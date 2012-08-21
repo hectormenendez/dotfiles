@@ -2,7 +2,7 @@
 [[ $- != *i* ]] && return
 
 # Set the creation mask, so files are created with 600 and dirs as 700
-umask 022
+umask 077
 
 # don't put duplicate lines in the history.
 HISTCONTROL=$HISTCONTROL${HISTCONTROL+:}ignoredups
