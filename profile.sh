@@ -23,7 +23,6 @@ PS1='\[\033[01;34m\]\w\[\033[00m\]\$ '
 # set file colors
 eval `gdircolors ~/.dir_colors`
 
-alias sudo='sudo '
-alias ls='gls --classify --tabsize=0 --literal --color=auto --show-control-chars --human-readable --group-directories-first'
-alias grep='grep --color=auto'
+# If an alias file exists, load it.
+if [ -f ~/.alias ]; then source ~/.alias; fi
 
