@@ -20,6 +20,7 @@
 	st = status
 	add  = add -v
 	tagshow = !sh -c 'git rev-list $0 | head -n 1'
+	logfile = !sh $PROFILE_SELF/git/logfile.sh
 
 [color]
 	ui = true
