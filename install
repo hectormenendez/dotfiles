@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Obtain directory where this file resides.
+PWD=`pwd`
+SELF=`dirname ${BASH_SOURCE[0]}`
+cd $SELF
+SELF=`pwd`
+cd $PWD
+
+for DOTFILE in `find $SELF -type f -depth 1 -name '*.sh' | sed -E 's%.*/%%' | sed -E 's/\.sh//'`; do
+
+    BACKUP=false
+
+    # Detect if there's a file already there.
+    if [[ -f ~/.$DOTFILE ]]; then
+        # But wait, is it a symlink pointing to self?
+        if [ -L ~/.$DOTFILE  -a `readlink ~/.$DOTFILE | sed -E 's%(.*)/.*%\1%'` == $SELF ]; then
+            # Skip, no need to do anything
+            echo "Symlink for $DOTFILE already existed."
+            continue
+        else
+            # Backup current file, then create a symlink
+            mv ~/.$DOTFILE ~/.$DOTFILE.backup
+            BACKUP=true
+        fi
+    fi
+
+    ln -s $SELF/$DOTFILE.sh ~/.$DOTFILE
+    if $BACKUP; then echo "Created symlink for $DOTFILE. (A backup was saved)"
+    else echo "Created symlink for $DOTFILE."
+    fi
+done
