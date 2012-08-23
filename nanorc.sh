@@ -1,5 +1,3 @@
-# Use auto-indentation
-set autoindent
 
 # Use cut to end of line with ^K by default
 set cut
