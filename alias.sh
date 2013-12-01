@@ -12,7 +12,7 @@ alias ls='gls --classify --tabsize=0 --literal --color=auto --show-control-chars
 alias grep='grep --color=auto'
 
 # SublimeText
-alias subl="open -a Sublime\ Text\ 2"
+alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 
 # Erase the screen and show the file listing.
 alias c="clear && ls -lA"
