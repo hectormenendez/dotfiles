@@ -3,7 +3,6 @@ SELF=${BASH_SOURCE[0]}
 [[ -z `readlink $SELF` ]] && SELF=`dirname $SELF` || SELF=`readlink $SELF | xargs dirname`
 export PROFILE_SELF=$SELF
 
-
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
@@ -24,7 +23,10 @@ shopt -s checkwinsize
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set color command prompt
-PS1='\[\033[01;34m\]\w\[\033[00m\]\$ '
+export PS1='\[\033[01;34m\]\w\[\033[00m\]\$ '
+
+# Force brew commands to be available before currently installed ones 
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
 # set file colors
 eval `gdircolors ~/.dir_colors`
@@ -50,3 +52,9 @@ if [[ ! -L /usr/local/bin/isGIT ]]; then
     ln -s $SELF/git/isGIT.sh /usr/local/bin/isGIT
 fi
 
+# Enable VirtualEnvWrapper
+if [[ ! -f /usr/local/bin/virtualenvwrapper.sh ]]; then
+	echo "Please, install virtualenv and virtualenvwrapper"
+fi
+export WORKON_HOME=$HOME/.virtualenvs
+source /usr/local/bin/virtualenvwrapper.sh
