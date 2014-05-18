@@ -55,6 +55,14 @@ fi
 # Enable VirtualEnvWrapper
 if [[ ! -f /usr/local/bin/virtualenvwrapper.sh ]]; then
 	echo "Please, install virtualenv and virtualenvwrapper"
+	echo "https://gist.github.com/pithyless/1208841"
 fi
 export WORKON_HOME=$HOME/.virtualenvs
 source /usr/local/bin/virtualenvwrapper.sh
+
+# Ruby environment management.
+eval "$(rbenv init -)"
+
+export RBENV_ROOT="$(brew --prefix rbenv)"
+export GEM_HOME="$(brew --prefix)/opt/gems"
+export GEM_PATH="$(brew --prefix)/opt/gems"
