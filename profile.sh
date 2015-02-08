@@ -3,6 +3,9 @@ SELF=${BASH_SOURCE[0]}
 [[ -z `readlink $SELF` ]] && SELF=`dirname $SELF` || SELF=`readlink $SELF | xargs dirname`
 export PROFILE_SELF=$SELF
 
+# Include libs!
+. "$SELF/inc/lib.sh"
+
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
@@ -25,24 +28,29 @@ shopt -s checkwinsize
 # set color command prompt
 export PS1='\[\033[01;34m\]\w\[\033[00m\]\$ '
 
-# Force brew commands to be available before currently installed ones 
+# Force brew commands to be available before currently installed ones
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
 # set file colors
 eval `gdircolors ~/.dir_colors`
 
-# Make sure core-utils are installed
-if [[ ! -d /usr/local/Cellar/coreutils ]]; then
-    echo "coreutils were not found, please install them with Homebrew."
-fi
-
-# Make sure gnu-sed is installed
-if [[ -z $(ls /usr/local/Cellar/gnu-sed/*/bin/gsed 2> /dev/null) ]]; then
-    echo "gnu-sed was not found, please install it with Homebrew."
-fi
-
 # If an alias file exists, load it.
 if [ -f ~/.alias ]; then source ~/.alias; fi
+
+# These are for mac only
+if ! $(isLinux); then
+
+	# Make sure core-utils are installed
+	if [[ ! -d /usr/local/Cellar/coreutils ]]; then
+	    echo "coreutils were not found, please install them with Homebrew."
+	fi
+
+	# Make sure gnu-sed is installed
+	if [[ -z $(ls /usr/local/Cellar/gnu-sed/*/bin/gsed 2> /dev/null) ]]; then
+	    echo "gnu-sed was not found, please install it with Homebrew."
+	fi
+
+fi
 
 # Prepend git branch name on command prompt.
 if [ -r "$SELF/git/prompt.sh" ]; then source "$SELF/git/prompt.sh"; fi
@@ -57,12 +65,15 @@ if [[ ! -f /usr/local/bin/virtualenvwrapper.sh ]]; then
 	echo "Please, install virtualenv and virtualenvwrapper"
 	echo "https://gist.github.com/pithyless/1208841"
 fi
+
 export WORKON_HOME=$HOME/.virtualenvs
 source /usr/local/bin/virtualenvwrapper.sh
 
 # Ruby environment management.
 eval "$(rbenv init -)"
 
-export RBENV_ROOT="$(brew --prefix rbenv)"
-export GEM_HOME="$(brew --prefix)/opt/gems"
-export GEM_PATH="$(brew --prefix)/opt/gems"
+if ! $(isLinux); then
+	export GEM_HOME="$(brew --prefix)/opt/gems"
+	export GEM_PATH="$(brew --prefix)/opt/gems"
+	export RBENV_ROOT="$(brew --prefix rbenv)"
+fi
