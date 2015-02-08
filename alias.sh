@@ -17,6 +17,7 @@ alias ls=$LS
 if ! $(isLinux); then
 
 	# Override boring OS.X commands with GNU's
+	alias dircolors='gdircolors'
 	alias echo='gecho'
 	alias sed='gsed'
 
