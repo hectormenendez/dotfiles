@@ -25,17 +25,23 @@ shopt -s checkwinsize
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
+# make usr/local writable to everyone in the same group as current user
+sudo chown $(id -u):$(id -g) -R /usr/local
+sudo chmod g+rw,o-rwx -R /usr/local
+
 # set color command prompt
 export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\$ '
 
 # Force brew commands to be available before currently installed ones
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
-# set file colors
-eval `gdircolors ~/.dir_colors`
 
 # If an alias file exists, load it.
 if [ -f ~/.alias ]; then source ~/.alias; fi
+
+# set file colors
+eval `dircolors ~/.dir_colors`
+
 
 # These are for mac only
 if ! $(isLinux); then
@@ -62,12 +68,14 @@ fi
 
 # Enable VirtualEnvWrapper
 if [[ ! -f /usr/local/bin/virtualenvwrapper.sh ]]; then
+	echo
 	echo "Please, install virtualenv and virtualenvwrapper"
 	echo "https://gist.github.com/pithyless/1208841"
+else
+	export WORKON_HOME=$HOME/.virtualenvs
+	source /usr/local/bin/virtualenvwrapper.sh
 fi
 
-export WORKON_HOME=$HOME/.virtualenvs
-source /usr/local/bin/virtualenvwrapper.sh
 
 # Ruby environment management.
 eval "$(rbenv init -)"
