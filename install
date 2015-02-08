@@ -7,26 +7,26 @@ cd $SELF
 SELF=`pwd`
 cd $PWD
 
-for DOTFILE in `find $SELF -type f -depth 1 -name '*.sh' | sed -E 's%.*/%%' | sed -E 's/\.sh//'`; do
+. "$SELF/inc/lib.sh"
 
+for dotfile in $(dotfiles $SELF); do
     BACKUP=false
 
     # Detect if there's a file already there.
-    if [[ -f ~/.$DOTFILE ]]; then
-        # But wait, is it a symlink pointing to self?
-        if [ -L ~/.$DOTFILE  -a `readlink ~/.$DOTFILE | sed -E 's%(.*)/.*%\1%'` == $SELF ]; then
-            # Skip, no need to do anything
-            echo "Symlink for $DOTFILE already existed."
+    if [[ -f ~/.$dotfile ]]; then
+
+        # is it a symlink? is it poiting to this dir?
+        if [ -L ~/.$dotfile -a `readlink ~/.$dotfile | xargs dirname $1` == $SELF ]; then
+            echo "~/.$dotfile already existed."
             continue
+        # ok, nothing to do with us, better make a backup.
         else
-            # Backup current file, then create a symlink
-            mv ~/.$DOTFILE ~/.$DOTFILE.backup
+            mv ~/.$dotfile ~/.$dotfile.orig
             BACKUP=true
         fi
     fi
 
-    ln -s $SELF/$DOTFILE.sh ~/.$DOTFILE
-    if $BACKUP; then echo "Created symlink for $DOTFILE. (A backup was saved)"
-    else echo "Created symlink for $DOTFILE."
-    fi
+    ln -s $SELF/$dotfile.sh ~/.$dotfile
+    printf "Symlinked $dotfile. "
+    if $BACKUP; then printf "(A backup was saved).\n"; fi
 done
