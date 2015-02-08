@@ -26,8 +26,8 @@ shopt -s checkwinsize
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # make usr/local writable to everyone in the same group as current user
-sudo chown $(id -u):$(id -g) -R /usr/local
-sudo chmod g+rw,o-rwx -R /usr/local
+sudo -k chown -R $(id -u):$(id -g) /usr/local
+sudo -k chmod -R u+rw,g+rw,o-rwx /usr/local
 
 # set color command prompt
 export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\$ '
@@ -66,22 +66,35 @@ if [[ ! -L /usr/local/bin/isGIT ]]; then
     ln -s $SELF/git/isGIT.sh /usr/local/bin/isGIT
 fi
 
-# Enable VirtualEnvWrapper
-if [[ ! -f /usr/local/bin/virtualenvwrapper.sh ]]; then
-	echo
-	echo "Please, install virtualenv and virtualenvwrapper"
-	echo "https://gist.github.com/pithyless/1208841"
-else
-	export WORKON_HOME=$HOME/.virtualenvs
-	source /usr/local/bin/virtualenvwrapper.sh
+if $(has python); then
+
+	# Enable VirtualEnvWrapper
+	if [[ ! -f /usr/local/bin/virtualenvwrapper.sh ]]; then
+		echo
+		echo "Please, install virtualenv and virtualenvwrapper"
+		if ! $(isLinux); then echo "https://gist.github.com/pithyless/1208841"; fi
+		echo
+	else
+		export WORKON_HOME=$HOME/.virtualenvs
+		source /usr/local/bin/virtualenvwrapper.sh
+	fi
+
 fi
 
+if $(has ruby); then
 
-# Ruby environment management.
-eval "$(rbenv init -)"
+	if ! $(has rbenv); then
+		echo
+		echo "Please, install rbenv."
+		echo
+	else
+		# Ruby environment management.
+		eval "$(rbenv init -)"
 
-if ! $(isLinux); then
-	export GEM_HOME="$(brew --prefix)/opt/gems"
-	export GEM_PATH="$(brew --prefix)/opt/gems"
-	export RBENV_ROOT="$(brew --prefix rbenv)"
+		if ! $(isLinux); then
+			export GEM_HOME="$(brew --prefix)/opt/gems"
+			export GEM_PATH="$(brew --prefix)/opt/gems"
+			export RBENV_ROOT="$(brew --prefix rbenv)"
+		fi
+	fi
 fi
