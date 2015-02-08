@@ -3,8 +3,9 @@
 	email = etor.mx@gmail.com
 
 [core]
-        whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
+	whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	editor = nano
+
 [push]
 	# 'git push' should only do the current branch, not all
 	default = current
@@ -41,9 +42,11 @@
 	added = yellow
 	changed = green
 	untracked = cyan
+
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
+
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true

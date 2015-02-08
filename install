@@ -28,5 +28,6 @@ for dotfile in $(dotfiles $SELF); do
 
     ln -s $SELF/$dotfile.sh ~/.$dotfile
     printf "Symlinked $dotfile. "
-    if $BACKUP; then printf "(A backup was saved).\n"; fi
+    if $BACKUP; then printf "(A backup was saved)."; fi
+    echo
 done
