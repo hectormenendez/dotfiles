@@ -50,9 +50,9 @@ function git_branch_front () {
 function git_branch_back (){
     local cgitb="\033[01;36m" # cyan
     local crset="\033[01;0m"  # reset
-    local branch=`git branch --no-color 2>/dev/null | grep "\*" --color=none | sed 's/^\*\s*/:/'`
+    local branch=`git branch --no-color 2>/dev/null | grep "\*" --color=none | sed 's/^\*\s*//'`
     if [ "$branch" != "" ]; then
-        echo -ne "$cgitb[git$branch] $crset"
+        echo -ne "$cgitb[$branch] $crset"
     fi
 }
 
