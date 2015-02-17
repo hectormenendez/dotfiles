@@ -49,16 +49,35 @@ eval `dircolors ~/.dir_colors`
 # These are for mac only
 if ! $(isLinux); then
 
+	# Brew must be installed.
+	if test ! $(which brew); then
+		echo "Installing brew…"
+		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	fi
+
+	echo "Updating brew…"
+	brew update
+
 	# Make sure core-utils are installed
 	if [[ ! -d /usr/local/Cellar/coreutils ]]; then
-	    echo "coreutils were not found, please install them with Homebrew."
+		echo "CoreUtils was not found… making an install"
+		brew install coreutils
+		brew install findutils
+		binaries=(
+			bash
+			python
+			node
+			tree
+			ack
+			git
+		)
+		brew install ${binaries[@]}
+		sudo mv /bin/bash /bin/bash3
+		sudo ln -s /usr/local/bin/bash /bin/bash
 	fi
 
-	# Make sure gnu-sed is installed
-	if [[ -z $(ls /usr/local/Cellar/gnu-sed/*/bin/gsed 2> /dev/null) ]]; then
-	    echo "gnu-sed was not found, please install it with Homebrew."
-	fi
-
+	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
+	brew cleanup
 fi
 
 # Prepend git branch name on command prompt.
