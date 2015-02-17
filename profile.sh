@@ -6,6 +6,10 @@ export PROFILE_SELF=$SELF
 # Include libs!
 . "$SELF/inc/lib.sh"
 
+# Only valid for Bash4 (remember to install it)
+# wildcard ** now means recursive
+shopt -s globstar
+
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
@@ -34,7 +38,6 @@ export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\$ '
 
 # Force brew commands to be available before currently installed ones
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-
 
 # If an alias file exists, load it.
 if [ -f ~/.alias ]; then source ~/.alias; fi
