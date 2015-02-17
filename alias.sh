@@ -20,6 +20,7 @@ if ! $(isLinux); then
 	alias dircolors='gdircolors'
 	alias echo='gecho'
 	alias sed='gsed'
+	alias find='gfind'
 
 	# Show ls in a pretty way (depends on brew's coreutils)
 	alias ls="g$LS"
