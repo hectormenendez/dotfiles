@@ -76,8 +76,10 @@ if ! $(isLinux); then
 		sudo ln -s /usr/local/bin/bash /bin/bash
 	fi
 
-	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
+	export PATH=$(brew --prefix coreutils)/libexec/gnubin:/usr/local/sbin:$PATH
+	export NODEBREW_ROOT=/usr/local/var/nodebrew
 	brew cleanup
+	brew prune
 fi
 
 # Prepend git branch name on command prompt.
