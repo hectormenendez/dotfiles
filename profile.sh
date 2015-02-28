@@ -3,6 +3,9 @@ SELF=${BASH_SOURCE[0]}
 [[ -z `readlink $SELF` ]] && SELF=`dirname $SELF` || SELF=`readlink $SELF | xargs dirname`
 export PROFILE_SELF=$SELF
 
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
 # Include libs!
 . "$SELF/inc/lib.sh"
 
@@ -37,7 +40,7 @@ sudo -k chmod -R u+rw,g+rw,o-rwx /usr/local
 export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\$ '
 
 # Force brew commands to be available before currently installed ones
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 
 # If an alias file exists, load it.
 if [ -f ~/.alias ]; then source ~/.alias; fi
@@ -75,9 +78,7 @@ if ! $(isLinux); then
 		sudo mv /bin/bash /bin/bash3
 		sudo ln -s /usr/local/bin/bash /bin/bash
 	fi
-
-	export PATH=$(brew --prefix coreutils)/libexec/gnubin:/usr/local/sbin:$PATH
-	export NODEBREW_ROOT=/usr/local/var/nodebrew
+	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$HOME/.nodebrew/current/bin:$PATH
 	brew cleanup
 	brew prune
 fi
@@ -113,12 +114,14 @@ if $(has ruby); then
 		echo
 	else
 		# Ruby environment management.
-		eval "$(rbenv init -)"
-
 		if ! $(isLinux); then
-			export GEM_HOME="$(brew --prefix)/opt/gems"
-			export GEM_PATH="$(brew --prefix)/opt/gems"
-			export RBENV_ROOT="$(brew --prefix rbenv)"
+			export GEM_HOME=$(brew --prefix)/opt/gems
+			export GEM_PATH=$(brew --prefix)/opt/gems
+			export RBENV_ROOT=$(brew --prefix rbenv)
+			export PATH=$GEM_PATH/bin:$PATH
 		fi
+		eval "$(rbenv init -)"
+		rbenv shell $(rbenv global)
+		rbenv rehash
 	fi
 fi
