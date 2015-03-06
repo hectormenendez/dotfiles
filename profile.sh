@@ -9,10 +9,6 @@ export LANG=en_US.UTF-8
 # Include libs!
 . "$SELF/inc/lib.sh"
 
-# Only valid for Bash4 (remember to install it)
-# wildcard ** now means recursive
-shopt -s globstar
-
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
@@ -32,9 +28,6 @@ shopt -s checkwinsize
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# make usr/local writable to everyone in the same group as current user
-sudo -k chown -R $(id -u):$(id -g) /usr/local
-sudo -k chmod -R u+rw,g+rw,o-rwx /usr/local
 
 # set color command prompt
 export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\$ '
@@ -56,16 +49,6 @@ if ! $(isLinux); then
 	if test ! $(which brew); then
 		echo "Installing brew…"
 		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	fi
-
-	echo "Updating brew…"
-	brew update
-
-	# Make sure core-utils are installed
-	if [[ ! -d /usr/local/Cellar/coreutils ]]; then
-		echo "CoreUtils was not found… making an install"
-		brew install coreutils
-		brew install findutils
 		binaries=(
 			bash
 			python
@@ -75,13 +58,31 @@ if ! $(isLinux); then
 			git
 		)
 		brew install ${binaries[@]}
+		echo "Making Bash4 default..."
 		sudo mv /bin/bash /bin/bash3
 		sudo ln -s /usr/local/bin/bash /bin/bash
 	fi
+
+	# Make sure core-utils are installed
+	if [[ ! -d $(brew --prefix)/Cellar/coreutils ]]; then
+		echo "CoreUtils was not found… making an install"
+		base=(
+			coreutils
+			findutils
+			gnu-tar
+			gnu-sed
+			gnu-indent
+		)
+		brew install ${base[@]} --with-default-names
+		brew tap homebrew/dupes; brew install grep --with-default-names
+	fi
 	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$HOME/.nodebrew/current/bin:$PATH
-	brew cleanup
-	brew prune
+	brew cleanup  > /dev/null 2>&1
+	brew prune  > /dev/null 2>&1
 fi
+
+# Only valid for Bash4: wildcard ** now means recursive
+shopt -s globstar
 
 # Prepend git branch name on command prompt.
 if [ -r "$SELF/git/prompt.sh" ]; then source "$SELF/git/prompt.sh"; fi
@@ -94,34 +95,39 @@ fi
 if $(has python); then
 
 	# Enable VirtualEnvWrapper
-	if [[ ! -f /usr/local/bin/virtualenvwrapper.sh ]]; then
-		echo
-		echo "Please, install virtualenv and virtualenvwrapper"
-		if ! $(isLinux); then echo "https://gist.github.com/pithyless/1208841"; fi
-		echo
-	else
-		export WORKON_HOME=$HOME/.virtualenvs
-		source /usr/local/bin/virtualenvwrapper.sh
+	if ! $(has virtualenv); then
+		echo "Virtualenv was not found, installing it ..."
+		pip install --upgrade setuptools
+		pip install --upgrade pip
+		pip install virtualenv
+		pip install virtualenvwrapper
 	fi
+	export WORKON_HOME=$HOME/.virtualenvs
+	source $(brew --prefix)/bin/virtualenvwrapper.sh
 
 fi
 
+# Ruby environment management.
 if $(has ruby); then
-
+	rbenv_installed=false
 	if ! $(has rbenv); then
-		echo
-		echo "Please, install rbenv."
-		echo
-	else
-		# Ruby environment management.
-		if ! $(isLinux); then
-			export GEM_HOME=$(brew --prefix)/opt/gems
-			export GEM_PATH=$(brew --prefix)/opt/gems
-			export RBENV_ROOT=$(brew --prefix rbenv)
-			export PATH=$GEM_PATH/bin:$PATH
-		fi
-		eval "$(rbenv init -)"
-		rbenv shell $(rbenv global)
-		rbenv rehash
+		echo "Rbenv was not found, installing it ..."
+		brew install rbenv ruby-build
+		rbenv_installed=true
 	fi
+	if ! $(isLinux); then
+		export GEM_HOME=$(brew --prefix)/opt/gems
+		export GEM_PATH=$(brew --prefix)/opt/gems
+		export RBENV_ROOT=$(brew --prefix rbenv)
+		export PATH=$GEM_PATH/bin:$PATH
+	fi
+	eval "$(rbenv init -)"
+	if [[ ${rbenv_installed} == true || $(rbenv global) == 'system' ]]; then
+		echo "Installing latest version of ruby."
+		rbenv_ver=$(rbenv install --list | grep -P '^\s*\d+\.\d+\.\d+$' | tail -n1 | xargs)
+		rbenv install $rbenv_ver
+		rbenv global $rbenv_ver
+	fi
+	rbenv shell $(rbenv global)
+	rbenv rehash
 fi
