@@ -20,3 +20,9 @@ function dotfiles {
     if $(isLinux); then depth="max$depth"; fi
     echo `find $1 -$depth 1 -type f -name '*.sh' -exec basename {} .sh \;`
 }
+
+# make usr/local writable to everyone in the same group as current user
+function perms {
+    sudo -k chown -R $(id -u):$(id -g) /usr/local
+    sudo -k chmod -R u+rw,g+rw,o-rwx /usr/local
+}
