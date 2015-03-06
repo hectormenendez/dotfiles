@@ -12,37 +12,10 @@ export LANG=en_US.UTF-8
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-# Set the creation mask, so files are created with 600 and dirs as 700
-umask 077
-
-# don't put duplicate lines in the history.
-HISTCONTROL=$HISTCONTROL${HISTCONTROL+:}ignoredups
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-
-# set color command prompt
-export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\$ '
-
-# Force brew commands to be available before currently installed ones
+# Initialise Path so it uses /usr/local/bin first.
 export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 
-# If an alias file exists, load it.
-if [ -f ~/.alias ]; then source ~/.alias; fi
-
-# set file colors
-eval `dircolors ~/.dir_colors`
-
-
-# These are for mac only
+# First, make sure we have everything needed to work.
 if ! $(isLinux); then
 
 	# Brew must be installed.
@@ -131,3 +104,28 @@ if $(has ruby); then
 	rbenv shell $(rbenv global)
 	rbenv rehash
 fi
+
+# Set the creation mask, so files are created with 600 and dirs as 700
+umask 077
+
+# don't put duplicate lines in the history.
+HISTCONTROL=$HISTCONTROL${HISTCONTROL+:}ignoredups
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set color command prompt
+export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\$ '
+
+# If an alias file exists, load it.
+if [ -f ~/.alias ]; then source ~/.alias; fi
+
+# set file colors
+eval `dircolors ~/.dir_colors`
