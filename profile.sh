@@ -105,6 +105,16 @@ if $(has ruby); then
 	rbenv rehash
 fi
 
+# Google Cloud SDK.
+gc_prefix="$HOME/Source/External"
+gc_dirname='google-cloud-sdk'
+if [ ! -d "$gc_prefix/$gc_dirname" ]; then
+	[ ! -d "$gc_prefix" ] && mkdir -p $gc_prefix
+	curl https://sdk.cloud.google.com | PREFIX=$gc_prefix bash
+fi
+source "$gc_prefix/$gc_dirname/path.bash.inc"
+source "$gc_prefix/$gc_dirname/completion.bash.inc"
+
 # Set the creation mask, so files are created with 600 and dirs as 700
 umask 077
 
@@ -129,3 +139,4 @@ if [ -f ~/.alias ]; then source ~/.alias; fi
 
 # set file colors
 eval `dircolors ~/.dir_colors`
+
