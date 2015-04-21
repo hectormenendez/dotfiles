@@ -132,7 +132,7 @@ shopt -s checkwinsize
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set color command prompt
-export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\$ '
+export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
 
 # If an alias file exists, load it.
 if [ -f ~/.alias ]; then source ~/.alias; fi
