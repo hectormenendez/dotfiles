@@ -7,6 +7,7 @@ cd $SELF
 SELF=`pwd`
 cd $PWD
 
+# Include libs!
 . "$SELF/inc/lib.sh"
 
 for dotfile in $(dotfiles $SELF); do
@@ -28,6 +29,10 @@ for dotfile in $(dotfiles $SELF); do
 
     ln -s $SELF/$dotfile.sh ~/.$dotfile
     printf "Symlinked $dotfile. "
-    if $BACKUP; then printf "(A backup was saved)."; fi
+    if $BACKUP; then
+        printf "(A backup was saved)."
+    fi
     echo
 done
+
+. "$SELF/inc/install.sh"
