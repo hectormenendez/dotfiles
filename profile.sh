@@ -17,6 +17,9 @@ export DOTFILES=$SELF
 
 # Initialise Path so it uses /usr/local/bin first.
 export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+if ! $(isLinux); then
+	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$HOME/.nodebrew/current/bin:$PATH
+fi
 
 # If an alias file exists, load it.
 if [ -f ~/.alias ]; then source ~/.alias; fi
