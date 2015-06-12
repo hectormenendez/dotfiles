@@ -4,7 +4,7 @@
 
 [core]
 	whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
-	editor = nano
+	editor = vim
 
 [push]
 	# 'git push' should only do the current branch, not all
@@ -17,6 +17,7 @@
 	whitespace = strip
 
 [alias]
+	ci = commit
 	co = checkout
 	st = status
 	add  = add -v
