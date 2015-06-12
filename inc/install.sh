@@ -35,12 +35,13 @@ if ! $(isLinux); then
 		git
 	)
 	brew install ${deps[@]}
+	nodebrew install-binary latest
+	nodebrew use latest
 
 	echo "Making Bash4 the default shell…"
 	chsh -s /usr/local/bin/bash
 
 	echo "Cleaning up the house…"
-	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$HOME/.nodebrew/current/bin:$PATH
 	brew cleanup  > /dev/null 2>&1
 	brew prune  > /dev/null 2>&1
 
@@ -54,7 +55,6 @@ elif [ -f "/etc/arch-release" ]; then
 		python
 		python-virtualenv
 		ruby
-		nodejs
 		git
 	)
 	sudo pacman -Syu --noconfirm ${deps[@]}
