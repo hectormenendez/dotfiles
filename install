@@ -39,5 +39,5 @@ for dotfile in $(dotfiles $DIR); do
 
 done
 
-run installation
+# run installation
 source "$SELF/lib/install.sh"
