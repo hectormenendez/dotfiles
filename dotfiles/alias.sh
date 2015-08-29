@@ -24,6 +24,10 @@ alias c="clear && la"
 alias a="alias -p"
 alias isGIT="git status >/dev/null 2>/dev/null"
 
+# Enable an HTTP request from CLI
+for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
+	alias "http-${method,,}"="lwp-request -m '$method'"
+done
 
 # These are for mac only
 if ! $(isLinux); then

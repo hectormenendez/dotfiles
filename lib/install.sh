@@ -21,12 +21,14 @@ if ! $(isLinux); then
 			gnu-indent
 		)
 		brew install ${base[@]} --with-default-names
-		brew tap homebrew/dupes; brew install grep --with-default-names
+		brew install grep --with-default-names
+		brew tap homebrew/dupes
 	fi
 
 	echo "Installing dependencies…"
 	deps=(
 		bash
+		bash-completion
 		python
 		node
 		nodebrew
@@ -34,7 +36,11 @@ if ! $(isLinux); then
 		ack
 		git
 	)
+
 	brew install ${deps[@]}
+	brew tap homebrew/completions
+
+	echo "Installing latest node binary…"
 	nodebrew install-binary latest
 	nodebrew use latest
 
