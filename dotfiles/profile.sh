@@ -1,9 +1,10 @@
 # Get directory, where the script files resides
 SELF=${BASH_SOURCE[0]}
 [[ -z `readlink $SELF` ]] && SELF=`dirname $SELF` || SELF=`readlink $SELF | xargs dirname`
+SELF=`realpath $SELF/..`
 
-# Include libs!
-. "$SELF/inc/lib.sh"
+# Include utils!
+source "$SELF/lib/utils.sh"
 
 # Environment variables
 if ! $(isLinux); then

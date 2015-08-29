@@ -6,33 +6,38 @@ SELF=`dirname ${BASH_SOURCE[0]}`
 cd $SELF
 SELF=`pwd`
 cd $PWD
+DIR=$SELF/dotfiles
 
-# Include libs!
-. "$SELF/inc/lib.sh"
+# Common utilities
+source "$SELF/lib/utils.sh"
 
-for dotfile in $(dotfiles $SELF); do
+for dotfile in $(dotfiles $DIR); do
     BACKUP=false
 
     # Detect if there's a file already there.
     if [[ -f ~/.$dotfile ]]; then
 
-        # is it a symlink? is it poiting to this dir?
-        if [ -L ~/.$dotfile -a `readlink ~/.$dotfile | xargs dirname $1` == $SELF ]; then
+        # is it a symlink? is it poiting to the dotfile dir?
+        if [ -L ~/.$dotfile -a `readlink ~/.$dotfile | xargs dirname $1` == $DIR ]; then
             echo "~/.$dotfile already existed."
             continue
-        # ok, nothing to do with us, better make a backup.
+
+        # ok, that dotfile has nothing to do with us, better make a backup.
         else
             mv ~/.$dotfile ~/.$dotfile.orig
             BACKUP=true
         fi
     fi
 
-    ln -s $SELF/$dotfile.sh ~/.$dotfile
+    ln -s $DIR/$dotfile.sh ~/.$dotfile
     printf "Symlinked $dotfile. "
+
     if $BACKUP; then
         printf "(A backup was saved)."
     fi
     echo
+
 done
 
-. "$SELF/inc/install.sh"
+run installation
+source "$SELF/lib/install.sh"

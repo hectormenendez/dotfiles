@@ -1,5 +1,5 @@
-# Include libs!
-. "$SELF/inc/lib.sh"
+# Include utils!
+source "$SELF/lib/utils.sh"
 
 # Sudo should be sudo
 alias sudo='sudo '
