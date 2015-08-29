@@ -39,7 +39,7 @@ if ! $(isLinux); then
 	nodebrew use latest
 
 	echo "Making Bash4 the default shell…"
-	chsh -s /usr/local/bin/bash
+	brew link --overwrite bash
 
 	echo "Cleaning up the house…"
 	brew cleanup  > /dev/null 2>&1
