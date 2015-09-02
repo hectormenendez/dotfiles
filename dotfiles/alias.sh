@@ -15,12 +15,12 @@ alias grep='grep --color=auto'
 # LS specific
 alias ls="ls --classify --tabsize=0 --literal --color=auto --show-control-chars --human-readable --group-directories-first"
 alias la="ls -lA"
-
+alias cl="clear && la"
 # show all ips
 alias ip="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6?(addr:)? ?/, \"\"); print }' && echo `dig +short myip.opendns.com @resolver1.opendns.com`"
 
 # Erase the screen and show the file listing.
-alias c="clear && la"
+alias c="clear"
 alias a="alias -p"
 alias isGIT="git status >/dev/null 2>/dev/null"
 
@@ -32,8 +32,9 @@ done
 # These are for mac only
 if ! $(isLinux); then
 
-	# SublimeText
+	# Text editors
 	alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+	alias atom="/Applications/Atom.app/Contents/Resources/app/atom.sh"
 
 	# Native JS REPL
 	jscbin="/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources/jsc";
@@ -62,4 +63,3 @@ if ! $(isLinux); then
 	alias os-lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
 	alias os-reload="exec $SHELL -l"
 fi
-

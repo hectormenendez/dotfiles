@@ -56,10 +56,9 @@ elif [ -f "/etc/arch-release" ]; then
 
 	echo "Updating system and installing dependencies…"
 	deps=(
-		base-devel
 		moreutils
+		dnsutils
 		python
-		python-virtualenv
 		ruby
 		git
 	)

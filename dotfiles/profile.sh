@@ -44,8 +44,6 @@ PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 # Enable bash completion
 if ! $(isLinux); then
 	source $(brew --prefix bash-completion)/etc/bash_completion
-else
-	source /etc/bash_completion
 fi
 
 # Add tab completions for SSH hostnames based on ~/.ssh/config
