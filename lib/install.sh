@@ -63,4 +63,6 @@ elif [ -f "/etc/arch-release" ]; then
 		git
 	)
 	sudo pacman -Syu --noconfirm ${deps[@]}
+	echo "Installing NVM"
+	curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.26.1/install.sh | bash
 fi
