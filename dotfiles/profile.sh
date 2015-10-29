@@ -6,6 +6,8 @@ SELF=`realpath $SELF/..`
 # Include utils!
 source "$SELF/lib/utils.sh"
 
+export HOMEBREW_GITHUB_API_TOKEN=04aea4ea0e1826957f542cfc959bd9ee12c3c545
+
 # Environment variables
 if ! $(isLinux); then
 	export LC_ALL=en_US.UTF-8
@@ -35,6 +37,7 @@ shopt -s cdspell      # Autocorrect typos in path names when using cd
 # History management:
 # cleanup the history file, by manually removing dups
 tac $HISTFILE | awk '!x[$0]++' | tac | sponge $HISTFILE
+
 # don't put duplicate lines in the history and erase those that already exist
 # don't overwrite history on login, append to it.
 HISTCONTROL=erasedups:ignorespace
@@ -42,8 +45,8 @@ shopt -s histappend
 PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 
 # Enable bash completion
-if ! $(isLinux); then
-	source $(brew --prefix bash-completion)/etc/bash_completion
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+	source $(brew --prefix)/etc/bash_completion
 fi
 
 # Add tab completions for SSH hostnames based on ~/.ssh/config
@@ -63,3 +66,9 @@ eval `dircolors ~/.dir_colors`
 
 # If an alias file exists, load it.
 if [ -f ~/.alias ]; then source ~/.alias; fi
+
+# Enable NVM
+if [ -f $(brew --prefix nvm)/nvm.sh ]; then
+	export NVM_DIR=~/.nvm
+	source $(brew --prefix nvm)/nvm.sh
+fi

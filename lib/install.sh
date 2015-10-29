@@ -7,6 +7,8 @@ if ! $(isLinux); then
 		hadBrew=false
 		echo "Installing brew…"
 		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+		brew tap homebrew/completions
+		brew tap homebrew/dupes
 	fi
 
 	# Make sure core-utils are installed
@@ -15,34 +17,31 @@ if ! $(isLinux); then
 		base=(
 			coreutils
 			findutils
-			moreutils
 			gnu-tar
 			gnu-sed
 			gnu-indent
+			moreutils
 		)
 		brew install ${base[@]} --with-default-names
 		brew install grep --with-default-names
-		brew tap homebrew/dupes
 	fi
 
 	echo "Installing dependencies…"
 	deps=(
+		git
 		bash
 		bash-completion
 		python
-		node
-		nodebrew
 		tree
 		ack
-		git
+		nvm
 	)
-
 	brew install ${deps[@]}
-	brew tap homebrew/completions
 
 	echo "Installing latest node binary…"
-	nodebrew install-binary latest
-	nodebrew use latest
+	if [[ ! -d  ~/.nvm ]]; then
+		mkdir ~/.nvm
+	fi
 
 	echo "Making Bash4 the default shell…"
 	brew link --overwrite bash
