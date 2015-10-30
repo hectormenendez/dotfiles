@@ -38,9 +38,11 @@ if ! $(isLinux); then
 	)
 	brew install ${deps[@]}
 
-	echo "Installing latest node binary…"
 	if [[ ! -d  ~/.nvm ]]; then
+		echo "Installing stable node binary…"
 		mkdir ~/.nvm
+		nvm install stable
+		nvm alias default stable
 	fi
 
 	echo "Making Bash4 the default shell…"
