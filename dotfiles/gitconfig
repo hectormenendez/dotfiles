@@ -28,9 +28,9 @@
 	ui = true
 
 [color "branch"]
-	current = yellow reverse
-	local = green
-	remote = blue
+	current = green reverse
+	local = yellow
+	remote = cyan
 
 [color "diff"]
 	whitespace = red reverse
@@ -40,9 +40,9 @@
  	new = green bold
 
 [color "status"]
-	added = yellow
-	changed = green
-	untracked = cyan
+	added = green
+	changed = yellow
+	untracked = red
 
 [diff]
 	prompt = false
@@ -55,6 +55,7 @@
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
+
 [filter "lfs"]
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
