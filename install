@@ -21,15 +21,14 @@ for dotfile in $(dotfiles $DIR); do
         if [ -L ~/.$dotfile -a `readlink ~/.$dotfile | xargs dirname $1` == $DIR ]; then
             echo "~/.$dotfile already existed."
             continue
-
-        # ok, that dotfile has nothing to do with us, better make a backup.
         else
+        # that dotfile has nothing to do with us, better make a backup.
             mv ~/.$dotfile ~/.$dotfile.orig
             BACKUP=true
         fi
     fi
 
-    ln -s $DIR/$dotfile.sh ~/.$dotfile
+    ln -s $DIR/$dotfile ~/.$dotfile
     printf "Symlinked $dotfile. "
 
     if $BACKUP; then
