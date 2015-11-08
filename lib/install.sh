@@ -57,6 +57,9 @@ if ! $(isLinux); then
 	brew cleanup  > /dev/null 2>&1
 	brew prune  > /dev/null 2>&1
 
+	echo "Configuring umask for Applications…"
+	sudo launchctl config user umask 077 2>&1
+
 # is this ArchLinux? PacMan baby!
 elif [ -f "/etc/arch-release" ]; then
 
@@ -72,3 +75,9 @@ elif [ -f "/etc/arch-release" ]; then
 	echo "Installing NVM"
 	curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.26.1/install.sh | bash
 fi
+
+# common ground
+
+echo "Installing VIM's Pathogen"
+mkdir -p ~/.vim/autoload ~/.vim/bundle 2>&1
+curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
