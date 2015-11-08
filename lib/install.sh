@@ -35,8 +35,13 @@ if ! $(isLinux); then
 		tree
 		ack
 		nvm
+		caskroom/cask/brew-cask
 	)
 	brew install ${deps[@]}
+
+	echo "Installing font management and font-hack"
+	brew tap caskroom/fonts
+	brew cask install font-hack
 
 	if [[ ! -d  ~/.nvm ]]; then
 		echo "Installing stable node binary…"
