@@ -29,8 +29,6 @@ umask 077
 
 # Shell options
 shopt -s checkwinsize # check winsize after each command and adjust screen automatically,
-shopt -s autocd       # Enable globs on cd
-shopt -s globstar     # wildcard ** now means recursive
 shopt -s nocaseglob   # case insensitive globbing
 shopt -s cdspell      # Autocorrect typos in path names when using cd
 

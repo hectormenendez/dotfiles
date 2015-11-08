@@ -17,18 +17,10 @@ alias ls="ls --classify --tabsize=0 --literal --color=auto --show-control-chars 
 alias la="ls -lA"
 alias cl="clear && la"
 
-# show all ips
-# alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6?(addr:)? ?/, \"\"); print }' && echo `dig +short myip.opendns.com @resolver1.opendns.com`"
-
 # Erase the screen and show the file listing.
 alias c="clear"
 alias a="alias -p"
 alias isGIT="git status >/dev/null 2>/dev/null"
-
-# Enable an HTTP request from CLI
-for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
-	alias "http-${method,,}"="lwp-request -m '$method'"
-done
 
 # These are for mac only
 if ! $(isLinux); then
