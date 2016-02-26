@@ -1,6 +1,3 @@
-# Include utils!
-source "$__dirname/lib/utils.sh"
-
 # Allow aliases to be run with sudo
 alias sudo='sudo '
 
