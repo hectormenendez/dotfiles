@@ -1,10 +1,11 @@
 [user]
-	name = Héctor Menéndez
+	name = Héctor Menéndez Rivera
 	email = etor.mx@gmail.com
 
 [core]
 	whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	editor = vim
+	excludesfile = /Users/etor/.gitignore_global
 
 [push]
 	# 'git push' should only do the current branch, not all
@@ -47,14 +48,6 @@
 [diff]
 	prompt = false
 	tool = vimdiff
-
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
-
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
 
 [filter "lfs"]
 	clean = git-lfs clean %f
