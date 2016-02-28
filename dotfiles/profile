@@ -4,12 +4,13 @@
 # Get directory, where the script files resides
 __filename=${BASH_SOURCE[0]}
 __dirname=`dirname $(readlink -f $__filename)`
+__libpath=`realpath "$__dirname/../lib"`
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
 # Include utilities
-source $(realpath "$__dirname/../lib/utils.sh")
+source "$__libpath/utils.sh"
 
 # Environment variables
 export DOTFILES=$__dirname
@@ -32,6 +33,9 @@ shopt -s checkwinsize # check winsize after each command and adjust screen autom
 shopt -s nocaseglob   # case insensitive globbing
 shopt -s cdspell      # Autocorrect typos in path names when using cd
 
+# set file colors
+eval `dircolors ~/.dir_colors`
+
 # History management:
 # cleanup the history file, by manually removing dups
 tac $HISTFILE | awk '!x[$0]++' | tac | sponge $HISTFILE
@@ -52,14 +56,10 @@ PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
 
 # Prepend git branch name on command prompt.
-if [ -r "$__dirname/lib/git/prompt.sh" ]; then source "$__dirname/lib/git/prompt.sh"; fi
-
-# set file colors
-eval `dircolors ~/.dir_colors`
+[ -r "$__libpath/git/prompt.sh" ] && source "$__libpath/git/prompt.sh"
 
 # If an alias file exists, load it.
-if [ -f ~/.alias ]; then source ~/.alias; fi
-
+[ -f ~/.alias ] && source ~/.alias
 
 # MacOnly
 if ! $(isLinux); then
@@ -78,5 +78,3 @@ else
 	[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
 fi
-
-
