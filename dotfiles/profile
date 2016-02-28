@@ -13,16 +13,15 @@ source $(realpath "$__dirname/../lib/utils.sh")
 
 # Environment variables
 export DOTFILES=$__dirname
+export NVM_DIR=~/.nvm
 
 if $(isLinux); then
 	export LC_ALL=en_US.UTF-8
 	export LANG=en_US.UTF-8
 	export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
-	export NVM_DIR=~/.nvm
 else
 	export HOMEBREW_GITHUB_API_TOKEN=04aea4ea0e1826957f542cfc959bd9ee12c3c545
 	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$HOME/.nodebrew/current/bin:$PATH
-	export NVM_DIR=$(brew --prefix nvm)
 fi
 
 # Set the creation mask, so files are created with 600 and dirs as 700
@@ -70,7 +69,14 @@ if ! $(isLinux); then
 		source $(brew --prefix)/etc/bash_completion
 	fi
 
+	# Load NVM if avilable
+	[ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
+
+else
+
+	# Load NVM if avilable
+	[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
 fi
 
-# Load NVM if avilable
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
