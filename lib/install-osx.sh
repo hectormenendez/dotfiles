@@ -48,6 +48,7 @@ COMMANDS=(
 	'vim --override-system-vi'
 	'zsh'
 	'python'
+	'tmux'
 )
 
 didInstall=false

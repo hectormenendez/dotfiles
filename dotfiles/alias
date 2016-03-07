@@ -6,6 +6,14 @@ alias ..='cd ..'
 alias .s='cd Source'
 alias -- --='cd -'
 
+# get rid of vi, use vi as vim, and use nvim as vim
+alias vi='vim'
+alias vim='nvim'
+alias tx='tmux -f ~/.tmux/tmux.conf'
+alias txn='tx new-session -s'
+alias txa='tx attach'
+alias txl='tx ls'
+
 # Show Color on grep
 alias grep='grep --color=auto'
 

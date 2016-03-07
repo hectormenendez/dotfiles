@@ -12,6 +12,7 @@ deps=(
 	'python'
 	'ruby'
 	'git'
+	'tmux'
 )
 sudo pacman -Syu --noconfirm ${deps[@]}
 
