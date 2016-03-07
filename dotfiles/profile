@@ -1,28 +1,24 @@
-# Quick hack for Mac
-[[ `uname` == 'Darwin' ]] &&  alias readlink=greadlink
-
-# Get directory, where the script files resides
-__filename=${BASH_SOURCE[0]}
-__dirname=`dirname $(readlink -f $__filename)`
-__libpath=`realpath "$__dirname/../lib"`
-
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
 # Include utilities
-source "$__libpath/utils.sh"
+DOTFILES=`dirname $(readlink ${BASH_SOURCE[0]})`
+source "$DOTFILES/../lib/utils.sh"
 
 # Environment variables
-export DOTFILES=$__dirname
 export NVM_DIR=~/.nvm
 
-if $(isLinux); then
+if isLinux; then
 	export LC_ALL=en_US.UTF-8
 	export LANG=en_US.UTF-8
 	export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
-else
+
+elif isDarwin; then
 	export HOMEBREW_GITHUB_API_TOKEN=04aea4ea0e1826957f542cfc959bd9ee12c3c545
-	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$HOME/.nodebrew/current/bin:$PATH
+	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
+else
+	echo "What OS is this? just to be safe, profile won't load."
+	exit 1
 fi
 
 # Set the creation mask, so files are created with 600 and dirs as 700
@@ -56,25 +52,21 @@ PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
 
 # Prepend git branch name on command prompt.
-[ -r "$__libpath/git/prompt.sh" ] && source "$__libpath/git/prompt.sh"
+[ -r "$DOTFILES_LIB/git/prompt.sh" ] && source "$DOTFILES_LIB/git/prompt.sh"
 
 # If an alias file exists, load it.
 [ -f ~/.alias ] && source ~/.alias
 
 # MacOnly
-if ! $(isLinux); then
+if isDarwin; then
 
 	# Enable bash completion
 	if [ -f $(brew --prefix)/etc/bash_completion ]; then
 		source $(brew --prefix)/etc/bash_completion
 	fi
 
-	# Load NVM if avilable
-	[ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
-
-else
-
-	# Load NVM if avilable
-	[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-
+	[ -s "$(brew --prefix nvm)/nvm.sh" ] && export NVM_DIR=$(brew --prefix nvm)
 fi
+
+# Load NVM if avilable
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"

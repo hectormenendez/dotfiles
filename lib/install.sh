@@ -1,83 +1,11 @@
+# Sources utils only if they are not already available
+[[ ! $DOTFILES_UTILS ]] && source "${BASH_SOURCE%/*}/utils.sh"
 
-# These are for mac only
-if ! $(isLinux); then
-	hadBrew=true
-	# Brew must be installed.
-	if ! $(which brew); then
-		hadBrew=false
-		echo "Installing brew…"
-		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-		brew tap homebrew/completions
-		brew tap homebrew/dupes
-	fi
+isDarwin && source "$DOTFILES_LIB/install-osx.sh"
+isArch   && source "$DOTFILES_LIB/install-arch.sh"
 
-	# Make sure core-utils are installed
-	if [[ ! -d $(brew --prefix)/Cellar/coreutils ]]; then
-		echo "CoreUtils was not found… making an install"
-		base=(
-			coreutils
-			findutils
-			gnu-tar
-			gnu-sed
-			gnu-indent
-			moreutils
-		)
-		brew install ${base[@]} --with-default-names
-		brew install grep --with-default-names
-	fi
-
-	echo "Installing dependencies…"
-	deps=(
-		git
-		bash
-		bash-completion
-		python
-		tree
-		ack
-		nvm
-		caskroom/cask/brew-cask
-	)
-	brew install ${deps[@]}
-
-	echo "Installing font management and font-hack"
-	brew tap caskroom/fonts
-	brew cask install font-hack
-
-	if [[ ! -d  ~/.nvm ]]; then
-		echo "Installing stable node binary…"
-		mkdir ~/.nvm
-		nvm install stable
-		nvm alias default stable
-	fi
-
-	echo "Making Bash4 the default shell…"
-	brew link --overwrite bash
-
-	echo "Cleaning up the house…"
-	brew cleanup  > /dev/null 2>&1
-	brew prune  > /dev/null 2>&1
-
-	echo "Configuring umask for Applications…"
-	sudo launchctl config user umask 077 2>&1
-
-# is this ArchLinux? PacMan baby!
-elif [ -f "/etc/arch-release" ]; then
-
-	echo "Updating system and installing dependencies…"
-	deps=(
-		moreutils
-		dnsutils
-		python
-		ruby
-		git
-	)
-	sudo pacman -Syu --noconfirm ${deps[@]}
-	echo "Installing NVM"
-	curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.26.1/install.sh | bash
-fi
-
-# common ground
-
-echo "Installing VIM's Pathogen"
-mkdir -p ~/.vim/autoload ~/.vim/bundle 2>&1
-curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+# Common installation steps
+echo "Updating vim's plugin manager"
+rm -Rf ~/.vim/autoload/plug.vim
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
