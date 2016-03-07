@@ -27,7 +27,8 @@ for dotfile in $(dotfiles $DOTFILES_SRC); do
     ln -s $DOTFILES_SRC/$dotfile ~/.$dotfile
     printf "Symlinked $dotfile. "
 
-    $BACKUP &&  printf "(A backup was saved).\n\n"
+    $BACKUP &&  printf "(A backup was saved)."
+	echo # echoes a blank line no matter what
 
 done
 
