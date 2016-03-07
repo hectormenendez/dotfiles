@@ -1,14 +1,26 @@
 #!/bin/bash
 
+# Used to let know script that this file has already been loaded
+DOTFILES_UTILS=true
+
+# obtain the absolute route to the folder containing this file
+pushd ${BASH_SOURCE%/*} > /dev/null
+DOTFILES_LIB=`pwd -P`
+popd > /dev/null
+
+DOTFILES_ROOT=${DOTFILES_LIB%/*}
+DOTFILES_SRC="$DOTFILES_ROOT/dotfiles"
+
+function isDarwin {
+    test `uname -s` = 'Darwin'
+}
+
 function isLinux {
-    if [ "$(uname)" == "Darwin" ]; then
-        return 1 # 1? false!, yup, this is false
-    elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-        return 0 # You guessed it, this is true
-    else
-        echo "The current OS is not supported"
-        exit 1
-    fi
+    test `uname -s` = 'Linux'
+}
+
+function isArch {
+    test -f '/etc/arch-release'
 }
 
 function has {
@@ -18,9 +30,9 @@ function has {
 function dotfiles {
     # try first the unix way, then the bsd way. (brew might be already installed)
     {
-        find $1 -maxdepth 1 -exec basename {} 2> /dev/null \;
+        find $1 -maxdepth 1 ! -path $1 -exec basename {} \;
     } || {
-        find $1 -depth 1 -exec basename {} 2> /dev/null \;
+        find $1 -depth 1 ! -path $1 -exec basename {} \;
     }
 }
 

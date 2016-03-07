@@ -1,42 +1,35 @@
 #!/bin/bash
 
-# Obtain directory where this file resides.
-PWD=`pwd`
-SELF=`dirname ${BASH_SOURCE[0]}`
-cd $SELF
-SELF=`pwd`
-cd $PWD
-DIR=$SELF/dotfiles
+source "${BASH_SOURCE%/*}/lib/utils.sh"
 
-# Common utilities
-source "$SELF/lib/utils.sh"
+if [ -z "$DOTFILES_ROOT" ]; then
+    echo "Invalid root directory."
+    exit 1
+fi
 
-for dotfile in $(dotfiles $DIR); do
+for dotfile in $(dotfiles $DOTFILES_SRC); do
     BACKUP=false
 
     # Detect if there's a file already there.
-    if [[ -f ~/.$dotfile ]]; then
+    if [[ -e ~/.$dotfile ]]; then
 
         # is it a symlink? is it poiting to the dotfile dir?
-        if [ -L ~/.$dotfile -a `readlink ~/.$dotfile | xargs dirname $1` == $DIR ]; then
-            echo "~/.$dotfile already existed."
+        dotfile_realpath=$(pwd -P `readlink ~/.$dotfile | xargs dirname $1`)
+        if [ -L ~/.$dotfile -a "$dotfile_realpath" == "$DOTFILES_ROOT" ]; then
+            echo "Skipped $dotfile"
             continue
         else
-        # that dotfile has nothing to do with us, better make a backup.
+            # that dotfile has nothing to do with us, better make a backup.
             mv ~/.$dotfile ~/.$dotfile.orig
             BACKUP=true
         fi
     fi
-
-    ln -s $DIR/$dotfile ~/.$dotfile
+    ln -s $DOTFILES_SRC/$dotfile ~/.$dotfile
     printf "Symlinked $dotfile. "
 
-    if $BACKUP; then
-        printf "(A backup was saved)."
-    fi
-    echo
+    $BACKUP &&  printf "(A backup was saved).\n\n"
 
 done
 
-# # run installation
-# source "$SELF/lib/install.sh"
+# run installation
+source "$DOTFILES_LIB/install.sh"
