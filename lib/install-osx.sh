@@ -65,7 +65,7 @@ for (( i=0; i < ${#COMMANDS[@]}; i++ )); do
 	[ ${CMD[0]} = 'bash' ] && brew link --overwrite bash
 
 	# Properly configure python
-	if [ ${CMD[0]} = 'python']; then
+	if [ ${CMD[0]} = 'python' ]; then
 		brew linkapps python
 		pip install --upgrade pip setuptools
 	fi
