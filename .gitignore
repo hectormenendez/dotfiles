@@ -1,1 +1,3 @@
 *.sublime-workspace
+dotfiles/vim/bundle/*
+!dotfiles/vim/bundle/Vundle.vim
