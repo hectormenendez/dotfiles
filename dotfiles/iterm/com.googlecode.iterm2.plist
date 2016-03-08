@@ -199,6 +199,8 @@
 	<true/>
 	<key>MaxVertically</key>
 	<false/>
+	<key>NSFontPanelAttributes</key>
+	<string>1, 4</string>
 	<key>NSNavLastRootDirectory</key>
 	<string>~/Documents</string>
 	<key>NSQuotedKeystrokeBinding</key>
@@ -245,9 +247,9 @@
 	<key>NSWindow Frame NSColorPanel</key>
 	<string>265 279 231 329 0 0 1280 777 </string>
 	<key>NSWindow Frame NSFontPanel</key>
-	<string>835 165 445 219 0 0 1280 777 </string>
+	<string>83 466 718 230 0 0 1680 1050 </string>
 	<key>NSWindow Frame Preferences</key>
-	<string>-1165 571 606 456 -1920 -30 1920 1080 </string>
+	<string>573 572 606 456 0 0 1680 1050 </string>
 	<key>NSWindow Frame SUAutomaticUpdateAlert</key>
 	<string>-1268 649 616 174 -1920 -30 1920 1080 </string>
 	<key>NSWindow Frame SUUpdateAlertFrame</key>
@@ -255,9 +257,9 @@
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>154 473 592 584 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 673 490 377 0 0 1680 1050 </string>
+	<string>42 296 1046 622 0 0 1680 1050 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>291 342 490 377 0 0 1680 1050 </string>
+	<string>380 162 490 377 0 0 1680 1050 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
 	<string>430 172 490 377 0 0 1680 1050 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
@@ -851,11 +853,11 @@
 			<key>Name</key>
 			<string>Default</string>
 			<key>Non Ascii Font</key>
-			<string>Monaco 12</string>
+			<string>MesloLGMDZ-RegularForPowerline 14</string>
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>Hack 10</string>
+			<string>Hack-Regular 12</string>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Prevent Opening in a Tab</key>
@@ -1033,10 +1035,12 @@
 			<true/>
 			<key>Use Bright Bold</key>
 			<true/>
+			<key>Use HFS Plus Mapping</key>
+			<true/>
 			<key>Use Italic Font</key>
 			<true/>
 			<key>Use Non-ASCII Font</key>
-			<false/>
+			<true/>
 			<key>Use Tab Color</key>
 			<false/>
 			<key>Vertical Spacing</key>
@@ -1209,7 +1213,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2016-02-24T01:14:11Z</date>
+	<date>2016-03-07T20:11:33Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SavePasteHistory</key>
@@ -1257,7 +1261,7 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>2.9.20160222-nightly</string>
+	<string>2.9.20160307-nightly</string>
 	<key>kPreferenceKeyWindowStyle</key>
 	<integer>1</integer>
 </dict>
