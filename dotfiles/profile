@@ -7,18 +7,18 @@ source "$DOTFILES/../lib/utils.sh"
 
 # Environment variables
 export NVM_DIR=~/.nvm
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 
 if isLinux; then
 	export LC_ALL=en_US.UTF-8
 	export LANG=en_US.UTF-8
-	export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 
 elif isDarwin; then
 	export HOMEBREW_GITHUB_API_TOKEN=04aea4ea0e1826957f542cfc959bd9ee12c3c545
 	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
 else
 	echo "What OS is this? just to be safe, profile won't load."
-	exit 1
+	return
 fi
 
 # Set the creation mask, so files are created with 600 and dirs as 700
