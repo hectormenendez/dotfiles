@@ -25,7 +25,10 @@ for dotfile in $(dotfiles $DOTFILES_SRC); do
     # create the symlink, but be relative about it.
     cd $HOME
     ln -s ${DOTFILES_SRC/$HOME\//}/$dotfile ./.$dotfile
-    chmod -h 700 ./.$dotfile
+
+    # OCT is my burden
+    [[ isDarwin ]] && /bin/chmod -h 700 ./.$dotfile
+
     printf "Symlinked $dotfile. "
     $BACKUP &&  printf "[backed up]"
     echo # echoes a blank line no matter what
