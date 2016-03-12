@@ -2,11 +2,10 @@
 [[ $- != *i* ]] && return
 
 # Include utilities
-DOTFILES=`dirname $(readlink ${BASH_SOURCE[0]})`
-source "$DOTFILES/../lib/utils.sh"
+source `readlink ${BASH_SOURCE[0]} | xargs dirname`/../lib/utils.sh
 
 # Environment variables
-export NVM_DIR=~/.nvm
+export NVM_DIR=$HOME/.nvm
 export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 
 if isLinux; then
@@ -14,7 +13,8 @@ if isLinux; then
 	export LANG=en_US.UTF-8
 
 elif isDarwin; then
-	export HOMEBREW_GITHUB_API_TOKEN=04aea4ea0e1826957f542cfc959bd9ee12c3c545
+	# looks for the file in the private/env folder and exports its contents
+	setEnv "HOMEBREW_GITHUB_API_TOKEN"
 	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
 else
 	echo "What OS is this? just to be safe, profile won't load."
@@ -30,7 +30,7 @@ shopt -s nocaseglob   # case insensitive globbing
 shopt -s cdspell      # Autocorrect typos in path names when using cd
 
 # set file colors
-eval `dircolors ~/.dir_colors`
+eval `dircolors $HOME/.dir_colors`
 
 # History management:
 # cleanup the history file, by manually removing dups
@@ -42,8 +42,8 @@ HISTCONTROL=erasedups:ignorespace
 shopt -s histappend
 PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 
-# Add tab completions for SSH hostnames based on ~/.ssh/config
-[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" scp sftp ssh;
+# Add tab completions for SSH hostnames based on $HOME/.ssh/config
+[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" $HOME/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" scp sftp ssh;
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -55,7 +55,7 @@ export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
 [ -r "$DOTFILES_LIB/git/prompt.sh" ] && source "$DOTFILES_LIB/git/prompt.sh"
 
 # If an alias file exists, load it.
-[ -f ~/.alias ] && source ~/.alias
+[ -f $HOME/.alias ] && source $HOME/.alias
 
 # MacOnly
 if isDarwin; then
@@ -68,5 +68,5 @@ if isDarwin; then
 	[ -s "$(brew --prefix nvm)/nvm.sh" ] && export NVM_DIR=$(brew --prefix nvm)
 fi
 
-# Load NVM if avilable
+# Load NVM if available
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
