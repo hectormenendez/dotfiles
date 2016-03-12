@@ -1,4 +1,2 @@
 *.sublime-workspace
-dotfiles/vim/bundle/*
-dotfiles/vim/autoload/plug.vim
 *.DS_*
