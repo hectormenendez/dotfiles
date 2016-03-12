@@ -1,3 +1,5 @@
+#! /bin/bash
+
 # Sources utils only if they are not already available
 [[ ! $DOTFILES_LIB ]] && echo >&2 "Expecting DOTFILES environment" && exit 1
 
