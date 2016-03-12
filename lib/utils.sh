@@ -12,6 +12,7 @@ if [[ -z $DOTFILES_ROOT ]]; then
     export DOTFILES_ROOT=${DOTFILES_LIB%/*}
     export DOTFILES_BIN="$DOTFILES_ROOT/bin"
     export DOTFILES_SRC="$DOTFILES_ROOT/dotfiles"
+    export DOTFILES_LNK="$DOTFILES_ROOT/private"
     export DOTFILES_ENV="$DOTFILES_ROOT/private/env"
 fi
 
@@ -32,6 +33,12 @@ function isLinux {
 
 function isArch {
     test -f '/etc/arch-release'
+}
+
+function isListed {
+  local e
+  for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
+  return 1
 }
 
 function has {
