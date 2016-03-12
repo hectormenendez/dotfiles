@@ -3,17 +3,24 @@
 # Used to let know script that this file has already been loaded
 DOTFILES_UTILS=true
 
-# obtain the absolute route to the folder containing this file
-pushd ${BASH_SOURCE%/*} > /dev/null
-DOTFILES_LIB=`pwd -P`
-popd > /dev/null
+if [[ -z $DOTFILES_ROOT ]]; then
+    # obtain the absolute route to the folder containing this file
+    pushd ${BASH_SOURCE%/*} > /dev/null
+    export DOTFILES_LIB=`pwd -P`
+    popd > /dev/null
 
-DOTFILES_ROOT=${DOTFILES_LIB%/*}
-DOTFILES_SRC="$DOTFILES_ROOT/dotfiles"
-DOTFILES_ENV="$DOTFILES_ROOT/private/env"
+    export DOTFILES_ROOT=${DOTFILES_LIB%/*}
+    export DOTFILES_BIN="$DOTFILES_ROOT/bin"
+    export DOTFILES_SRC="$DOTFILES_ROOT/dotfiles"
+    export DOTFILES_ENV="$DOTFILES_ROOT/private/env"
+fi
 
-# Make sure the root directory was obtain correctly
+# Make sure the root directory was obtained correctly
 [ ! -d $DOTFILES_ROOT ] &&  echo "Invalid root directory." && exit 1;
+
+function isGIT {
+    git status > /dev/null 2> /dev/null
+}
 
 function isDarwin {
     test `uname -s` = 'Darwin'
@@ -61,6 +68,6 @@ function getLinkPath {
 
 # Set environment variable based upon a file
 function setEnv {
-    export $1=`cat $DOTFILES_ENV/$1 2> /dev/null`
+    export $1="`cat $DOTFILES_ENV/$1 2> /dev/null`"
 }
 
