@@ -10,6 +10,7 @@ popd > /dev/null
 
 DOTFILES_ROOT=${DOTFILES_LIB%/*}
 DOTFILES_SRC="$DOTFILES_ROOT/dotfiles"
+DOTFILES_ENV="$DOTFILES_ROOT/private/env"
 
 # Make sure the root directory was obtain correctly
 [ ! -d $DOTFILES_ROOT ] &&  echo "Invalid root directory." && exit 1;
@@ -58,4 +59,8 @@ function getLinkPath {
     echo `pwd -P`
 }
 
+# Set environment variable based upon a file
+function setEnv {
+    export $1=`cat $DOTFILES_ENV/$1 2> /dev/null`
+}
 
