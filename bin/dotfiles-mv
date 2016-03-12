@@ -8,7 +8,10 @@ ignorelist=( '.dropbox' '.Trash' )
 
 for dotfile in `find $HOME -maxdepth 1 -name ".*" ! -type l ! -path $HOME`; do
 	dotfile=${dotfile/$HOME\//}
+	# ignored listed files
 	isListed $dotfile ${ignorelist[@]} && continue
+	# dont overwrite
+	[[ -e $DOTFILES_LNK/$dotfile ]] && continue
 	cd $HOME
 	mv $HOME/$dotfile $DOTFILES_LNK/
 	ln -s ${DOTFILES_LNK/$HOME\//}/$dotfile ./$dotfile
