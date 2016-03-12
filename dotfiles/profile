@@ -20,6 +20,7 @@ elif isDarwin; then
 	# looks for the file in the private/env folder and exports its contents
 	setEnv "HOMEBREW_GITHUB_API_TOKEN"
 	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
+	export MANPATH=$(brew --prefix coreutils)/libexec/gnuman:$(brew --prefix findutils)/libexec/bin:/usr/share/man
 else
 	echo "What OS is this? just to be safe, profile won't load."
 	return
