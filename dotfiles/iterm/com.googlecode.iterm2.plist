@@ -57,6 +57,76 @@
 			<key>Text</key>
 			<string></string>
 		</dict>
+		<key>0x2d-0x180000</key>
+		<dict>
+			<key>Action</key>
+			<integer>28</integer>
+			<key>Text</key>
+			<string>ABB7CB58-5C98-4AF9-AE0C-5ED9C58381CC</string>
+		</dict>
+		<key>0x31-0x180000</key>
+		<dict>
+			<key>Action</key>
+			<integer>29</integer>
+			<key>Text</key>
+			<string>ABB7CB58-5C98-4AF9-AE0C-5ED9C58381CC</string>
+		</dict>
+		<key>0x68-0x100000</key>
+		<dict>
+			<key>Action</key>
+			<integer>18</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
+		<key>0x68-0x180000</key>
+		<dict>
+			<key>Action</key>
+			<integer>25</integer>
+			<key>Text</key>
+			<string>Move Divider Left</string>
+		</dict>
+		<key>0x6a-0x100000</key>
+		<dict>
+			<key>Action</key>
+			<integer>21</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
+		<key>0x6a-0x180000</key>
+		<dict>
+			<key>Action</key>
+			<integer>25</integer>
+			<key>Text</key>
+			<string>Move Divider Down</string>
+		</dict>
+		<key>0x6b-0x100000</key>
+		<dict>
+			<key>Action</key>
+			<integer>20</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
+		<key>0x6b-0x180000</key>
+		<dict>
+			<key>Action</key>
+			<integer>25</integer>
+			<key>Text</key>
+			<string>Move Divider Up</string>
+		</dict>
+		<key>0x6c-0x100000</key>
+		<dict>
+			<key>Action</key>
+			<integer>19</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
+		<key>0x6c-0x180000</key>
+		<dict>
+			<key>Action</key>
+			<integer>25</integer>
+			<key>Text</key>
+			<string>Move Divider Right</string>
+		</dict>
 		<key>0x9-0x40000</key>
 		<dict>
 			<key>Action</key>
@@ -71,10 +141,24 @@
 			<key>Text</key>
 			<string></string>
 		</dict>
+		<key>0xf700-0x380000</key>
+		<dict>
+			<key>Action</key>
+			<integer>13</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
 		<key>0xf701-0x300000</key>
 		<dict>
 			<key>Action</key>
 			<integer>6</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
+		<key>0xf701-0x380000</key>
+		<dict>
+			<key>Action</key>
+			<integer>13</integer>
 			<key>Text</key>
 			<string></string>
 		</dict>
@@ -92,10 +176,10 @@
 			<key>Text</key>
 			<string>0x01</string>
 		</dict>
-		<key>0xf702-0x320000</key>
+		<key>0xf702-0x380000</key>
 		<dict>
 			<key>Action</key>
-			<integer>33</integer>
+			<integer>13</integer>
 			<key>Text</key>
 			<string></string>
 		</dict>
@@ -113,10 +197,10 @@
 			<key>Text</key>
 			<string>0x05</string>
 		</dict>
-		<key>0xf703-0x320000</key>
+		<key>0xf703-0x380000</key>
 		<dict>
 			<key>Action</key>
-			<integer>34</integer>
+			<integer>13</integer>
 			<key>Text</key>
 			<string></string>
 		</dict>
@@ -131,34 +215,6 @@
 		<dict>
 			<key>Action</key>
 			<integer>4</integer>
-			<key>Text</key>
-			<string></string>
-		</dict>
-		<key>0xf72c-0x100000</key>
-		<dict>
-			<key>Action</key>
-			<integer>9</integer>
-			<key>Text</key>
-			<string></string>
-		</dict>
-		<key>0xf72c-0x20000</key>
-		<dict>
-			<key>Action</key>
-			<integer>9</integer>
-			<key>Text</key>
-			<string></string>
-		</dict>
-		<key>0xf72d-0x100000</key>
-		<dict>
-			<key>Action</key>
-			<integer>8</integer>
-			<key>Text</key>
-			<string></string>
-		</dict>
-		<key>0xf72d-0x20000</key>
-		<dict>
-			<key>Action</key>
-			<integer>8</integer>
 			<key>Text</key>
 			<string></string>
 		</dict>
@@ -261,9 +317,9 @@
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>154 473 592 584 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>3 0 1672 1049 0 0 1680 1050 </string>
+	<string>338 161 1046 775 0 0 1680 1050 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>178 113 1004 452 0 0 1680 1050 </string>
+	<string>338 140 1046 775 0 0 1680 1050 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
 	<string>430 172 490 377 0 0 1680 1050 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
@@ -571,7 +627,7 @@
 			<key>Idle Code</key>
 			<integer>0</integer>
 			<key>Initial Text</key>
-			<string></string>
+			<string>tmux -CC attach</string>
 			<key>Jobs to Ignore</key>
 			<array>
 				<string>rlogin</string>
@@ -1286,7 +1342,7 @@
 			<key>Character Encoding</key>
 			<integer>4</integer>
 			<key>Close Sessions On End</key>
-			<true/>
+			<false/>
 			<key>Columns</key>
 			<integer>80</integer>
 			<key>Command</key>
@@ -1835,6 +1891,8 @@
 			<string>/Users/etor</string>
 		</dict>
 	</array>
+	<key>NoSyncCommandHistoryHasEverBeenUsed</key>
+	<true/>
 	<key>NoSyncDoNotWarnBeforeMultilinePaste</key>
 	<true/>
 	<key>NoSyncDoNotWarnBeforeMultilinePaste_selection</key>
@@ -1922,7 +1980,7 @@
 		<string>0065</string>
 	</array>
 	<key>OnlyWhenMoreTabs</key>
-	<true/>
+	<false/>
 	<key>OpenArrangementAtStartup</key>
 	<false/>
 	<key>OpenBookmark</key>
@@ -1930,7 +1988,7 @@
 	<key>OpenNoWindowsAtStartup</key>
 	<false/>
 	<key>OpenTmuxWindowsIn</key>
-	<integer>1</integer>
+	<integer>0</integer>
 	<key>OptionClickMovesCursor</key>
 	<true/>
 	<key>PMPrintingExpandedStateForPrint2</key>
@@ -1995,10 +2053,12 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2016-03-08T20:11:35Z</date>
+	<date>2016-03-12T19:57:36Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SavePasteHistory</key>
+	<false/>
+	<key>Secure Input</key>
 	<false/>
 	<key>ShowBookmarkName</key>
 	<false/>
@@ -2011,11 +2071,13 @@
 	<key>SplitPaneDimmingAmount</key>
 	<real>0.47591397166252136</real>
 	<key>SwitchPaneModifier</key>
-	<integer>4</integer>
+	<integer>9</integer>
 	<key>SwitchTabModifier</key>
-	<integer>6</integer>
+	<integer>9</integer>
 	<key>SwitchWindowModifier</key>
-	<integer>5</integer>
+	<integer>9</integer>
+	<key>TabStyle</key>
+	<integer>1</integer>
 	<key>TabViewType</key>
 	<integer>0</integer>
 	<key>ThreeFingerEmulates</key>
@@ -2045,7 +2107,7 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>2.9.20160307-nightly</string>
+	<string>2.9.20160311-nightly</string>
 	<key>kPreferenceKeyWindowStyle</key>
 	<integer>1</integer>
 </dict>
