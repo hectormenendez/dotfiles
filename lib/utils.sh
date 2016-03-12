@@ -11,6 +11,9 @@ popd > /dev/null
 DOTFILES_ROOT=${DOTFILES_LIB%/*}
 DOTFILES_SRC="$DOTFILES_ROOT/dotfiles"
 
+# Make sure the root directory was obtain correctly
+[ ! -d $DOTFILES_ROOT ] &&  echo "Invalid root directory." && exit 1;
+
 function isDarwin {
     test `uname -s` = 'Darwin'
 }
@@ -41,3 +44,18 @@ function perms {
     sudo -k chown -R $(id -u):$(id -g) /usr/local
     sudo -k chmod -R u+rw,g+rw,o-rwx /usr/local
 }
+
+function getLinkPath {
+    # get until the very end of the (possible) symlink sequence
+    local target=$1
+    cd ${target%/*}
+    target=`basename $target`
+    while [ -L "$target" ]; do
+        target=`readlink $target`
+        cd ${target%/*}
+        target=`basename $target`
+    done
+    echo `pwd -P`
+}
+
+
