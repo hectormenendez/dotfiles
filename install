@@ -27,7 +27,7 @@ for dotfile in $(dotfiles $DOTFILES_SRC); do
     ln -s ${DOTFILES_SRC/$HOME\//}/$dotfile ./.$dotfile
 
     # OCT is my burden
-    [[ isDarwin ]] && /bin/chmod -h 700 ./.$dotfile
+    isDarwin  && /bin/chmod -h 700 ./.$dotfile
 
     printf "Symlinked $dotfile. "
     $BACKUP &&  printf "[backed up]"

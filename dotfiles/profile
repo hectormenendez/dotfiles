@@ -80,4 +80,4 @@ fi
 unset DOTFILES_UTILS
 
 # if in mac, link away unknown dotfiles  so they can be auto uploaded to the cloud
-[[ isDarwin ]] && dotfiles-mv
+isDarwin && dotfiles-mv

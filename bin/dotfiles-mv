@@ -16,5 +16,5 @@ for dotfile in `find $HOME -maxdepth 1 -name ".*" ! -type l ! -path $HOME`; do
 	mv $HOME/$dotfile $DOTFILES_LNK/
 	ln -s ${DOTFILES_LNK/$HOME\//}/$dotfile ./$dotfile
 	# OCT is my burden
-	[[ isDarwin ]] && /bin/chmod -h 700 ./$dotfile
+	isDarwin && /bin/chmod -h 700 ./$dotfile
 done
