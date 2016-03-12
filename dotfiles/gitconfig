@@ -1,11 +1,7 @@
-[user]
-	name = Héctor Menéndez Rivera
-	email = etor.mx@gmail.com
-
 [core]
 	whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
-	editor = vim
-	excludesfile = /Users/etor/.gitignore_global
+	editor = nvim
+	excludesfile = ~/.gitignore
 
 [push]
 	# 'git push' should only do the current branch, not all
@@ -23,7 +19,7 @@
 	st = status
 	add  = add -v
 	tagshow = !sh -c 'git rev-list $0 | head -n 1'
-	logfile = !sh $PROFILE_SELF/git/logfile.sh
+	logfile = !sh -c 'git-logfile'
 
 [color]
 	ui = true

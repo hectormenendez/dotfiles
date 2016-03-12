@@ -25,7 +25,6 @@ alias cl="clear && la"
 # Erase the screen and show the file listing.
 alias c="clear"
 alias a="alias -p"
-alias isGIT="git status >/dev/null 2>/dev/null"
 
 # These are for mac only
 if ! $(isLinux); then

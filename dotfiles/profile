@@ -6,7 +6,11 @@ source `readlink ${BASH_SOURCE[0]} | xargs dirname`/../lib/utils.sh
 
 # Environment variables
 export NVM_DIR=$HOME/.nvm
-export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=$DOTFILES_BIN:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+setEnv "GIT_AUTHOR_NAME"
+setEnv "GIT_AUTHOR_EMAIL"
+export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
+export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
 
 if isLinux; then
 	export LC_ALL=en_US.UTF-8
@@ -52,7 +56,7 @@ PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
 
 # Prepend git branch name on command prompt.
-[ -r "$DOTFILES_LIB/git/prompt.sh" ] && source "$DOTFILES_LIB/git/prompt.sh"
+[ -r "$DOTFILES_LIB/gitprompt.sh" ] && source "$DOTFILES_LIB/gitprompt.sh"
 
 # If an alias file exists, load it.
 [ -f $HOME/.alias ] && source $HOME/.alias
@@ -70,3 +74,6 @@ fi
 
 # Load NVM if available
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+# forces internal script to resource utils
+unset DOTFILES_UTILS

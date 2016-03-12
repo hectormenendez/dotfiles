@@ -1,19 +1,7 @@
-#/bin/bash
+# Sources utils only if they are not already available
+[[ ! $DOTFILES_LIB ]] && echo >&2 "Expecting DOTFILES environment" && exit 1
 
-################################################################################
-#   GIT LOG File                                                               #
-#   Written by: Hector Menendez <h@cun.mx> @et0r on Twitter.                   #
-#   2011/AUG/25 05:25                                                          #
-#                                                                              #
-#   You are free to use and/or modify this file as long as                     #
-#   you contact me and give some feedback. Or maybe, just say Hi!              #
-#                                                                              #
-#   Cheers mate!                                                               #
-################################################################################
-
-
-# does amI exist?
-#hash isGIT 2>&- || { echo >&2 "isGIT not found; Aborting."; exit 1; }
+source $DOTFILES_LIB/utils.sh
 
 # are we in a repo?
 if ! isGIT; then
@@ -107,9 +95,9 @@ if $colors; then
   cNON=`echo "\033[0m"`
 
   git log --name-only --abbrev-commit $filter | grep -Pv "^(?=\s)" | \
-    gsed -E "s/commit (.*)/\n\n$cONE\1$cNON/g"                     | \
-    gsed -E "s/^(Author:)(.*)/$cTWO\1$cNON\2/g"                    | \
-    gsed -E "s/^(Date:)(.*)/$cTWO\1$cNON\2\n$cTRI/g"
+    sed -E "s/commit (.*)/\n\n$cONE\1$cNON/g"                     | \
+    sed -E "s/^(Author:)(.*)/$cTWO\1$cNON\2/g"                    | \
+    sed -E "s/^(Date:)(.*)/$cTWO\1$cNON\2\n$cTRI/g"
 else
   git log --name-only --abbrev-commit $filter | grep -Pv "^(?=\s)" ;
 fi
