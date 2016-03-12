@@ -81,3 +81,6 @@ unset DOTFILES_UTILS
 
 # if in mac, link away unknown dotfiles  so they can be auto uploaded to the cloud
 isDarwin && dotfiles-mv
+
+# Enable iterm2's shell integration
+test -e "$HOME/.iterm/shell_integration.bash" && . "$HOME/.iterm/shell_integration.bash"
