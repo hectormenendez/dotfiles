@@ -1,0 +1,20 @@
+#!/bin/bash
+dotfile=`basename $1`
+dotfile_path=`dirname $1`
+
+cd $HOME
+
+[[ ! -d $dotfile_path ]] && echo 'Only HOME allowed.' && exit 1 
+[[ "`cd $dotfile_path; pwd -P`" != "$HOME" ]] && echo "Only Home allowed." && exit 1
+[[ ${dotfile:0:1} != "." ]] && echo "Only dotfiles allowed" && exit 1
+[[ ! -L $HOME/$dotfile ]] && echo "Invalid target" && exit 1
+
+dotfile_path=`readlink $1`
+[[ -d $dotfile_path ]] && dotfile_path=`cd $dotfile_path; pwd -P`
+dotfile_path=$(cd `dirname $dotfile_path`; pwd -P)
+
+[[ "$dotfile_path" != "$DOTFILES_LNK" ]] && echo "Not a private symlink" && exit 1
+
+rm $HOME/$dotfile
+rm -Rf $DOTFILES_LNK/$dotfile
+
