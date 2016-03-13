@@ -1,2 +1,4 @@
 *.sublime-workspace
 *.DS_*
+private/*
+!private/env
