@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Sources utils only if they are available
+[[ ! $DOTFILES_LIB ]] && echo >&2 "Expecting DOTFILES environment" && exit 1
+source "$DOTFILES_LIB/utils.sh"
+
+for dotfile in `find $DOTFILES_LNK -maxdepth 1 -name ".*"`; do
+    dotfile=`basename ${dotfile/$DOTFILES_LNK\//}`
+    rm -Rf $HOME/$dotfile
+    dotfile_path=${DOTFILES_LNK/$HOME\//}
+    cd $HOME
+    ln -s "$dotfile_path/$dotfile" "./$dotfile"
+done
