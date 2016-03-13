@@ -8,16 +8,18 @@ echo "Updating system and installing dependencies…"
 deps=(
 	'moreutils'
 	'dnsutils'
-	'sponge'
 	'python'
 	'ruby'
 	'git'
+    'neovim'
 	'tmux'
 )
 sudo pacman -Syu --noconfirm ${deps[@]}
 
-echo "Installing NVM"
-git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
+if [ ! -d  ~/.nvm ]; then 
+    echo "Installing NVM"
+    git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
+fi
 
 echo "Renaming .profile"
 mv ~/.profile ~/.bash_profile
