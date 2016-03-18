@@ -7,7 +7,7 @@ target=$2
 
 function __chmod {
     [[ $(whoami) != "root" ]] && echo "Error: sudo required" && exit 1
-    chmod -Rv g+u,o-rwx $target | grep "changed from" 
+    chmod -Rv g+u,o-wx,o+r $target | grep "changed from" 
 }
 
 function __chown {
@@ -25,6 +25,11 @@ function __ddump {
     mysqldump -h localhost -u llevele -p llevele > /srv/http/llevele.mx/public_html/.prestashop-dumps/$ref.sql
 }
 
+function __drest {
+    local ref=$(git rev-parse --verify HEAD^)
+    mysqldump -h localhost -u llevele -p llevele < /srv/http/llevele.mx/public_html/.prestashop-dumps/$ref.sql
+}
+
 function __gdump {
     local ref=$(git rev-parse --verify HEAD)
     git add .prestashop-dumps
@@ -38,44 +43,39 @@ function __gdrop {
     __chmod
 }
 
-function __gls {
-    git log --pretty=oneline
-}
-
-function __gtree {
-    git log --graph --oneline --all
-}
-
-[[ $1 == "chmod" ]] && __chmod
-[[ $1 == "chown" ]] && __chown
-[[ $1 == "ddrop" ]] && __ddrop
-[[ $1 == "gdrop" ]] && __gdrop
-[[ $1 == "ddump" ]] && __ddump
-[[ $1 == "gdump" ]] && __gdump
-[[ $1 == "gls"   ]] && __gls
-[[ $1 == "gtree" ]] && __gtree
+[[ $1 == "chmod" ]] && __chmod && exit 0
+[[ $1 == "chown" ]] && __chown && exit 0
+[[ $1 == "ddrop" ]] && __ddrop && exit 0
+[[ $1 == "gdrop" ]] && __gdrop && exit 0
+[[ $1 == "ddump" ]] && __ddump && exit 0
+[[ $1 == "gdump" ]] && __gdump && exit 0
+[[ $1 == "drest" ]] && __drest && exit 0
 
 if [[ $1 == "ch" ]]; then
     __chmod
     __chown
+    exit 0
 fi
 
 if [[ $1 == "drop" ]]; then 
     __ddrop
     __gdrop
+    exit 0
 fi
 
 if [[ $1 == "dump" ]]; then
     __ddump
     __gdrop
+    exit 0
 fi
 
 if [[ $1 == "save" ]]; then
     git add -A
-    read -p "What changed? »" MESSAGE
+    read -p "What changed? » " MESSAGE
     git commit -m "Commited change: $MESSAGE"
     __ddump
     __gdump
     echo "Snapshot saved."
     echo "Just to be sure, run 'ch' with sudo to ensure file permissions."
+    exit 0
 fi
