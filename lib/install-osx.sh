@@ -49,6 +49,7 @@ COMMANDS=(
 	'python'
 	'tmux'
     'fzf'
+    'the_silver_searcher'
 )
 
 didInstall=false
