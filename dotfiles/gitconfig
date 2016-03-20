@@ -14,7 +14,7 @@
 	whitespace = strip
 
 [alias]
-	ci = commit
+	ci = commit -m 
 	co = checkout
 	st = status
 	add  = add -v
