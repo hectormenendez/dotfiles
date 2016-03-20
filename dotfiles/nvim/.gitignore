@@ -1,0 +1,3 @@
+bundle/*
+autoload/plug.vim
+.netrwhist
