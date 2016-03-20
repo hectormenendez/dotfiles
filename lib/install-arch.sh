@@ -14,6 +14,7 @@ deps=(
     'neovim'
 	'tmux'
     'fzf'
+    'the_silver_searcher'
 )
 sudo pacman -Syu --noconfirm ${deps[@]}
 

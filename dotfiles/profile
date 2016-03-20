@@ -7,11 +7,16 @@ source `readlink ${BASH_SOURCE[0]} | xargs dirname`/../lib/utils.sh
 # Environment variables
 export NVM_DIR=$HOME/.nvm
 export PATH=$DOTFILES_BIN:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+
+# In order to avoid storing my mail and name on gitconfig these envvars are used
 setEnv "GIT_AUTHOR_NAME"
 setEnv "GIT_AUTHOR_EMAIL"
 export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
 export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
-export FZF_TMUX=0  # don't use a split in tmyx for FZF
+
+# FZF options
+export FZF_TMUX=0                     # don't use a split in tmyx for FZF
+export FZF_DEFAULT_COMMAND='ag -g ""' # make FZF parse .gitignore .hgignore and svn:ignore
 
 if isLinux; then
 	export LC_ALL=en_US.UTF-8
