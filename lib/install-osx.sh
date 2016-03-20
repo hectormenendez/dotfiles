@@ -46,9 +46,9 @@ COMMANDS=(
 	'rsync'
 	'unzip'
 	'vim --override-system-vi'
-	'zsh'
 	'python'
 	'tmux'
+    'fzf'
 )
 
 didInstall=false

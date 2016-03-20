@@ -565,7 +565,7 @@
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>972 786 620 392 0 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>2 11 1277 1421 0 0 2560 1440 </string>
+	<string>5 7 2551 1430 0 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>521 973 650 452 0 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
@@ -1395,7 +1395,7 @@
 			<key>Thin Strokes</key>
 			<integer>1</integer>
 			<key>Transparency</key>
-			<real>0.093528106508875747</real>
+			<real>0.023298816568047338</real>
 			<key>Triggers</key>
 			<array/>
 			<key>Unlimited Scrollback</key>
@@ -1415,7 +1415,7 @@
 			<key>Use Tab Color</key>
 			<false/>
 			<key>Vertical Spacing</key>
-			<real>0.89407235383987427</real>
+			<real>0.8932934864457831</real>
 			<key>Visual Bell</key>
 			<true/>
 			<key>Window Type</key>
@@ -2244,7 +2244,7 @@
 			<key>Thin Strokes</key>
 			<integer>1</integer>
 			<key>Transparency</key>
-			<real>0.093528106508875747</real>
+			<real>0.019928809171597634</real>
 			<key>Triggers</key>
 			<array/>
 			<key>Unlimited Scrollback</key>
@@ -2264,7 +2264,7 @@
 			<key>Use Tab Color</key>
 			<false/>
 			<key>Vertical Spacing</key>
-			<real>0.76470720767974854</real>
+			<real>0.89438533782958984</real>
 			<key>Visual Bell</key>
 			<false/>
 			<key>Window Type</key>
@@ -2375,7 +2375,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2016-03-19T08:44:34Z</date>
+	<date>2016-03-20T08:44:33Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SavePasteHistory</key>

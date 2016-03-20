@@ -13,6 +13,7 @@ deps=(
 	'git'
     'neovim'
 	'tmux'
+    'fzf'
 )
 sudo pacman -Syu --noconfirm ${deps[@]}
 

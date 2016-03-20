@@ -11,6 +11,7 @@ setEnv "GIT_AUTHOR_NAME"
 setEnv "GIT_AUTHOR_EMAIL"
 export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
 export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+export FZF_TMUX=0  # don't use a split in tmyx for FZF
 
 if isLinux; then
 	export LC_ALL=en_US.UTF-8
@@ -19,8 +20,14 @@ if isLinux; then
 elif isDarwin; then
 	# looks for the file in the private/env folder and exports its contents
 	setEnv "HOMEBREW_GITHUB_API_TOKEN"
+
+    # Add custom commands to path
 	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
-	export MANPATH=$(brew --prefix coreutils)/libexec/gnuman:$(brew --prefix findutils)/libexec/bin:/usr/share/man
+    export PATH=$(brew --prefix fzf)/bin:$PATH
+
+    # Add custom commands to manpath
+	export MANPATH=$(brew --prefix coreutils)/libexec/gnuman:$(brew --prefix findutils)/libexec/bin:/usr/share/man:$MANPATH
+    export MANPATH=$(brew --prefix fzf)/share/man:$MANPATH
 else
 	echo "What OS is this? just to be safe, profile won't load."
 	return
@@ -33,6 +40,7 @@ umask 077
 shopt -s checkwinsize # check winsize after each command and adjust screen automatically,
 shopt -s nocaseglob   # case insensitive globbing
 shopt -s cdspell      # Autocorrect typos in path names when using cd
+set -o vi             # Enable vi mode
 
 # set file colors
 eval `dircolors $HOME/.dir_colors`
@@ -71,6 +79,12 @@ if isDarwin; then
 	fi
 
 	[ -s "$(brew --prefix nvm)/nvm.sh" ] && export NVM_DIR=$(brew --prefix nvm)
+
+    # Enable Fuzzy Search
+    if [ ! -z "$(brew --prefix fzf)" ]; then
+       source "$(brew --prefix fzf)/shell/completion.bash" 2> /dev/null
+       source "$(brew --prefix fzf)/shell/key-bindings.bash"
+    fi
 fi
 
 # Load NVM if available
