@@ -90,6 +90,10 @@ if isDarwin; then
        source "$(brew --prefix fzf)/shell/completion.bash" 2> /dev/null
        source "$(brew --prefix fzf)/shell/key-bindings.bash"
     fi
+elif isArch; then
+
+    # Enable keybindings for Fuzzy Search
+    [ -f /etc/profile.d/fzf.bash ] && source /etc/profile.d/fzf.bash
 fi
 
 # Load NVM if available
