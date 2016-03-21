@@ -15,8 +15,9 @@ export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
 export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
 
 # FZF options
-export FZF_TMUX=0                     # don't use a split in tmyx for FZF
-export FZF_DEFAULT_COMMAND='ag -g ""' # make FZF parse .gitignore .hgignore and svn:ignore
+export FZF_TMUX=0                                # don't use a split in tmyx for FZF
+export FZF_DEFAULT_COMMAND='ag -g ""'            # make FZF parse .gitignore .hgignore and svn:ignore
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND" # Same as above but for CtrlT
 
 if isLinux; then
 	export LC_ALL=en_US.UTF-8
