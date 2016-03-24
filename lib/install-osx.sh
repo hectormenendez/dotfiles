@@ -46,7 +46,7 @@ COMMANDS=(
 	'rsync'
 	'unzip'
 	'vim --override-system-vi'
-	'python'
+	'python3'
 	'tmux'
     'fzf'
     'the_silver_searcher'
@@ -67,8 +67,8 @@ for (( i=0; i < ${#COMMANDS[@]}; i++ )); do
 	[ ${CMD[0]} = 'bash' ] && brew link --overwrite bash
 
 	# Properly configure python
-	if [ ${CMD[0]} = 'python' ]; then
-		brew linkapps python
+	if [ ${CMD[0]} = 'python3' ]; then
+		brew linkapps python3
 		pip install --upgrade pip setuptools
 	fi
 done
