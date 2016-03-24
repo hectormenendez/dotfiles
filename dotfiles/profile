@@ -84,7 +84,7 @@ if isDarwin; then
 		source $(brew --prefix)/etc/bash_completion
 	fi
 
-	[ -s "$(brew --prefix nvm)/nvm.sh" ] && export NVM_DIR=$(brew --prefix nvm)
+	[ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
 
     # Enable Fuzzy Search
     if [ ! -z "$(brew --prefix fzf)" ]; then
@@ -95,10 +95,11 @@ elif isArch; then
 
     # Enable keybindings for Fuzzy Search
     [ -f /etc/profile.d/fzf.bash ] && source /etc/profile.d/fzf.bash
+
+    # Load NVM if available
+    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
 fi
 
-# Load NVM if available
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
 # forces internal script to resource utils
 unset DOTFILES_UTILS

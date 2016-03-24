@@ -9,3 +9,8 @@ echo "Updating vim's plugin manager"
 rm -Rf ~/.vim/autoload/plug.vim
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+echo "Enabling latest version of node"
+target=$(nvm ls-remote | tail -1 | xargs)
+nvm install $target
+nvm alias default $target
