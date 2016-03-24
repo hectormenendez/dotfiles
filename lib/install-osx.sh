@@ -69,7 +69,7 @@ for (( i=0; i < ${#COMMANDS[@]}; i++ )); do
 	# Properly configure python
 	if [ ${CMD[0]} = 'python3' ]; then
 		brew linkapps python3
-		pip install --upgrade pip setuptools
+		pip install --upgrade pip setuptools neovim
 	fi
 done
 
