@@ -1,3 +1,4 @@
 bundle/*
 autoload/plug.vim
 .netrwhist
+*.vim-rplugin*
