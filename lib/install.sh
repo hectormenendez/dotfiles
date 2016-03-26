@@ -4,14 +4,16 @@
 isDarwin && source "$DOTFILES_LIB/install-osx.sh"
 isArch   && source "$DOTFILES_LIB/install-arch.sh"
 
-# Common installation steps
+# Make sure vim's plugin manager is installed
 [ ! -f ~/.vim/autoload/plug.vim ] && \
-	echo "Updating vim's plugin manager" && \
+	echo "Installing vim's plugin manager" && \
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-[ -f ~/.profile ] && source ~/.profile
-[ -f ~/.bash_profile ] && source ~/.bash_profile
+# Make sure tmux's plugin manager is installed
+[ ! -d ~/.tmux/plugins/tpm ] && \
+	echo "Installing tmux's plugin manager" && \
+	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm 
 
 if [ -z "$(nvm ls default)" ]; then
 	echo "Enabling latest version of node"
