@@ -16,9 +16,13 @@ dotfiles/vim/autoload/*
 dotfiles/vim/bundle/*
 !dotfiles/tmux/plugins/.gitignore
 
-dotfiles/vim/cache/*
+dotfiles/vim/cache/back/*
 !dotfiles/vim/cache/back/.gitignore
+
+dotfiles/vim/cache/swap/*
 !dotfiles/vim/cache/swap/.gitignore
+
+dotfiles/vim/cache/undo/*
 !dotfiles/vim/cache/undo/.gitignore
 
 private/*
