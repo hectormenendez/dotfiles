@@ -10,6 +10,9 @@ isArch   && source "$DOTFILES_LIB/install-arch.sh"
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
+[ -f ~/.profile ] && source ~/.profile
+[ -f ~/.bash_profile ] && source ~/.bash_profile
+
 if [ -z "$(nvm ls default)" ]; then
 	echo "Enabling latest version of node"
 	target=$(nvm ls-remote | tail -1 | xargs)

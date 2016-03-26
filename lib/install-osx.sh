@@ -80,3 +80,6 @@ if [ "$didInstall" = true ]; then
 else
 	echo "Every brew package was already installed."
 fi
+
+# Make sure nvm is available
+source $(brew --prefix nvm)/nvm.sh

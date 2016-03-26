@@ -25,3 +25,6 @@ fi
 
 echo "Renaming .profile"
 mv ~/.profile ~/.bash_profile
+
+export NVM_DIR=$HOME/.nvm
+source "$NVM_DIR/nvm.sh"
