@@ -21,3 +21,10 @@ if [ -z "$(nvm ls default)" ]; then
 	nvm install $target
 	nvm alias default $target
 fi
+
+# Install powerline fonts
+if [ ! -d $DOTFILES_LNK/fonts ]; then
+	echo "Installing powerline fonts"
+	git clone https://github.com/powerline/fonts.git $DOTFILES_LNK/fonts
+	$DOTFILES_LNK/fonts/install.sh
+fi
