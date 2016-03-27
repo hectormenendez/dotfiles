@@ -48,6 +48,7 @@ COMMANDS=(
     'vim --override-system-vi'
     'python3'
     'tmux'
+    'reattach-to-user-namespace'
     'fzf'
     'the_silver_searcher'
 )
