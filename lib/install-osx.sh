@@ -9,10 +9,22 @@ if [[ -z $(which brew) ]]; then
     hadBrew=false
     echo "Installing brew…"
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    brew tap homebrew/completions # Install brew completions
-    brew tap homebrew/dupes       # Allow duplications of OS.X software
-    brew tap choppsv1/term24      # Repo for tmux with forced support for truecolor
-    brew install coreutils caskroom/cask/brew-cask
+    /usr/local/bin/brew install coreutils
+    # after coreutils are installed, try to continue installation… try.
+    cd ~
+    source .profile
+
+    brew tap homebrew/completions # for brew completions
+    brew tap homebrew/dupes       # duplications for OS.X software
+
+    # Install OS.X apps from brew
+    brew install caskroom/cask/brew-cask
+    # Install tmux with forced support for truecolor
+    brew tap choppsv1/term24
+    brew install choppsv1/term24/tmux
+    # Use development version of neovim
+    brew tap neovim/neovim
+    brew install --HEAD neovim
 fi
 
 COMMANDS=(
@@ -50,7 +62,6 @@ COMMANDS=(
     'python3'
     'fzf'
     'the_silver_searcher'
-    'choppsv1/term24/tmux'
 )
 
 didInstall=false
