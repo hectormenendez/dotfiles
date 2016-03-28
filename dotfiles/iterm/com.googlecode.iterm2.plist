@@ -657,13 +657,13 @@
 				<key>Alpha Component</key>
 				<real>1</real>
 				<key>Blue Component</key>
-				<real>0.11764705882352941</real>
+				<real>0.12934795022010803</real>
 				<key>Color Space</key>
 				<string>Calibrated</string>
 				<key>Green Component</key>
-				<real>0.11764705882352941</real>
+				<real>0.12934574484825134</real>
 				<key>Red Component</key>
-				<real>0.11764705882352941</real>
+				<real>0.12934963405132294</real>
 			</dict>
 			<key>Background Image Is Tiled</key>
 			<false/>
@@ -1257,11 +1257,11 @@
 			<key>Tags</key>
 			<array/>
 			<key>Terminal Type</key>
-			<string>xterm-256color-italic</string>
+			<string>256color-iterm</string>
 			<key>Thin Strokes</key>
 			<integer>1</integer>
 			<key>Transparency</key>
-			<real>0.094713849852071014</real>
+			<real>0.019783191568047337</real>
 			<key>Triggers</key>
 			<array/>
 			<key>Unlimited Scrollback</key>

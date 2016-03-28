@@ -11,6 +11,7 @@ if [[ -z $(which brew) ]]; then
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     brew tap homebrew/completions # Install brew completions
     brew tap homebrew/dupes       # Allow duplications of OS.X software
+    brew tap choppsv1/term24      # Repo for tmux with forced support for truecolor
     brew install coreutils caskroom/cask/brew-cask
 fi
 
@@ -47,10 +48,9 @@ COMMANDS=(
     'unzip'
     'vim --override-system-vi'
     'python3'
-    'tmux'
-    'reattach-to-user-namespace'
     'fzf'
     'the_silver_searcher'
+    'choppsv1/term24/tmux'
 )
 
 didInstall=false

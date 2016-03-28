@@ -67,14 +67,26 @@ PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# set color command prompt
-export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
-
-# Prepend git branch name on command prompt.
-[ -r "$DOTFILES_LIB/gitprompt.sh" ] && source "$DOTFILES_LIB/gitprompt.sh"
-
 # If an alias file exists, load it.
 [ -f $HOME/.alias ] && source $HOME/.alias
+
+# Tmux specific
+if [ -n "$TMUX" ]; then
+    # Everytime the prompt is set, run a command that updates location on tmux-powerline
+    export PS1="\n$ "'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
+
+    export TERM=256color-tmux
+
+# NonTmux environment (standard)
+else
+    # the prompt you'd expect, nothing special
+    export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
+
+    export TERM=256color-iterm
+
+    # Prepend git branch name on command prompt.
+    [ -r "$DOTFILES_LIB/gitprompt.sh" ] && source "$DOTFILES_LIB/gitprompt.sh"
+fi
 
 # MacOnly
 if isDarwin; then
