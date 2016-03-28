@@ -476,7 +476,7 @@
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>972 786 620 392 0 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>322 209 1060 587 0 0 2560 1440 </string>
+	<string>0 8 2558 1427 0 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>521 973 650 452 0 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
@@ -689,7 +689,7 @@
 			<key>Blinking Cursor</key>
 			<true/>
 			<key>Blur</key>
-			<true/>
+			<false/>
 			<key>Blur Radius</key>
 			<real>30</real>
 			<key>Bold Color</key>
@@ -1261,7 +1261,7 @@
 			<key>Thin Strokes</key>
 			<integer>1</integer>
 			<key>Transparency</key>
-			<real>0.019783191568047337</real>
+			<real>0.0</real>
 			<key>Triggers</key>
 			<array/>
 			<key>Unlimited Scrollback</key>
