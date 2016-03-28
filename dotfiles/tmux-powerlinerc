@@ -1,0 +1,17 @@
+# ------------------------------------------------------------------------------- General
+
+export TMUX_POWERLINE_DEBUG_MODE_ENABLED="false" # Show segment errors
+export TMUX_POWERLINE_PATCHED_FONT_IN_USE="true" # Is a powerline font ready?
+
+# --------------------------------------------------------------------------------- Theme
+
+export TMUX_POWERLINE_THEME="etor"
+export TMUX_POWERLINE_DIR_USER_THEMES="$DOTFILES_LNK/tmux-powerline/themes"
+export TMUX_POWERLINE_DIR_USER_SEGMENTS="$DOTFILES_LNK/tmux-powerline/segments"
+
+# ------------------------------------------------------------------------------ Segments
+
+export TMUX_POWERLINE_SEG_HOSTNAME_FORMAT="short" # long or short
+export TMUX_POWERLINE_SEG_PWD_MAX_LEN="40"        # max length for pwd output
+export TMUX_POWERLINE_SEG_TIME_FORMAT="%H:%M"     # format for time (see date manual)
+export TMUX_POWERLINE_SEG_DATE_FORMAT="%b %d"     # format for date (see date manual)
