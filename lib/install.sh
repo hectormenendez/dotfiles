@@ -13,7 +13,7 @@ isArch   && source "$DOTFILES_LIB/install-arch.sh"
 # Make sure tmux's plugin manager is installed
 [ ! -d ~/.tmux/plugins/tpm ] && \
 	echo "Installing tmux's plugin manager" && \
-	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm 
+	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 if [ -z "$(nvm ls default)" ]; then
 	echo "Enabling latest version of node"
@@ -29,8 +29,15 @@ if [ ! -d $DOTFILES_LNK/fonts ]; then
 	$DOTFILES_LNK/fonts/install.sh
 fi
 
-# Enable italics on xterm and tmux
-if [ ! -d ~/.terminfo ]; then
-	tic -x $DOTFILES_LIB/256color-iterm.terminfo
-	tic -x $DOTFILES_LIB/256color-tmux.terminfo
-fi
+echo "Enabling truecolor and italics on both tmux and iterm"
+tic -x $DOTFILES_LIB/256color-iterm.terminfo
+tic -x $DOTFILES_LIB/256color-tmux.terminfo
+
+echo "Installing/upgrading pyton-base and neovim"
+pip3 install --upgrade setuptools pip neovim
+
+echo "Installing vim plugins"
+nvim +PlugInstall +UpdateRemotePlugins  +qall
+
+
+echo "Done. Restart session."
