@@ -28,3 +28,7 @@ if [ ! -d $DOTFILES_LNK/fonts ]; then
 	git clone https://github.com/powerline/fonts.git $DOTFILES_LNK/fonts
 	$DOTFILES_LNK/fonts/install.sh
 fi
+
+# Enable italics on xterm and tmux
+tic -x $DOTFILES_LIB/xterm-256color-italic.terminfo
+tic -x $DOTFILES_LIB/tmux-256color.terminfo
