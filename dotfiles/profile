@@ -95,6 +95,9 @@ if isDarwin; then
     # Enable iterm2's shell integration
     test -e "$HOME/.iterm/shell_integration.bash" && . "$HOME/.iterm/shell_integration.bash"
 
+    # Enables gruvbox's color palette to exactly match theme colors
+    source ~/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
+
 elif isArch; then
 
     # Enable keybindings for Fuzzy Search
@@ -102,11 +105,12 @@ elif isArch; then
 
     # Load NVM if available
     [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
-fi
 
+    # Enables gruvbox's color palette to exactly match theme colors
+    source ~/.vim/bundle/gruvbox/gruvbox_256palette.sh
+
+fi
 
 # forces internal script to resource utils
 unset DOTFILES_UTILS
 
-# Enable iterm2's shell integration
-test -e "$HOME/.iterm/shell_integration.bash" && . "$HOME/.iterm/shell_integration.bash"

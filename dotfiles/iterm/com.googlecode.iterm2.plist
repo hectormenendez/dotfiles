@@ -472,11 +472,11 @@
 	<key>NSWindow Frame NSFontPanel</key>
 	<string>1350 175 568 361 0 0 2560 1440 </string>
 	<key>NSWindow Frame Preferences</key>
-	<string>269 968 606 456 0 0 2560 1440 </string>
+	<string>2829 968 606 456 2560 0 2560 1440 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>972 786 620 392 0 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>322 213 1210 927 0 0 2560 1440 </string>
+	<string>322 209 1060 587 0 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>521 973 650 452 0 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
@@ -657,13 +657,13 @@
 				<key>Alpha Component</key>
 				<real>1</real>
 				<key>Blue Component</key>
-				<real>0.15686275059999999</real>
+				<real>0.11764705882352941</real>
 				<key>Color Space</key>
 				<string>Calibrated</string>
 				<key>Green Component</key>
-				<real>0.15686275059999999</real>
+				<real>0.11764705882352941</real>
 				<key>Red Component</key>
-				<real>0.15686275059999999</real>
+				<real>0.11764705882352941</real>
 			</dict>
 			<key>Background Image Is Tiled</key>
 			<false/>
@@ -772,16 +772,12 @@
 			<false/>
 			<key>Foreground Color</key>
 			<dict>
-				<key>Alpha Component</key>
-				<real>1</real>
 				<key>Blue Component</key>
-				<real>0.69803923369999998</real>
-				<key>Color Space</key>
-				<string>Calibrated</string>
+				<real>0.69803921568627403</real>
 				<key>Green Component</key>
-				<real>0.85882353779999998</real>
+				<real>0.85882352941176499</real>
 				<key>Red Component</key>
-				<real>0.92156863209999995</real>
+				<real>0.92156862745098</real>
 			</dict>
 			<key>Guid</key>
 			<string>0A3D57B2-E614-4A43-9583-3B7E62E220E7</string>
@@ -1074,13 +1070,13 @@
 				<key>Alpha Component</key>
 				<real>1</real>
 				<key>Blue Component</key>
-				<real>0.76170003414154053</real>
+				<real>0.67800000000000005</real>
 				<key>Color Space</key>
 				<string>Calibrated</string>
 				<key>Green Component</key>
-				<real>0.51218634843826294</real>
+				<real>0.27000000000000002</real>
 				<key>Red Component</key>
-				<real>0.26959708333015442</real>
+				<real>0.023</real>
 			</dict>
 			<key>Log Directory</key>
 			<string></string>
@@ -1136,13 +1132,13 @@
 				<key>Alpha Component</key>
 				<real>1</real>
 				<key>Blue Component</key>
-				<real>0.089878618717193604</real>
+				<real>0.077523812651634216</real>
 				<key>Color Space</key>
 				<string>Calibrated</string>
 				<key>Green Component</key>
-				<real>0.090159431099891663</real>
+				<real>0.077522493898868561</real>
 				<key>Red Component</key>
-				<real>0.08966924250125885</real>
+				<real>0.077524803578853607</real>
 			</dict>
 			<key>Semantic History</key>
 			<dict>
@@ -1261,7 +1257,7 @@
 			<key>Tags</key>
 			<array/>
 			<key>Terminal Type</key>
-			<string>xterm-256color</string>
+			<string>xterm-256color-italic</string>
 			<key>Thin Strokes</key>
 			<integer>1</integer>
 			<key>Transparency</key>
@@ -1365,7 +1361,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2016-03-27T01:42:26Z</date>
+	<date>2016-03-28T01:42:26Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SavePasteHistory</key>
