@@ -4,7 +4,7 @@
 [[ ! $DOTFILES_LIB ]] && echo >&2 "Expecting DOTFILES environment" && exit 1
 source $DOTFILES_LIB/utils.sh
 
-ignorelist=( '.dropbox' '.Trash' )
+ignorelist=( '.dropbox' '.Trash' , '.ssh', '.terminfo', '.cache'w)
 
 for dotfile in `find $HOME -maxdepth 1 -name ".*" ! -type l ! -path $HOME`; do
 	dotfile=${dotfile/$HOME\//}
