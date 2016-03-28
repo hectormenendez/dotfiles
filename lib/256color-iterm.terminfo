@@ -1,0 +1,4 @@
+# A xterm-256color based TERMINFO for truecolor and italics support on iterm
+256color-iterm|iterm with 256 colors and italics,
+  sitm=\E[3m, ritm=\E[23m, rmso=\E[27m, smso=\E[7m, Ms@,
+  use=xterm-256color,

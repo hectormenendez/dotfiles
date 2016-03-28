@@ -30,5 +30,7 @@ if [ ! -d $DOTFILES_LNK/fonts ]; then
 fi
 
 # Enable italics on xterm and tmux
-tic -x $DOTFILES_LIB/xterm-256color-italic.terminfo
-tic -x $DOTFILES_LIB/tmux-256color.terminfo
+if [ ! -d ~/.terminfo ]; then
+	tic -x $DOTFILES_LIB/256color-iterm.terminfo
+	tic -x $DOTFILES_LIB/256color-tmux.terminfo
+fi

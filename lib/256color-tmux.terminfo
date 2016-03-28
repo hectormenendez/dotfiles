@@ -1,0 +1,4 @@
+# A xterm-256color based TERMINFO for truecolor and italics support on tmux
+256color-tmux|tmux with 256 colors and italics,
+    sitm=\E[3m, ritm=\E[23m, rmso=\E[27m, smso=\E[7m, Ms@,
+    use=screen-256color,
