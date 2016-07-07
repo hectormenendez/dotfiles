@@ -18,12 +18,10 @@ export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
 export FZF_TMUX=0                                # don't use a split in tmyx for FZF
 export FZF_DEFAULT_COMMAND='ag -g ""'            # make FZF parse .gitignore .hgignore and svn:ignore
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND" # Same as above but for CtrlT
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 
-if isLinux; then
-	export LC_ALL=en_US.UTF-8
-	export LANG=en_US.UTF-8
-
-elif isDarwin; then
+if isDarwin; then
 	# looks for the file in the private/env folder and exports its contents
 	setEnv "HOMEBREW_GITHUB_API_TOKEN"
 
