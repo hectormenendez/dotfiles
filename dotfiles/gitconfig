@@ -15,6 +15,7 @@
 
 [alias]
     ci      = commit -m
+    cin     = commit --no-verify -m
     co      = checkout
     st      = status
     add     = add -v
