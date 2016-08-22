@@ -1,3 +1,5 @@
+unalias -a
+
 # Allow aliases to be run with sudo
 alias sudo='sudo '
 
