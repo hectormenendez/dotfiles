@@ -26,6 +26,24 @@ alias cl="clear && la"
 alias c="clear"
 alias a="alias -p"
 
+# GIT aliases
+alias gls="git ls" # An alias of an alias, you can't get any lazier than that
+alias gst="git st -s"
+alias gdf="git diff"
+
+# NPM aliases
+alias nr="npm r"
+alias ni="npm i"
+alias nln="npm link"
+alias nun="npm unlink"
+alias nls="npm ls --depth=0 --production --dev"
+alias nlsd="npm ls --depth=0 --dev"
+alias nlsp="npm ls --depth=0 --production"
+alias nip="npm i -S"
+alias nid="npm i -D"
+alias nrp="npm r -S"
+alias nrd="npm r -D"
+
 # These are for mac only
 if isDarwin; then
 
