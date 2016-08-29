@@ -14,6 +14,8 @@ alias txn='tx new-session -s'
 alias txa='tx attach'
 alias txl='tx ls'
 
+alias ssh='TERM=xterm ssh'
+
 # Show Color on grep
 alias grep='grep --color=auto'
 
