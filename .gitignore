@@ -28,3 +28,4 @@ dotfiles/vim/cache/undo/*
 private/*
 !private/env
 !private/tmux-powerline
+dotfiles/vim/session
