@@ -38,7 +38,8 @@ alias nr="npm r"
 alias ni="npm i"
 alias nln="npm link"
 alias nun="npm unlink"
-alias nls="npm ls --depth=0 --production --dev"
+alias nlg="npm ls --depth=0 -g -s"
+alias nls="npm ls --depth=0 -s"
 alias nlsd="npm ls --depth=0 --dev"
 alias nlsp="npm ls --depth=0 --production"
 alias nip="npm i -S"
@@ -50,6 +51,7 @@ alias nrd="npm r -D"
 if isDarwin; then
 
 	# Text editors
+	alias cat="ccat"
 	alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 	alias atom="/Applications/Atom.app/Contents/Resources/app/atom.sh"
 
