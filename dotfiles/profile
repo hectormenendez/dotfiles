@@ -1,104 +1,89 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-# Include utilities
-source `readlink ${BASH_SOURCE[0]} | xargs dirname`/../lib/utils.sh
+# Internal vars
+_self=`readlink -n ${BASH_SOURCE[0]}`
+_self=$HOME/$_self
+_path=`echo $_self | xargs dirname`
 
-# Environment variables
+# Include common utilities
+source $_path/../lib/utils.sh
+
+# ---------------------------------------------------------------------------- ENVIRONMENT
+
+# get these vars from $_path/private/env (so their values aren't published on git)
+setEnv "GIT_AUTHOR_NAME"
+setEnv "GIT_AUTHOR_EMAIL"
+setEnv "HOMEBREW_GITHUB_API_TOKEN"
+
+# Common
+export LC_ALL=en_US.UTF-8
+export LANG=$LC_ALL
+
 export NVM_DIR=$HOME/.nvm
 export PATH=$DOTFILES_BIN:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 
-# In order to avoid storing my mail and name on gitconfig these envvars are used
-setEnv "GIT_AUTHOR_NAME"
-setEnv "GIT_AUTHOR_EMAIL"
-export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
-export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"    # Alias for git
+export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"  # Alias for git
 
-# FZF options
 export FZF_TMUX=0                                # don't use a split in tmyx for FZF
 export FZF_DEFAULT_COMMAND='ag -g ""'            # make FZF parse .gitignore .hgignore and svn:ignore
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND" # Same as above but for CtrlT
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
 
+export HISTCONTROL=erasedups:ignorespace                                                # remove history duplicates (ignoring spacing)
+export PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND" # fix history on each command
+
+# Mac-only
 if isDarwin; then
-    # looks for the file in the private/env folder and exports its contents
-    setEnv "HOMEBREW_GITHUB_API_TOKEN"
-
-    # Add custom commands to path
+    # Use coreutils instad of native binaries
     export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
-    export PATH=$(brew --prefix fzf)/bin:$PATH
-
-    # Add custom commands to manpath
     export MANPATH=$(brew --prefix coreutils)/libexec/gnuman:$(brew --prefix findutils)/libexec/bin:/usr/share/man:$MANPATH
+    # Enable Fussy file finder
+    export PATH=$(brew --prefix fzf)/bin:$PATH
     export MANPATH=$(brew --prefix fzf)/share/man:$MANPATH
-else
-    echo "What OS is this? just to be safe, profile won't load."
-    return
 fi
 
-# Set the creation mask, so files are created with 600 and dirs as 700
-umask 077
+# Command prompt
+if [ -n "$TMUX" ]; then
+    # Everytime the prompt is set, run a command that updates location on tmux-powerline
+    export PS1="\e[01;38;05;232;48;05;15m \\$\[\e[m\] "'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
+    export TERM=256color-tmux
+else
+    export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
+    export TERM=256color-iterm
+fi
 
-# Shell options
-shopt -s checkwinsize # check winsize after each command and adjust screen automatically,
-shopt -s nocaseglob   # case insensitive globbing
-shopt -s cdspell      # Autocorrect typos in path names when using cd
-set -o vi             # Enable vi mode
+# ------------------------------------------------------------------------------ BEHAVIOUR
 
-# set file colors
-eval `dircolors $HOME/.dir_colors`
+shopt -s checkwinsize                                        # check winsize after each command and adjust screen automatically,
+shopt -s nocaseglob                                          # case insensitive globbing
+shopt -s cdspell                                             # Autocorrect typos in path names when using cd
+shopt -s histappend                                          # don't overwrite history on login, append to it.
+set -o vi                                                    # Enable vi mode
+umask 077                                                    # Set the creation mask, so files are created with 600 and dirs as 700
+eval `dircolors $HOME/.dir_colors`                           # colorize files by type
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)" # enable lesspipe
 
-# History management:
-# cleanup the history file, by manually removing dups
-tac $HISTFILE | awk '!x[$0]++' | tac | sponge $HISTFILE
-
-# don't put duplicate lines in the history and erase those that already exist
-# don't overwrite history on login, append to it.
-HISTCONTROL=erasedups:ignorespace
-shopt -s histappend
-PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
-
-# Add tab completions for SSH hostnames based on $HOME/.ssh/config
-[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" $HOME/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" scp sftp ssh;
-
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+# ----------------------------------------------------------------------------- EXTENSIONS
 
 # If an alias file exists, load it.
 [ -f $HOME/.alias ] && source $HOME/.alias
 
-# Tmux specific
-if [ -n "$TMUX" ]; then
-    # print a blank line on start so the prompt isn't right after the statusbar
-    echo
-    # Everytime the prompt is set, run a command that updates location on tmux-powerline
-    export PS1="\e[01;38;05;232;48;05;15m \\$\[\e[m\] "'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
-    export TERM=256color-tmux
-
-else # NonTmux environment (standard)
-    # the prompt you'd expect, nothing special
-    export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
-    export TERM=256color-iterm
-
-    # Prepend git branch name on command prompt.
+# Prepend git branch name on command prompt. (if not on TMUX)
+if [ ! -n "$TMUX" ]; then
     [ -r "$DOTFILES_LIB/gitprompt.sh" ] && source "$DOTFILES_LIB/gitprompt.sh"
 fi
 
 # MacOnly
 if isDarwin; then
 
-    # Enable bash completion
-    if [ -f $(brew --prefix)/etc/bash_completion ]; then
-	source $(brew --prefix)/etc/bash_completion
-    fi
-
+    [ -f $(brew --prefix)/etc/bash_completion ] && source $(brew --prefix)/etc/bash_completion
     [ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
 
-    # Enable Fuzzy Search
     if [ ! -z "$(brew --prefix fzf)" ]; then
-	source "$(brew --prefix fzf)/shell/completion.bash" 2> /dev/null
-	source "$(brew --prefix fzf)/shell/key-bindings.bash"
+        # Enable Fuzzy Search
+        source "$(brew --prefix fzf)/shell/completion.bash" 2> /dev/null
+        source "$(brew --prefix fzf)/shell/key-bindings.bash"
     fi
 
     # Enable iterm2's shell integration
@@ -107,20 +92,37 @@ if isDarwin; then
     # Enables gruvbox's color palette to exactly match theme colors
     source ~/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
 
-elif isArch; then
-
-    # Enable keybindings for Fuzzy Search
-    [ -f /etc/profile.d/fzf.bash ] && source /etc/profile.d/fzf.bash
+elif isLinux; then
 
     # Load NVM if available
     [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+
+    # Enable keybindings for Fuzzy Search
+    [ -f /etc/profile.d/fzf.bash ] && source /etc/profile.d/fzf.bash
 
     # Enables gruvbox's color palette to exactly match theme colors
     source ~/.vim/bundle/gruvbox/gruvbox_256palette.sh
 
 fi
 
+
+# ---------------------------------------------------------------------------------- TASKS
+
+
+# cleanup the history file, by manually removing dups
+tac $HISTFILE | awk '!x[$0]++' | tac | sponge $HISTFILE
+
+# Add tab completions for SSH hostnames based on $HOME/.ssh/config
+[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" $HOME/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" scp sftp ssh;
+
+
+# -------------------------------------------------------------------------------- CLEANUP
+
+
 # forces internal script to resource utils
 unset DOTFILES_UTILS
 
-test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+# remove internals
+unset _self
+unset _path
+
