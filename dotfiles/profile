@@ -22,19 +22,19 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 if isDarwin; then
-	# looks for the file in the private/env folder and exports its contents
-	setEnv "HOMEBREW_GITHUB_API_TOKEN"
+    # looks for the file in the private/env folder and exports its contents
+    setEnv "HOMEBREW_GITHUB_API_TOKEN"
 
     # Add custom commands to path
-	export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
+    export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
     export PATH=$(brew --prefix fzf)/bin:$PATH
 
     # Add custom commands to manpath
-	export MANPATH=$(brew --prefix coreutils)/libexec/gnuman:$(brew --prefix findutils)/libexec/bin:/usr/share/man:$MANPATH
+    export MANPATH=$(brew --prefix coreutils)/libexec/gnuman:$(brew --prefix findutils)/libexec/bin:/usr/share/man:$MANPATH
     export MANPATH=$(brew --prefix fzf)/share/man:$MANPATH
 else
-	echo "What OS is this? just to be safe, profile won't load."
-	return
+    echo "What OS is this? just to be safe, profile won't load."
+    return
 fi
 
 # Set the creation mask, so files are created with 600 and dirs as 700
@@ -76,8 +76,7 @@ if [ -n "$TMUX" ]; then
     export PS1="\e[01;38;05;232;48;05;15m \\$\[\e[m\] "'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
     export TERM=256color-tmux
 
-# NonTmux environment (standard)
-else
+else # NonTmux environment (standard)
     # the prompt you'd expect, nothing special
     export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
     export TERM=256color-iterm
@@ -89,17 +88,17 @@ fi
 # MacOnly
 if isDarwin; then
 
-	# Enable bash completion
-	if [ -f $(brew --prefix)/etc/bash_completion ]; then
-		source $(brew --prefix)/etc/bash_completion
-	fi
+    # Enable bash completion
+    if [ -f $(brew --prefix)/etc/bash_completion ]; then
+	source $(brew --prefix)/etc/bash_completion
+    fi
 
-	[ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
+    [ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
 
     # Enable Fuzzy Search
     if [ ! -z "$(brew --prefix fzf)" ]; then
-       source "$(brew --prefix fzf)/shell/completion.bash" 2> /dev/null
-       source "$(brew --prefix fzf)/shell/key-bindings.bash"
+	source "$(brew --prefix fzf)/shell/completion.bash" 2> /dev/null
+	source "$(brew --prefix fzf)/shell/key-bindings.bash"
     fi
 
     # Enable iterm2's shell integration
