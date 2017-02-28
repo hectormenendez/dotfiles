@@ -18,7 +18,7 @@ deps=(
 )
 sudo pacman -Syu --noconfirm ${deps[@]}
 
-if [ ! -d  ~/.nvm ]; then 
+if [ ! -d  ~/.nvm ]; then
     echo "Installing NVM"
     git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
 fi

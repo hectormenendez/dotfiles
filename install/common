@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -e
+
+_path="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+[[ ! $DOTFILES_UTILS ]] && source $_path/../lib/utils.sh
+
+# Install the default version of Node
+if hash nvm 2>/dev/null && [ -z $(nvm ls default) ]; then
+	echo "Enabling latest version of node"
+	target=$(nvm ls-remote | tail -1 | xargs)
+	nvm install $target
+	nvm alias default $target
+fi
+
+# Nvim's addons
+if hash nvim 2>/dev/null; then
+	echo "Installing/upgrading pyton-base and neovim"
+	pip3 install --upgrade setuptools pip neovim
+
+	echo "Installing vim plugins"
+	nvim +PlugInstall +UpdateRemotePlugins  +qall
+
+	# Nvim's plugin manager
+	[ ! -f ~/.vim/autoload/plug.vim ] && \
+		echo "Installing vim's plugin manager" && \
+		curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+			https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+fi
+
+# Install powerline fonts
+if [ ! -d $DOTFILES_LNK/fonts ]; then
+	echo "Installing powerline fonts"
+	git clone https://github.com/powerline/fonts.git $DOTFILES_LNK/fonts
+	$DOTFILES_LNK/fonts/install.sh
+fi
+
+echo "Enabling truecolor and italics on both tmux and iterm"
+tic -x $DOTFILES_LIB/256color-iterm.terminfo

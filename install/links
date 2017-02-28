@@ -1,7 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
 # Sources utils only if they are not already available
-[[ ! $DOTFILES_UTILS ]] && source "${BASH_SOURCE%/*}/lib/utils.sh"
+_path="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+[[ ! $DOTFILES_UTILS ]] && source $_path/../lib/utils.sh
 
 for dotfile in $(dotfiles $DOTFILES_SRC); do
     BACKUP=false
@@ -31,8 +33,5 @@ for dotfile in $(dotfiles $DOTFILES_SRC); do
 
     printf "Symlinked $dotfile. "
     $BACKUP &&  printf "[backed up]"
-    echo # echoes a blank line no matter what
+    echo
 done
-
-#run installation
-source "$DOTFILES_LIB/install.sh"
