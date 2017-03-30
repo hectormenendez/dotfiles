@@ -24,9 +24,18 @@
     add     = add -v
     tagshow = !sh -c 'git rev-list $0 | head -n 1'
     lsf     = !sh -c 'git-logfile'
-    lg      = log --pretty=format:'%C(bold green)%<(15)%ar %C(auto)%h  %C(dim white)%<(20,trunc)%an %C(reset) %<(60,trunc)%s %C(auto)%d'
-    ls      = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) %C(dim white)%an%C(reset) %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold yellow)%d%C(reset)'
-    lsa     = !git ls --all
+    ls      = !git log \
+	--graph          \
+	--date=relative  \
+	--pretty=tformat:'%C(bold blue)%h%C(reset) %C(bold green)%>(8,trunc)%ar%C(reset) %C(bold dim white)%>(8,trunc)%an%C(reset) %C(white)%s%C(reset)%C(auto)%d%C(reset)'
+    lsa = !git ls --all
+lsa = !git ls --all
+    lga = !git lg --all
+    lg  = !git log   \
+	--graph          \
+	--date=relative  \
+	--pretty=tformat:'%>|(18)%C(auto)%h%C(reset)   %C(white)%an%C(reset) %C(bold dim white)%ar%C(reset) %C(auto)%d%C(reset)%n %>|(19)%C(dim black)%m%C(reset) %<(60,trunc)%C(dim white)%s%C(reset)%n' \
+
 [color]
     ui = true
 
