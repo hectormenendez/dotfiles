@@ -1,9 +1,13 @@
-;; ------------------------------------------------------------------ Repositories
+;; ----------------------------------------------------------------------------- Behaviour
+
+;; Disable the default packaage-manager at startup
 (require 'package)
 (setq package-enable-at-startup nil)
 
+;; The repositories to fetch packages-from.
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
+;; This will be added no matter what, so, add it.
 (package-initialize)
 
 ;; Enable the 'use-package' package manager (install it if not available)
@@ -13,19 +17,106 @@
 )
 (eval-when-compile (require 'use-package))
 
-;;
+;; Save all customisations to this file instead.
+;; TODO: Find out why is not being read by emacs.
 (setq custom-file (expand-file-name "_custom.el" user-emacs-directory))
 
-;; ----------------------------------------------------- Config: File management
+;; Enable the server so several clients can connect to it.
+(require 'server)
+(unless (server-running-p) (server-start))
 
-;; Set backup files to a directory instead of a file on the same dir.
+;; -------------------------------------------------------------------------------- Editor
+
+(setq frame-title-format "emacs")
+(setq inhibit-startup-screen 1)
+(setq initial-scratch-message nil); Don't show a message on *scratch* mode
+(setq visible-bell t); don't make sounds, show bells.
+
+; be immediate about scrolling
+(setq mouse-wheel-progressive-speed nil)
+;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 5) ((control))))
+
+; Higlight invalid whitespaces
+(require 'whitespace)
+(setq whitespace-style '(face empty tabs trailing))
+(global-whitespace-mode t)
+
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(column-number-mode 1); Show the current-column too
+(global-hl-line-mode 1); Highlight the current line
+(global-auto-revert-mode); Update buffers whenever the file changes on disk
+(defalias 'yes-or-no-p 'y-or-n-p); Ask for just one letter
+
+(add-to-list 'default-frame-alist '(font . "Ubuntu Mono-11"))
+
+;; TODO: Add the gruvbox colors to this theme (use darktooth-theme as reference too)
+;; TODO: Add theming for helm bar.
+(add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/")
+(load-theme 'birds-of-paradise-plus 1)
+
+;; Save and restore the window geometry.
+;; TODO: This should be on its own file.
+(if window-system (progn
+    ;; Save current geometry to a file.
+    (defun framegeometry-save () (let
+        (
+            (framegeometry-left (frame-parameter (selected-frame) 'left))
+            (framegeometry-top (frame-parameter (selected-frame) 'top))
+            (framegeometry-width (frame-parameter (selected-frame) 'width))
+            (framegeometry-height (frame-parameter (selected-frame) 'height))
+            (framegeometry-file (expand-file-name "_framegeometry" user-emacs-directory))
+        )
+        (when (not (number-or-marker-p framegeometry-left)) (setq framegeometry-left 0))
+        (when (not (number-or-marker-p framegeometry-top)) (setq framegeometry-top 0))
+        (when (not (number-or-marker-p framegeometry-width)) (setq framegeometry-width 0))
+        (when (not (number-or-marker-p framegeometry-height)) (setq framegeometry-height 0))
+        (with-temp-buffer
+            (insert
+                "(setq initial-frame-alist '(\n"
+                (format "    (top . %d)\n" (max framegeometry-top 0))
+                (format "    (left . %d)\n" (max framegeometry-left 0))
+                (format "    (width . %d)\n" (max framegeometry-width 0))
+                (format "    (height . %d)\n" (max framegeometry-height 0))
+                "))\n"
+            )
+            (when (file-writable-p framegeometry-file) (write-file framegeometry-file))
+        )
+    ))
+    ;; Load geometry from file
+    (defun framegeometry-load () (let
+        (
+            (framegeometry-file (expand-file-name "_framegeometry" user-emacs-directory))
+        )
+        (when (file-readable-p framegeometry-file) (load-file framegeometry-file))
+    ))
+    ;; Enable hooks.
+    (add-hook 'after-init-hook 'framegeometry-load)
+    (add-hook 'kill-emacs-hook 'framegeometry-save)
+))
+
+;; ------------------------------------------------------------------------------ Defaults
+
+(setq-default indent-tabs-mode nil); Use spaces for tabs
+(setq-default tab-width 4); set tab width to 4 on every mode
+(setq-default fill-column 90); The number of chars before wrapping (used by fci)
+(show-paren-mode 1)
+
+;; ----------------------------------------------------------------------- Version Control
+
+(setq version-control t)
+(setq vc-follow-symlinks t); Don't ask to follow symlinks, just do it.
+
+;; ----------------------------------------------------------------------- File management
+
+;; Backing up
+(setq make-backup-files t)
+(setq delete-old-versions t)
 (setq backup-directory-alist '(("." . "~/.emacs.d/_backups")))
 
-;; Make backup of everthing (disabled by default)
-(setq make-backup-files nil)
-(setq delete-old-versions t)
-(setq version-control t)
+;; Auto saving (disabled)
 (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/_auto-save/" t)))
+(setq buffer-auto-save-file-name nil)
 
 ;; History
 (setq savehist-file "~/.emacs.d/_history")
@@ -39,34 +130,10 @@
 (setq save-place t)
 (require 'saveplace)
 
-(require 'diminish) ; TODO: Findout what this does.
-(require 'bind-key) ; TODO: Findout what this does.
+(require 'diminish); TODO: Findout what this does.
+(require 'bind-key); TODO: Findout what this does.
 
-;;------------------------------------------------------------- Config: Look & Feel
-
-
-(setq frame-title-format "emacs")
-(setq inhibit-startup-screen 1)
-(setq initial-scratch-message nil) ; Don't show a message on *scratch* mode
-(setq whitespace-style '(face trailing)) ; Show an arrow whenever text is too long
-
-;; (setq-default indent-tabs-mode nil) ; Always use spaces for indentation
-(setq-default tab-width 4) ; Yeah, you read it right, 4! as in 1, 2, 3, 4.
-(setq-default fill-column 90) ; The number of chars before wrapping (used by fci)
-
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(column-number-mode 1) ; Show the current-column too
-(global-hl-line-mode 1); Highlight the current line
-
-(add-to-list 'default-frame-alist '(font . "Ubuntu Mono-11"))
-
-;; TODO: Add the gruvbox colors to this theme (use darktooth-theme as reference too)
-;; TODO: Add theming for helm bar.
-(add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/")
-(load-theme 'birds-of-paradise-plus 1)
-
-;; ------------------------------------------------------------------ Packages
+;; ------------------------------------------------------------------------------ Packages
 
 ;; VI rocks! there, I said it.
 (use-package evil
@@ -152,6 +219,45 @@
     (add-hook 'prog-mode-hook 'fci-mode)
 )
 
+;; Smart pairs
+(use-package smartparens
+    :ensure t
+    :config
+    (require 'smartparens-config)
+    (add-hook 'prog-mode-hook 'smartparens-mode)
+    )
+
+;; Enable JSX syntax support
+(use-package rjsx-mode
+    :ensure t
+    :config
+    (with-eval-after-load 'rjsx)
+    (define-key rjsx-mode-map "<" nil); This behaviour made emacs hang, so disabled it.
+)
+
+;; Adds a gutter with the git status of each file (duh)
+(use-package git-gutter
+    :ensure t
+    :config
+    (git-gutter:linum-setup)
+    (custom-set-variables
+        '(git-gutter:modified-sign " ~")
+        '(git-gutter:added-sign " +")
+        '(git-gutter:deleted-sign " -")
+    )
+    (set-face-foreground 'git-gutter:modified "#54969a"); gruvbox's blue
+    (set-face-foreground 'git-gutter:added "#a8a521"); grubox's green
+    (set-face-foreground 'git-gutter:deleted "#d83925"); gruvbox's red
+    (add-hook 'prog-mode-hook 'git-gutter-mode)
+)
+
+;; Keeps current line always vertically centered to the screen
+(use-package centered-cursor-mode
+    :ensure t
+    :config
+    (add-hook 'prog-mode-hook 'centered-cursor-mode)
+)
+
 ;; Log working time on wakatime.com
 ;; TODO:  install wakatime-cli via pip and see if  it works.
 ;; (use-package wakatime-mode
@@ -159,13 +265,3 @@
 ;;     :config
 ;;     (global-wakatime-mode)
 ;; )
-
-  
-
-(use-package rjsx-mode
-    :ensure t
-    :config
-    (with-eval-after-load 'rjsx)
-    (define-key rjsx-mode-map "<" nil)
-)
-
