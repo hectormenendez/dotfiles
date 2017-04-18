@@ -48,12 +48,10 @@
 (global-auto-revert-mode); Update buffers whenever the file changes on disk
 (defalias 'yes-or-no-p 'y-or-n-p); Ask for just one letter
 
-(add-to-list 'default-frame-alist '(font . "Ubuntu Mono-11"))
+(add-to-list 'default-frame-alist '(font . "Ubuntu Mono")); The default font
+(add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/"); The default theme location
 
-;; TODO: Add the gruvbox colors to this theme (use darktooth-theme as reference too)
-;; TODO: Add theming for helm bar.
 (add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/")
-(load-theme 'birds-of-paradise-plus 1)
 
 ;; Save and restore the window geometry.
 ;; TODO: This should be on its own file.
@@ -95,6 +93,14 @@
     (add-hook 'kill-emacs-hook 'framegeometry-save)
 ))
 
+;; -------------------------------------------------------------------------------- DarwiN
+
+(if window-system (progn
+    (setq mac-right-option-modifier 'none); Right Alt should not be Meta
+    (global-set-key (kbd "s-+") 'text-scale-increase)
+    (global-set-key (kbd "s--") 'text-scale-decrease)
+))
+
 ;; ------------------------------------------------------------------------------ Defaults
 
 (setq-default indent-tabs-mode nil); Use spaces for tabs
@@ -116,7 +122,7 @@
 
 ;; Auto saving (disabled)
 (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/_auto-save/" t)))
-(setq buffer-auto-save-file-name nil)
+(setq auto-save-default nil)
 
 ;; History
 (setq savehist-file "~/.emacs.d/_history")
@@ -134,6 +140,14 @@
 (require 'bind-key); TODO: Findout what this does.
 
 ;; ------------------------------------------------------------------------------ Packages
+
+
+;; TODO: Add the gruvbox colors to this theme (use darktooth-theme as reference too)
+;; TODO: Add theming for helm bar.
+(use-package birds-of-paradise-plus-theme
+    :ensure t
+    :config
+)
 
 ;; VI rocks! there, I said it.
 (use-package evil
@@ -170,6 +184,8 @@
     (progn
         (require 'helm-config)
         (setq helm-buffers-fuzzy-matching t)
+        (setq helm-apropos-fuzzy-matching t)
+        (setq helm-M-fuzzy-matching t)
         (setq helm-autoresize-mode t)
         (setq helm-buffer-max-length 50)
         (setq helm-candidate-number-limit 100)
@@ -180,9 +196,10 @@
             helm-yas-display-key-on-candidate t
             helm-quick-update t
             helm-M-x-requires-pattern nil
-            helm-ff-skip-boring-files t)
+            helm-ff-skip-boring-files t
+        )
+        (ido-mode -1); Disable the "I Do" mode, we have helm for that now.
         (helm-mode 1)
-	(ido-mode -1); Disable the "I Do" mode, we have helm for that now.
     )
     :bind (
         ("C-c C-c" . helm-mini)
@@ -241,6 +258,7 @@
     :config
     (git-gutter:linum-setup)
     (custom-set-variables
+        '(git-gutter:update-interval 2)
         '(git-gutter:modified-sign " ~")
         '(git-gutter:added-sign " +")
         '(git-gutter:deleted-sign " -")
