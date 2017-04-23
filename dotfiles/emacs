@@ -1,4 +1,4 @@
-;; ----------------------------------------------------------------------------- Behaviour
+; ----------------------------------------------------------------------------- Behaviour
 
 ;; Disable the default packaage-manager at startup
 (require 'package)
@@ -49,10 +49,10 @@
 (global-auto-revert-mode); Update buffers whenever the file changes on disk
 (defalias 'yes-or-no-p 'y-or-n-p); Ask for just one letter
 
+;; --------------------------------------------------------------------------- Window Mode
+
 (add-to-list 'default-frame-alist '(font . "Ubuntu Mono")); The default font
 (add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/"); The default theme location
-
-(add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/")
 
 ;; Save and restore the window geometry.
 ;; TODO: This should be on its own file.
@@ -147,32 +147,34 @@
 ;; TODO: Add theming for helm bar.
 (use-package birds-of-paradise-plus-theme
     :ensure t
-    :config
 )
 
 ;; VI rocks! there, I said it.
 (use-package evil
     :ensure t
-    :config
-    ;; TODO: Improve wn this for the love of god.
-    (setq evil-emacs-state-cursor '("red" box))
-    (setq evil-normal-state-cursor '("black" box))
-    (setq evil-visual-state-cursor '("orange" box))
-    (setq evil-insert-state-cursor '("cyan" bar))
-    (setq evil-replace-state-cursor '("blue" bar))
-    (setq evil-operator-state-cursor '("red" hollow))
-    (evil-mode 1)
-    ;; Enable tpope's vim-commentary port
-    (use-package evil-commentary
-        :ensure t
-        :config
-        (add-hook 'prog-mode-hook 'evil-commentary-mode)
-    )
-    ;; Enable tpope's vim-surround port (globally)
-    (use-package evil-surround
-        :ensure t
-        :config
-        (global-evil-surround-mode 1)
+    :config (progn
+        ;; Setup the colors for the cursor on different modes.
+        ;; TODO: Improve these colors.
+        (setq
+            evil-emacs-state-cursor '("red" box)
+            evil-normal-state-cursor '("black" box)
+            evil-visual-state-cursor '("orange" box)
+            evil-insert-state-cursor '("cyan" bar)
+            evil-replace-state-cursor '("blue" bar)
+            evil-operator-state-cursor '("red" hollow)
+        )
+        ;; Enable evil-mode baby!
+        (evil-mode 1)
+        ;; Enable tpope's vim-commentary port
+        (use-package evil-commentary
+            :ensure t
+            :config (add-hook 'prog-mode-hook 'evil-commentary-mode)
+        )
+        ;; Enable tpope's vim-surround port (globally)
+        (use-package evil-surround
+            :ensure t
+            :config (global-evil-surround-mode 1)
+        )
     )
 )
 
@@ -181,15 +183,16 @@
     :ensure t
     :diminish helm-mode ; TODO
     :commands helm-mode ; TODO
-    :config
-    (progn
+    :config (progn
         (require 'helm-config)
-        (setq helm-buffers-fuzzy-matching t)
-        (setq helm-apropos-fuzzy-matching t)
-        (setq helm-M-fuzzy-matching t)
+        ;; Enable fuzzy matching
+        (setq
+            helm-candidate-number-limit 100
+            helm-mode-fuzzy-match t
+            helm-completion-in-region-fuzzy-match t
+        )
         (setq helm-autoresize-mode t)
         (setq helm-buffer-max-length 50)
-        (setq helm-candidate-number-limit 100)
         ;; Try to update faster when hitting RET too quickly
         (setq
             helm-idle-delay 0.0
@@ -207,74 +210,88 @@
         ("C-h C-h" . helm-apropos)
         ("C-c c b" . helm-buffers-list)
         ("M-x" . helm-M-x)
+        ("M-y" . helm-show-kill-ring)
+    )
+)
+
+;; Enable version control using Magit (fugitive alternative)
+(use-package magit
+    :ensure t
+    :bind (
+        ("C-c g s" . magit-status)
     )
 )
 
 ;; Relative line-numbers
 (use-package linum-relative
     :ensure t
-    :config
-    (setq linum-relative-current-symbol ""); Show the curren line-number
-    (setq linum-relative-format "%3s "); Add some spaces to numbers
-    (linum-relative-on)
-    (add-hook 'prog-mode-hook 'linum-mode)
+    :config (progn
+        (setq linum-relative-current-symbol ""); Show the current line-number
+        (setq linum-relative-format "%3s "); Add some spaces to numbers
+        (linum-relative-on)
+        (add-hook 'prog-mode-hook 'linum-mode)
+    )
 )
 
 ;; Indentation lines!
 (use-package highlight-indent-guides
     :ensure t
-    :config
-    (setq highlight-indent-guides-method 'character)
-    (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+    :config (progn
+        (setq highlight-indent-guides-method 'character)
+        (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+    )
 )
 
 ;; Add an indicator at the fill-column position.
 (use-package fill-column-indicator
     :ensure t
-    :config
-    (setq fci-rule-width 1)
-    (setq fci-rule-color "#554040")
-    (add-hook 'prog-mode-hook 'fci-mode)
+    :config (progn
+        (setq fci-rule-width 1)
+        (setq fci-rule-color "#554040")
+        (add-hook 'prog-mode-hook 'fci-mode)
+    )
 )
 
 ;; Smart pairs
 (use-package smartparens
     :ensure t
-    :config
-    (require 'smartparens-config)
-    (add-hook 'prog-mode-hook 'smartparens-mode)
+    :config (progn
+        (require 'smartparens-config)
+        (add-hook 'prog-mode-hook 'smartparens-mode)
     )
+)
 
 ;; Enable JSX syntax support
 (use-package rjsx-mode
     :ensure t
-    :config
-    (with-eval-after-load 'rjsx)
-    (define-key rjsx-mode-map "<" nil); This behaviour made emacs hang, so disabled it.
+    :config (progn
+        (with-eval-after-load 'rjsx)
+        (define-key rjsx-mode-map "<" nil); This behaviour made emacs hang, so disabled it.
+    )
 )
 
 ;; Adds a gutter with the git status of each file (duh)
 (use-package git-gutter
     :ensure t
-    :config
-    (git-gutter:linum-setup)
-    (custom-set-variables
-        '(git-gutter:update-interval 2)
-        '(git-gutter:modified-sign " ~")
-        '(git-gutter:added-sign " +")
-        '(git-gutter:deleted-sign " -")
+    :config (progn
+        (git-gutter:linum-setup)
+        (custom-set-variables
+            '(git-gutter:update-interval 2)
+            '(git-gutter:modified-sign " ~")
+            '(git-gutter:added-sign " +")
+            '(git-gutter:deleted-sign " -")
+        )
+        (set-face-foreground 'git-gutter:modified "#54969a"); gruvbox's blue
+        (set-face-foreground 'git-gutter:added "#a8a521"); grubox's green
+        (set-face-foreground 'git-gutter:deleted "#d83925"); gruvbox's red
+        (add-hook 'prog-mode-hook 'git-gutter-mode)
     )
-    (set-face-foreground 'git-gutter:modified "#54969a"); gruvbox's blue
-    (set-face-foreground 'git-gutter:added "#a8a521"); grubox's green
-    (set-face-foreground 'git-gutter:deleted "#d83925"); gruvbox's red
-    (add-hook 'prog-mode-hook 'git-gutter-mode)
 )
 
 ;; Keeps current line always vertically centered to the screen
 (use-package centered-cursor-mode
     :ensure t
-    :config
-    (add-hook 'prog-mode-hook 'centered-cursor-mode)
+    :config (add-hook 'prog-mode-hook 'centered-cursor-mode)
 )
 
 ;; Log working time on wakatime.com
