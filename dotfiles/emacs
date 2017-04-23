@@ -5,6 +5,7 @@
 (setq package-enable-at-startup nil)
 
 ;; The repositories to fetch packages-from.
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
 ;; This will be added no matter what, so, add it.
