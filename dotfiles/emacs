@@ -143,6 +143,16 @@
 ;; ------------------------------------------------------------------------------ Packages
 
 
+;; Try packages before installing.
+(use-package try
+    :ensure t
+)
+
+(use-package which-key
+    :ensure t
+    :config (which-key-mode)
+)
+
 ;; TODO: Add the gruvbox colors to this theme (use darktooth-theme as reference too)
 ;; TODO: Add theming for helm bar.
 (use-package birds-of-paradise-plus-theme
