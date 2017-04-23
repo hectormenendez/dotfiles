@@ -49,7 +49,7 @@
 (global-auto-revert-mode); Update buffers whenever the file changes on disk
 (defalias 'yes-or-no-p 'y-or-n-p); Ask for just one letter
 
-;; --------------------------------------------------------------------------- Window Mode
+;; ------------------------------------------------------------------------- Window System
 
 (add-to-list 'default-frame-alist '(font . "Ubuntu Mono")); The default font
 (add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/"); The default theme location
@@ -302,6 +302,22 @@
 (use-package centered-cursor-mode
     :ensure t
     :config (add-hook 'prog-mode-hook 'centered-cursor-mode)
+)
+
+;; Allows easier movement from window to window
+(use-package ace-window
+    :ensure t
+    :config (progn
+        (global-set-key [remap other-window] 'ace-window)
+        ;; Set the font-face for the ace-window indicator
+        (custom-set-faces
+            '(aw-leading-char-face ((t (
+                :inherit ace-jump-face-foreground
+                :foreground "#FFFFFF"
+                :height 3.0))
+            ))
+        )
+    )
 )
 
 ;; Log working time on wakatime.com
