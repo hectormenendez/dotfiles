@@ -1,4 +1,6 @@
-; ----------------------------------------------------------------------------- Behaviour
+;-*-Emacs-Lisp-*-
+
+; ------------------------------------------------------------------------ Package Manager
 
 ;; Disable the default packaage-manager at startup
 (require 'package)
