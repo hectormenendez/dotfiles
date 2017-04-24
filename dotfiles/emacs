@@ -19,47 +19,91 @@
     (package-install 'use-package)
 )
 (eval-when-compile (require 'use-package))
+(require 'diminish); for :diminish
+(require 'bind-key); for :bind
 
-;; Save all customisations to this file instead.
-;; TODO: Find out why is not being read by emacs.
-(setq custom-file (expand-file-name "_custom.el" user-emacs-directory))
+;; -------------------------------------------------------------------------------- Server
 
-;; Enable the server so several clients can connect to it.
 (require 'server)
 (unless (server-running-p) (server-start))
 
 ;; -------------------------------------------------------------------------------- Editor
 
-(setq frame-title-format "emacs")
 (setq inhibit-startup-screen 1)
 (setq initial-scratch-message nil); Don't show a message on *scratch* mode
 (setq visible-bell t); don't make sounds, show bells.
+(setq default-fill-column 90); determines where the lines should end. (used by fci)
 
-; be immediate about scrolling
-(setq mouse-wheel-progressive-speed nil)
-;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 5) ((control))))
-
-; Higlight invalid whitespaces
-(require 'whitespace)
-(setq whitespace-style '(face empty tabs trailing))
-(global-whitespace-mode t)
-
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
 (column-number-mode 1); Show the current-column too
 (global-hl-line-mode 1); Highlight the current line
-(global-auto-revert-mode); Update buffers whenever the file changes on disk
+(global-auto-revert-mode 1); Update buffers whenever the file changes on disk
+(global-prettify-symbols-mode 1); Convert lambda to λ
+(show-paren-mode 1); Show matching parenthesis
+
+; Whitespace management
+(require 'whitespace)
+(setq whitespace-style '(face empty tabs trailing))
+(setq indent-tabs-mode nil); Use spaces for tabs
+(setq tab-width 4); set tab width to 4 on every mode
+(global-whitespace-mode t)
+
+;; Version control
+(setq version-control t)
+(setq vc-follow-symlinks t); Don't ask to follow symlinks, just do it.
+
 (defalias 'yes-or-no-p 'y-or-n-p); Ask for just one letter
 
-;; ------------------------------------------------------------------------- Window System
+;; ----------------------------------------------------------------------- File management
 
-(add-to-list 'default-frame-alist '(font . "Ubuntu Mono")); The default font
-(add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/"); The default theme location
+;; Backing up
+(setq make-backup-files t)
+(setq delete-old-versions t)
+(setq backup-directory-alist '(("." . "~/.emacs.d/_backups")))
 
-;; Save and restore the window geometry.
+;; Auto saving (disabled)
+(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/_auto-save/" t)))
+(setq auto-save-default nil)
+
+;; History
+(setq savehist-file "~/.emacs.d/_history")
+(setq savehist-save-minibuffer-history 1)
+(setq history-length t)
+(setq history-delete-duplicates t)
+(savehist-mode 1)
+
+;; Track opened files
+(require 'recentf)
+(setq recentf-save-file "~/.emacs.d/_recentf")
+(setq recentf-filename-handlers '(abbreviate-file-name))
+(recentf-mode 1)
+
+;; Save the cursor position for every file.
+(setq save-place-file "~/.emacs.d/_saveplace")
+(save-place-mode 1)
+
+;; Themes location
+(add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/")
+
+;; Save all customisations to this file instead.
+;; TODO: Find out why is not being read by emacs.
+(setq custom-file (expand-file-name "_custom.el" user-emacs-directory))
+
+;; ------------------------------------------------------------------------------ GUI only
+
+;; Save and restore the frame geometry.
 ;; TODO: This should be on its own file.
 (if window-system (progn
-    ;; Save current geometry to a file.
+    ;; Frame appareance
+    (setq frame-title-format "emacs")
+    (tool-bar-mode -1); Don't show the toolbar
+    (scroll-bar-mode -1); Don't show the scrollbar
+    ;; Font appareance
+    (add-to-list 'default-frame-alist '(font . "Ubuntu Mono")); The default font
+
+    ; (setq mac-right-option-modifier 'none); Right Alt should not be Meta
+
+    ;; Save the frame size and position when exiting, and load'em on boot.
+    ;; TODO: This should be a plugin.
     (defun framegeometry-save () (let
         (
             (framegeometry-left (frame-parameter (selected-frame) 'left))
@@ -84,74 +128,56 @@
             (when (file-writable-p framegeometry-file) (write-file framegeometry-file))
         )
     ))
-    ;; Load geometry from file
     (defun framegeometry-load () (let
         (
             (framegeometry-file (expand-file-name "_framegeometry" user-emacs-directory))
         )
         (when (file-readable-p framegeometry-file) (load-file framegeometry-file))
     ))
-    ;; Enable hooks.
     (add-hook 'after-init-hook 'framegeometry-load)
     (add-hook 'kill-emacs-hook 'framegeometry-save)
+    ;; Use common key-bindings for zooming the frame.
+    ;; TODO: Find a way to NOT changing the frame size, but just the fonts.
+    (use-package zoom-frm
+        :ensure t
+	:config (progn
+	    ;; TODO: this doesn't do anything apparently.
+	    (setq zoom-frame/buffer 'buffer)
+	    ;; Disable default text-scaling (it messes up with FCI)
+	    (define-key text-scale-adjust (kbd "C-x C-0") nil)
+	    (define-key text-scale-adjust (kbd "C-x C-=") nil)
+	    (define-key text-scale-adjust (kbd "C-x C-+") nil)
+	    (define-key text-scale-adjust (kbd "C-x C--") nil)
+	)
+	:bind (
+	    ("M-0" . zoom-frm-unzoom)
+	    ("M-+" . zoom-frm-in)
+	    ("M--" . zoom-frm-out)
+	)
+    )
+
 ))
-
-;; -------------------------------------------------------------------------------- DarwiN
-
-(if window-system (progn
-    (setq mac-right-option-modifier 'none); Right Alt should not be Meta
-    (global-set-key (kbd "s-+") 'text-scale-increase)
-    (global-set-key (kbd "s--") 'text-scale-decrease)
-))
-
-;; ------------------------------------------------------------------------------ Defaults
-
-(setq-default indent-tabs-mode nil); Use spaces for tabs
-(setq-default tab-width 4); set tab width to 4 on every mode
-(setq-default fill-column 90); The number of chars before wrapping (used by fci)
-(show-paren-mode 1)
-
-;; ----------------------------------------------------------------------- Version Control
-
-(setq version-control t)
-(setq vc-follow-symlinks t); Don't ask to follow symlinks, just do it.
-
-;; ----------------------------------------------------------------------- File management
-
-;; Backing up
-(setq make-backup-files t)
-(setq delete-old-versions t)
-(setq backup-directory-alist '(("." . "~/.emacs.d/_backups")))
-
-;; Auto saving (disabled)
-(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/_auto-save/" t)))
-(setq auto-save-default nil)
-
-;; History
-(setq savehist-file "~/.emacs.d/_history")
-(setq savehist-save-minibuffer-history 1)
-(setq history-length t)
-(setq history-delete-duplicates t)
-(savehist-mode 1)
-
-;; Save the cursor position for every file.
-(setq save-place-file "~/.emacs.d/_saveplace")
-(setq save-place t)
-(require 'saveplace)
-
-(require 'diminish); TODO: Findout what this does.
-(require 'bind-key); TODO: Findout what this does.
 
 ;; ------------------------------------------------------------------------------ Packages
 
+;; Some packages use this, just in case, make it available
+(use-package s :ensure t)
 
 ;; Try packages before installing.
-(use-package try
+(use-package try :ensure t)
+
+;; Hide minor modes from line-mode (used by 'use-package')
+(use-package diminish
     :ensure t
+    :config (progn
+        (diminish 'global-whitespace-mode)
+    )
 )
 
+;; Show all available mas when key is pressed. (after a timeout)
 (use-package which-key
     :ensure t
+    :diminish which-key-mode
     :config (which-key-mode)
 )
 
@@ -175,16 +201,20 @@
             evil-replace-state-cursor '("blue" bar)
             evil-operator-state-cursor '("red" hollow)
         )
+        ;; Have <tab> to work as it does on Vim
+        (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
         ;; Enable evil-mode baby!
         (evil-mode 1)
         ;; Enable tpope's vim-commentary port
         (use-package evil-commentary
             :ensure t
+	    :diminish evil-commentary-mode
             :config (add-hook 'prog-mode-hook 'evil-commentary-mode)
         )
         ;; Enable tpope's vim-surround port (globally)
         (use-package evil-surround
             :ensure t
+	    :diminish evil-surround-mode
             :config (global-evil-surround-mode 1)
         )
     )
@@ -214,15 +244,19 @@
             helm-M-x-requires-pattern nil
             helm-ff-skip-boring-files t
         )
-        (ido-mode -1); Disable the "I Do" mode, we have helm for that now.
+        ; Disable the "I Do" mode, we have helm for that now.
+        (ido-mode -1)
         (helm-mode 1)
     )
     :bind (
-        ("C-c C-c" . helm-mini)
-        ("C-h C-h" . helm-apropos)
-        ("C-c c b" . helm-buffers-list)
+        ("C-c C-c" . helm-mini); Find all
+        ("C-c C-h" . helm-apropos); Find help
+        ("C-c C-b" . helm-buffers-list)
+	("C-c C-f" . helm-find-files)
+	("C-c f" . helm-find)
         ("M-x" . helm-M-x)
         ("M-y" . helm-show-kill-ring)
+        ("C-s" . helm-occur); Find ocurrences of pattern
     )
 )
 
@@ -231,12 +265,35 @@
     :ensure t
     :bind (
         ("C-c g s" . magit-status)
+	("C-c g c" . magit-commit)
+    )
+)
+;; Autocompletion
+(use-package company
+    :ensure t
+    :diminish company-mode
+    :config (progn
+        (add-hook 'prog-mode-hook 'company-mode)
     )
 )
 
+;; Generate a traversable undo history for files
+(use-package undo-tree
+    :ensure t
+    :diminish undo-tree-mode
+    :config (progn
+        (setq undo-tree-auto-save-history t)
+        (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/_undotree")))
+	(global-undo-tree-mode 1)
+    )
+    :bind (
+        ("C-x u" . undo-tree-visualize)
+    )
+)
 ;; Relative line-numbers
 (use-package linum-relative
     :ensure t
+    :diminish linum-relative-mode
     :config (progn
         (setq linum-relative-current-symbol ""); Show the current line-number
         (setq linum-relative-format "%3s "); Add some spaces to numbers
@@ -248,15 +305,23 @@
 ;; Indentation lines!
 (use-package highlight-indent-guides
     :ensure t
+    :diminish highlight-indent-guides-mode
     :config (progn
         (setq highlight-indent-guides-method 'character)
         (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
     )
 )
 
+;; Try to guess the current file indentation and set emacs to follow it
+(use-package dtrt-indent
+    :ensure t
+    :config (add-hook 'prog-mode-hook 'dtrt-indent-mode)
+)
+
 ;; Add an indicator at the fill-column position.
 (use-package fill-column-indicator
     :ensure t
+    :diminish fci-mode
     :config (progn
         (setq fci-rule-width 1)
         (setq fci-rule-color "#554040")
@@ -267,28 +332,31 @@
 ;; Smart pairs
 (use-package smartparens
     :ensure t
+    :diminish smartparens-mode
     :config (progn
         (require 'smartparens-config)
         (add-hook 'prog-mode-hook 'smartparens-mode)
     )
 )
 
-;; Enable JSX syntax support
-(use-package rjsx-mode
+;; Use different colors for parenthesis to ease matching
+(use-package rainbow-delimiters
     :ensure t
     :config (progn
-        (with-eval-after-load 'rjsx)
-        (define-key rjsx-mode-map "<" nil); This behaviour made emacs hang, so disabled it.
+        (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
     )
 )
 
 ;; Adds a gutter with the git status of each file (duh)
+;; TODO: the gutter doesn't update when loading files
 (use-package git-gutter
     :ensure t
+    :diminish git-gutter-mode
     :config (progn
-        (git-gutter:linum-setup)
+        (git-gutter:linum-setup); play along with linum-mode
+	;; Customize symbols and colors
         (custom-set-variables
-            '(git-gutter:update-interval 2)
+            '(git-gutter:update-interval 0)
             '(git-gutter:modified-sign " ~")
             '(git-gutter:added-sign " +")
             '(git-gutter:deleted-sign " -")
@@ -296,6 +364,14 @@
         (set-face-foreground 'git-gutter:modified "#54969a"); gruvbox's blue
         (set-face-foreground 'git-gutter:added "#a8a521"); grubox's green
         (set-face-foreground 'git-gutter:deleted "#d83925"); gruvbox's red
+	;; for some reason the key-bindings cannot be set using use-packages's bind.
+	(global-set-key (kbd "C-c g n") 'git-gutter:next-hunk)
+	(global-set-key (kbd "C-c g p") 'git-gutter:previous-hunk)
+	(global-set-key (kbd "C-c g +") 'git-gutter:stage-hunk)
+	(global-set-key (kbd "C-c g -") 'git-gutter:revert-hunk)
+	;; when to update
+	(add-to-list 'git-gutter:update-hooks 'focus-in-hook)
+	(add-to-list 'git-gutter:update-commands 'other-window)
         (add-hook 'prog-mode-hook 'git-gutter-mode)
     )
 )
@@ -303,12 +379,14 @@
 ;; Keeps current line always vertically centered to the screen
 (use-package centered-cursor-mode
     :ensure t
+    :diminish centered-cursor-mode
     :config (add-hook 'prog-mode-hook 'centered-cursor-mode)
 )
 
 ;; Allows easier movement from window to window
 (use-package ace-window
     :ensure t
+    :diminish ace-window-mode
     :config (progn
         (global-set-key [remap other-window] 'ace-window)
         ;; Set the font-face for the ace-window indicator
@@ -322,10 +400,62 @@
     )
 )
 
+;; A Powerline replacement.
+;; TODO: The colors for evil-mode look awful, replace this with smartline maybe?
+(use-package telephone-line
+    :ensure t
+    :config (progn
+        ;; The left segments
+        (setq telephone-line-lhs '(
+            (evil . (telephone-line-evil-tag-segment)); Evil-mode status
+            (accent . (telephone-line-vc-segment)); Version control status
+            (nil . (telephone-line-buffer-segment)); Buffer info
+        ))
+        ;; The right segments
+        (setq telephone-line-rhs '(
+            (nil . (
+                telephone-line-misc-info-segment
+                telephone-line-airline-position-segment
+            ))
+            (accent . (
+                telephone-line-minor-mode-segment
+                telephone-line-major-mode-segment
+            ))
+        ))
+        (telephone-line-mode 1)
+    )
+)
+
 ;; Log working time on wakatime.com
-;; TODO:  install wakatime-cli via pip and see if  it works.
-;; (use-package wakatime-mode
-;;     :ensure t
-;;     :config
-;;     (global-wakatime-mode)
-;; )
+(if (file-exists-p "/usr/local/bin/wakatime") (use-package wakatime-mode
+    :ensure t
+    :diminish wakatime-mode "w"
+    :config (progn
+	(setq
+	    wakatime-cli-path "/usr/local/bin/wakatime"
+	    wakatime-python-bin "/usr/local/bin/python"
+	)
+	(global-wakatime-mode 1)
+    )
+))
+
+;; Highlight TODOs
+;; TODO: Mode triggers until first calling
+(use-package hl-todo
+    :ensure t
+    :config (global-hl-todo-mode t)
+    :bind (
+        ("C-c t n" . hl-todo-next)
+	("C-c t p" . hl-todo-previous)
+	("C-c C-t" . hl-todo-occur)
+    )
+)
+
+;; Enable JSX syntax support
+(use-package rjsx-mode
+    :ensure t
+    :config (progn
+        (with-eval-after-load 'rjsx)
+        (define-key rjsx-mode-map "<" nil); This behaviour made emacs hang, so disabled it
+    )
+)
