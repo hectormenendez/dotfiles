@@ -217,6 +217,16 @@
 	    :diminish evil-surround-mode
             :config (global-evil-surround-mode 1)
         )
+        ;; Enable the <leader> key like in Vim
+        (use-package evil-leader
+            :ensure t
+            :config (progn
+                (evil-leader/set-leader "SPC")
+                (evil-leader/set-key "|" 'split-window-horizontally)
+                (evil-leader/set-key "-" 'split-window-vertically)
+                (global-evil-leader-mode)
+            )
+        )
     )
 )
 
@@ -263,9 +273,14 @@
 ;; Enable version control using Magit (fugitive alternative)
 (use-package magit
     :ensure t
-    :bind (
-        ("C-c g s" . magit-status)
-	("C-c g c" . magit-commit)
+    :config (progn
+        (evil-leader/set-key "gs" 'magit-status)
+        (evil-leader/set-key "gc" 'magit-commit)
+        (evil-leader/set-key "gp" 'magit-push)
+        (evil-leader/set-key "g+" 'git-gutter:stage-hunk)
+        (evil-leader/set-key "g-" 'git-gutter:revert-hunk)
+        (evil-leader/set-key "g}" 'git-gutter:next-hunk)
+        (evil-leader/set-key "g{" 'git-gutter:previous-hunk)
     )
 )
 ;; Autocompletion
