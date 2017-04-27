@@ -283,6 +283,7 @@
         (evil-leader/set-key "g{" 'git-gutter:previous-hunk)
     )
 )
+
 ;; Autocompletion
 (use-package company
     :ensure t
@@ -370,23 +371,18 @@
     :config (progn
         (git-gutter:linum-setup); play along with linum-mode
 	;; Customize symbols and colors
-        (custom-set-variables
-            '(git-gutter:update-interval 0)
-            '(git-gutter:modified-sign " ~")
-            '(git-gutter:added-sign " +")
-            '(git-gutter:deleted-sign " -")
-        )
         (set-face-foreground 'git-gutter:modified "#54969a"); gruvbox's blue
         (set-face-foreground 'git-gutter:added "#a8a521"); grubox's green
         (set-face-foreground 'git-gutter:deleted "#d83925"); gruvbox's red
-	;; for some reason the key-bindings cannot be set using use-packages's bind.
-	(global-set-key (kbd "C-c g n") 'git-gutter:next-hunk)
-	(global-set-key (kbd "C-c g p") 'git-gutter:previous-hunk)
-	(global-set-key (kbd "C-c g +") 'git-gutter:stage-hunk)
-	(global-set-key (kbd "C-c g -") 'git-gutter:revert-hunk)
 	;; when to update
+        (setq git-gutter:update-interval 2); Update git gutter after n secs idle
+        (setq git-gitter:ask-p nil); Don't ask confirmation when committing or reverting
+        (setq git-gutter:modified-sign " ~")
+        (setq git-gutter:added-sign " +")
+        (setq git-gutter:deleted-sign " -")
 	(add-to-list 'git-gutter:update-hooks 'focus-in-hook)
-	(add-to-list 'git-gutter:update-commands 'other-window)
+        (add-to-list 'git-gutter:update-hooks 'magit-post-refresh-hook)
+        (add-to-list 'git-gutter:update-hooks 'git-gutter:post-command-hook)
         (add-hook 'prog-mode-hook 'git-gutter-mode)
     )
 )
@@ -396,6 +392,20 @@
     :ensure t
     :diminish centered-cursor-mode
     :config (add-hook 'prog-mode-hook 'centered-cursor-mode)
+)
+
+;; Show a file-tree ala Vim
+(use-package neotree
+    :ensure t
+    :config (progn
+        (evil-leader/set-key "tn" 'neotree-toggle)
+        ;; Allow to use evil mode with neotree
+        (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
+        (evil-define-key 'normal neotree-mode-map (kbd "-") 'neotree-enter-horizontal-split)
+        (evil-define-key 'normal neotree-mode-map (kbd "|") 'neotree-enter-vertical-split)
+        ;; (evil-define-ket 'normal neotree-mode-map (kbd "|") 'neotree-)
+        (setq neo-smart-open t); let neotree find the current file and jump to it.
+    )
 )
 
 ;; Allows easier movement from window to window
