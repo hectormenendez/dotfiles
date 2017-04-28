@@ -222,8 +222,6 @@
             :ensure t
             :config (progn
                 (evil-leader/set-leader "SPC")
-                (evil-leader/set-key "|" 'split-window-horizontally)
-                (evil-leader/set-key "-" 'split-window-vertically)
                 (global-evil-leader-mode)
             )
         )
@@ -413,7 +411,24 @@
     :ensure t
     :diminish ace-window-mode
     :config (progn
+        ;; Replace "other-window"
         (global-set-key [remap other-window] 'ace-window)
+        ;; Disable the usual bindings for window management
+        (global-set-key (kbd "C-x 0") nil); closes window
+        (global-set-key (kbd "C-x 1") nil); delete other windows
+        (global-set-key (kbd "C-x 2") nil); splits window horizontally
+        (global-set-key (kbd "C-x 3") nil); splits window vertically
+        ;; Key bindings for evil-mode (window management related)
+        (evil-leader/set-key "|" 'split-window-horizontally)
+        (evil-leader/set-key "-" 'split-window-vertically)
+        (evil-leader/set-key "ww" 'ace-window)
+        (evil-leader/set-key "wh" 'windmove-left)
+        (evil-leader/set-key "wj" 'windmove-down)
+        (evil-leader/set-key "wk" 'windmove-up)
+        (evil-leader/set-key "wl" 'windmove-right)
+        (evil-leader/set-key "wq" 'delete-window)
+        (evil-leader/set-key "wo" 'delete-other-windows)
+        (evil-leader/set-key "w=" 'balance-windows)
         ;; Set the font-face for the ace-window indicator
         (custom-set-faces
             '(aw-leading-char-face ((t (
