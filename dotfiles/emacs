@@ -93,6 +93,8 @@
 ;; Save and restore the frame geometry.
 ;; TODO: This should be on its own file.
 (if window-system (progn
+    ;; Allow the frame to become full-screen with the usual key-binding
+    (global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
     ;; Frame appareance
     (setq frame-title-format "emacs")
     (tool-bar-mode -1); Don't show the toolbar
