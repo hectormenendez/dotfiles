@@ -139,22 +139,20 @@
     (add-hook 'after-init-hook 'framegeometry-load)
     (add-hook 'kill-emacs-hook 'framegeometry-save)
     ;; Use common key-bindings for zooming the frame.
-    ;; TODO: Find a way to NOT changing the frame size, but just the fonts.
     (use-package zoom-frm
         :ensure t
 	:config (progn
 	    ;; TODO: this doesn't do anything apparently.
 	    (setq zoom-frame/buffer 'buffer)
 	    ;; Disable default text-scaling (it messes up with FCI)
-	    (define-key text-scale-adjust (kbd "C-x C-0") nil)
-	    (define-key text-scale-adjust (kbd "C-x C-=") nil)
-	    (define-key text-scale-adjust (kbd "C-x C-+") nil)
-	    (define-key text-scale-adjust (kbd "C-x C--") nil)
-	)
-	:bind (
-	    ("M-0" . zoom-frm-unzoom)
-	    ("M-+" . zoom-frm-in)
-	    ("M--" . zoom-frm-out)
+            (global-set-key (kbd "C-x C-0") nil)
+            (global-set-key (kbd "C-x C-=") nil)
+            (global-set-key (kbd "C-x C-+") nil)
+            (global-set-key (kbd "C-x C--") nil)
+            ;; Now setup the bindings with the zoom plugin
+            (global-set-key (kbd "M-0") 'zoom-frm-unzoom)
+            (global-set-key (kbd "M-+") 'zoom-frm-in)
+            (global-set-key (kbd "M--") 'zoom-frm-out)
 	)
     )
 
