@@ -374,7 +374,7 @@
         (set-face-foreground 'git-gutter:deleted "#d83925"); gruvbox's red
 	;; when to update
         (setq git-gutter:update-interval 2); Update git gutter after n secs idle
-        (setq git-gitter:ask-p nil); Don't ask confirmation when committing or reverting
+        (setq git-gutter:ask-p nil); Don't ask confirmation when committing or reverting
         (setq git-gutter:modified-sign " ~")
         (setq git-gutter:added-sign " +")
         (setq git-gutter:deleted-sign " -")
