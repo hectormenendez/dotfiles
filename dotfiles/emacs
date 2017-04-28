@@ -252,13 +252,15 @@
             helm-M-x-requires-pattern nil
             helm-ff-skip-boring-files t
         )
+        (evil-leader/set-key "SPC" 'helm-M-x)
+        (evil-leader/set-key "TAB" 'helm-mini)
         ; Disable the "I Do" mode, we have helm for that now.
         (ido-mode -1)
         (helm-mode 1)
     )
     :bind (
         ("C-c C-c" . helm-mini); Find all
-        ("C-c C-h" . helm-apropos); Find help
+        ("C-h C-h" . helm-apropos); Find help
         ("C-c C-b" . helm-buffers-list)
 	("C-c C-f" . helm-find-files)
 	("C-c f" . helm-find)
