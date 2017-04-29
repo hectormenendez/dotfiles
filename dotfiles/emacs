@@ -286,6 +286,7 @@
         (evil-leader/set-key "gs" 'magit-status)
         (evil-leader/set-key "gc" 'magit-commit)
         (evil-leader/set-key "gp" 'magit-push)
+        (evil-leader/set-key "gd" 'vc-diff)
         (evil-leader/set-key "g+" 'git-gutter:stage-hunk)
         (evil-leader/set-key "g-" 'git-gutter:revert-hunk)
         (evil-leader/set-key "g}" 'git-gutter:next-hunk)
