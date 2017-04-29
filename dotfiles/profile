@@ -9,6 +9,14 @@ _path=`echo $_self | xargs dirname`
 # Include common utilities
 source $_path/../lib/utils.sh
 
+if isDarwin; then
+    _path_brew=`brew --prefix`
+    _path_core=$_path_brew/opt/coreutils
+    _path_find=$_path_brew/opt/findutils
+    _path_fzf=$_path_brew/opt/fzf
+    _path_nvm=$_path_brew/opt/nvm
+fi
+
 # ---------------------------------------------------------------------------- ENVIRONMENT
 
 # get these vars from $_path/private/env (so their values aren't published on git)
@@ -26,103 +34,93 @@ export PATH=$DOTFILES_BIN:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin
 export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"    # Alias for git
 export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"  # Alias for git
 
+# Fuzzy finder settings
 export FZF_TMUX=0                                # don't use a split in tmyx for FZF
-export FZF_DEFAULT_COMMAND='ag -g ""'            # make FZF parse .gitignore .hgignore and svn:ignore
+export FZF_DEFAULT_COMMAND='ag -g ""'            # parse .gitignore .hgignore, etc.
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND" # Same as above but for CtrlT
 
-export HISTCONTROL=erasedups:ignorespace                                                # remove history duplicates (ignoring spacing)
-export PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND" # fix history on each command
+# Better history storing
+export HISTCONTROL=erasedups:ignorespace
+export PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 
 # Mac-only
 if isDarwin; then
-    # Use coreutils instad of native binaries
-    export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
-    export MANPATH=$(brew --prefix coreutils)/libexec/gnuman:$(brew --prefix findutils)/libexec/bin:/usr/share/man:$MANPATH
-    # Enable Fussy file finder
-    export PATH=$(brew --prefix fzf)/bin:$PATH
-    export MANPATH=$(brew --prefix fzf)/share/man:$MANPATH
-fi
-
-# Command prompt
-if [ -n "$TMUX" ]; then
-    # Everytime the prompt is set, run a command that updates location on tmux-powerline
-    export PS1="\e[01;38;05;232;48;05;15m \\$\[\e[m\] "'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
-    export TERM=256color-tmux
-else
-    export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
+    export PATH=$_path_core/libexec/gnubin:$_path_fzf/bin:$PATH
+    export MANPATH=$_path_core/libexec/gnuman:$_path_find/libexec/bin:$MANPATH
     export TERM=256color-iterm
 fi
 
+export PS1='\[\033[01;30m\]\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
+
 # ------------------------------------------------------------------------------ BEHAVIOUR
 
-shopt -s checkwinsize                                        # check winsize after each command and adjust screen automatically,
-shopt -s nocaseglob                                          # case insensitive globbing
-shopt -s cdspell                                             # Autocorrect typos in path names when using cd
-shopt -s histappend                                          # don't overwrite history on login, append to it.
-set -o vi                                                    # Enable vi mode
-umask 077                                                    # Set the creation mask, so files are created with 600 and dirs as 700
-eval `dircolors $HOME/.dir_colors`                           # colorize files by type
+shopt -s checkwinsize # check winsize after each command and adjust screen automatically,
+shopt -s nocaseglob # case insensitive globbing
+shopt -s cdspell # Autocorrect typos in path names when using cd
+shopt -s histappend # don't overwrite history on login, append to it.
+set -o vi # Enable vi mode
+umask 077 # Set the creation mask, so files are created with 600 and dirs as 700
+eval `dircolors $HOME/.dir_colors` # colorize files by type
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)" # enable lesspipe
 
 # ----------------------------------------------------------------------------- EXTENSIONS
 
-# If an alias file exists, load it.
-[ -f $HOME/.alias ] && source $HOME/.alias
+# Aliases
+[ -s $HOME/.alias ] && source $HOME/.alias
 
-# Prepend git branch name on command prompt. (if not on TMUX)
-if [ ! -n "$TMUX" ]; then
-    [ -r "$DOTFILES_LIB/gitprompt.sh" ] && source "$DOTFILES_LIB/gitprompt.sh"
-fi
+# Prepend git branch name on command prompt.
+[ -r "$DOTFILES_LIB/gitprompt.sh" ] && source "$DOTFILES_LIB/gitprompt.sh"
 
 # MacOnly
 if isDarwin; then
 
-    [ -f $(brew --prefix)/etc/bash_completion ] && source $(brew --prefix)/etc/bash_completion
-    [ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
+    # Enable bash completion
+    [ -f $_path_brew/etc/bash_completion ] && source $_path_brew/etc/bash_completion
 
-    if [ ! -z "$(brew --prefix fzf)" ]; then
-        # Enable Fuzzy Search
-        source "$(brew --prefix fzf)/shell/completion.bash" 2> /dev/null
-        source "$(brew --prefix fzf)/shell/key-bindings.bash"
+    # Enable NVM
+    [ -s $_path_brew/nvm.sh ] && source $_path_brew/nvm.sh
+
+    # Enable Fuzzy Search
+    if [ ! -z $_path_fzf ]; then
+        source $_path_fzf/shell/completion.bash 2> /dev/null
+        source $_path_fzf/shell/key-bindings.bash
     fi
 
     # Enable iterm2's shell integration
-    test -e "$HOME/.iterm/shell_integration.bash" && . "$HOME/.iterm/shell_integration.bash"
+    [ -f $HOME/.iterm2_shell_integration.bash ] &&\
+	source $HOME/.iterm2_shell_integration.bash
 
     # Enables gruvbox's color palette to exactly match theme colors
-    source ~/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
+    source $HOME/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
 
 elif isLinux; then
 
     # Load NVM if available
-    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+    [ -s $NVM_DIR/nvm.sh ] && source $NVM_DIR/nvm.sh
 
     # Enable keybindings for Fuzzy Search
     [ -f /etc/profile.d/fzf.bash ] && source /etc/profile.d/fzf.bash
 
     # Enables gruvbox's color palette to exactly match theme colors
-    source ~/.vim/bundle/gruvbox/gruvbox_256palette.sh
+    source $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
 
 fi
 
-
 # ---------------------------------------------------------------------------------- TASKS
-
 
 # cleanup the history file, by manually removing dups
 tac $HISTFILE | awk '!x[$0]++' | tac | sponge $HISTFILE
 
 # Add tab completions for SSH hostnames based on $HOME/.ssh/config
-[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" $HOME/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" scp sftp ssh;
-
+[ -e $HOME/.ssh/config ] &&\
+    complete\
+	-o "default"\
+	-o "nospace"\
+	-W "$(grep "^Host" $HOME/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')"\
+	scp sftp ssh;
 
 # -------------------------------------------------------------------------------- CLEANUP
 
-
-# forces internal script to resource utils
 unset DOTFILES_UTILS
-
-# remove internals
 unset _self
 unset _path
-
