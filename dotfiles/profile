@@ -14,7 +14,6 @@ if isDarwin; then
     _path_core=$_path_brew/opt/coreutils
     _path_find=$_path_brew/opt/findutils
     _path_fzf=$_path_brew/opt/fzf
-    _path_nvm=$_path_brew/opt/nvm
 fi
 
 # ---------------------------------------------------------------------------- ENVIRONMENT
@@ -29,7 +28,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=$LC_ALL
 
 export NVM_DIR=$HOME/.nvm
-export PATH=$DOTFILES_BIN:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=$DOTFILES_BIN:$NVM_DIR/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 
 export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"    # Alias for git
 export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"  # Alias for git
@@ -71,14 +70,15 @@ eval `dircolors $HOME/.dir_colors` # colorize files by type
 # Prepend git branch name on command prompt.
 [ -r "$DOTFILES_LIB/gitprompt.sh" ] && source "$DOTFILES_LIB/gitprompt.sh"
 
+# Node version manager
+[ ! -d $NVM_DIR ] && git clone https://github.com/creationix/nvm $NVM_DIR
+[ -f $NVM_DIR/nvm.sh ] && source $NVM_DIR/nvm.sh
+
 # MacOnly
 if isDarwin; then
 
     # Enable bash completion
     [ -f $_path_brew/etc/bash_completion ] && source $_path_brew/etc/bash_completion
-
-    # Enable NVM
-    [ -s $_path_brew/nvm.sh ] && source $_path_brew/nvm.sh
 
     # Enable Fuzzy Search
     if [ ! -z $_path_fzf ]; then
@@ -94,9 +94,6 @@ if isDarwin; then
     source $HOME/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
 
 elif isLinux; then
-
-    # Load NVM if available
-    [ -s $NVM_DIR/nvm.sh ] && source $NVM_DIR/nvm.sh
 
     # Enable keybindings for Fuzzy Search
     [ -f /etc/profile.d/fzf.bash ] && source /etc/profile.d/fzf.bash
