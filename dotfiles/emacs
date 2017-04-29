@@ -411,8 +411,6 @@
         (evil-leader/set-key "tn" 'neotree-toggle)
         ;; Allow to use evil mode with neotree
         (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
-        (evil-define-key 'normal neotree-mode-map (kbd "-") 'neotree-enter-horizontal-split)
-        (evil-define-key 'normal neotree-mode-map (kbd "|") 'neotree-enter-vertical-split)
         ;; (evil-define-ket 'normal neotree-mode-map (kbd "|") 'neotree-)
         (setq neo-smart-open t); let neotree find the current file and jump to it.
     )
