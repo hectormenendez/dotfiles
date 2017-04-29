@@ -241,8 +241,7 @@
 ;; The CtrlP of Emacs, just better.
 (use-package helm
     :ensure t
-    :diminish helm-mode ; TODO
-    :commands helm-mode ; TODO
+    :diminish helm-mode
     :config (progn
         (require 'helm-config)
         ;; Enable fuzzy matching
