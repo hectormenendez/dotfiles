@@ -180,6 +180,7 @@
     :ensure t
     :config (progn
         (diminish 'global-whitespace-mode)
+        (diminish 'auto-revert-mode)
     )
 )
 
