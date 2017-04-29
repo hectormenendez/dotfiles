@@ -1,18 +1,9 @@
-unalias -a
-
 # Allow aliases to be run with sudo
 alias sudo='sudo '
 
 # Navigation
 alias ..='cd ..'
-alias .s='cd Source'
 alias -- --='cd -'
-
-# get rid of vi, use vi as vim, and use nvim as vim
-alias tx='tmux -f ~/.tmux/tmux.conf'
-alias txn='tx new-session -s'
-alias txa='tx attach'
-alias txl='tx ls'
 
 alias ssh='TERM=xterm ssh'
 
@@ -22,63 +13,23 @@ alias grep='grep --color=auto'
 # LS specific
 alias ls="ls --classify --tabsize=0 --literal --color=auto --show-control-chars --human-readable --group-directories-first"
 alias la="ls -lA"
-alias cl="clear && la"
 
 # Erase the screen and show the file listing.
 alias c="clear"
 alias a="alias -p"
 
-# GIT aliases
-alias gls="git ls" # An alias of an alias, you can't get any lazier than that
-alias gst="git st -s"
-alias gdf="git diff"
-
-# NPM aliases
-alias nr="npm r"
-alias ni="npm i"
-alias nln="npm link"
-alias nun="npm unlink"
-alias nlg="npm ls --depth=0 -g -s"
-alias nls="npm ls --depth=0 -s"
-alias nlsd="npm ls --depth=0 --dev"
-alias nlsp="npm ls --depth=0 --production"
-alias nip="npm i -S"
-alias nid="npm i -D"
-alias nrp="npm r -S"
-alias nrd="npm r -D"
-
 # These are for mac only
 if isDarwin; then
-
-	# Text editors
-	alias cat="ccat"
-	alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
-	alias atom="/Applications/Atom.app/Contents/Resources/app/atom.sh"
-
-	# Native JS REPL
-	jscbin="/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources/jsc";
-	[ -e "${jscbin}" ] && alias js="${jscbin}";
-	unset jscbin;
-
-	alias os-upgrade="sudo softwareupdate -i -a; brew update; brew upgrade --all; brew cleanup; npm install npm@latest -g; npm update -g"
-
-	alias os-flush-cache="dscacheutil -flushcache && killall -HUP mDNSResponder"
-	alias os-flush-launch="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
-	alias os-flush-dstore="sudo find . -type f -name '*.DS_Store' -ls -delete"
-	alias os-flush-trash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
-
-	alias os-files-show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
-	alias os-files-hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
-
-	alias os-icons-show="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
-	alias os-icons-hide="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
-
-	alias os-spotlight-on="sudo mdutil -a -i on"
-	alias os-spotlight-off="sudo mdutil -a -i off"
-
-	alias os-audio-mute="osascript -e 'set volume output muted true'"
-	alias os-audio-max="osascript -e 'set volume 7'"
-
-	alias os-lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
-	alias os-reload="exec $SHELL -l"
+    # Text editors
+    alias cat="ccat"
+    # Native JS REPL
+    jscbin="/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources/jsc";
+    [ -e "${jscbin}" ] && alias js="${jscbin}";
+    unset jscbin;
+    # OS handling
+    alias os-upgrade="sudo softwareupdate -i -a; brew update; brew upgrade --all; brew cleanup; npm install npm@latest -g; npm update -g"
+    alias os-flush-cache="dscacheutil -flushcache && killall -HUP mDNSResponder"
+    alias os-flush-launch="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
+    alias os-flush-dstore="sudo find . -type f -name '*.DS_Store' -ls -delete"
+    alias os-flush-trash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
 fi
