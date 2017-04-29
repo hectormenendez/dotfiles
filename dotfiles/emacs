@@ -158,6 +158,15 @@
 
 ))
 
+;; ---------------------------------------------------------------------------- MacOS only
+
+;; Make sure Mac's $PATH is available to emacs
+(use-package exec-path-from-shell
+    :if (memq window-system '(mac ns))
+    :ensure t
+    :config (exec-path-from-shell-initialize)
+)
+
 ;; ------------------------------------------------------------------------------ Packages
 
 ;; Some packages use this, just in case, make it available
