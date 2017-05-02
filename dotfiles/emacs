@@ -32,7 +32,7 @@
 (setq inhibit-startup-screen 1)
 (setq initial-scratch-message nil); Don't show a message on *scratch* mode
 (setq visible-bell t); don't make sounds, show bells.
-(setq default-fill-column 90); determines where the lines should end. (used by fci)
+(setq custom-safe-themes t); Don't ask for confirmation when loading themes
 
 (column-number-mode 1); Show the current-column too
 (global-hl-line-mode 1); Highlight the current line
@@ -44,7 +44,6 @@
 (require 'whitespace)
 (setq whitespace-style '(face empty tabs trailing))
 (setq indent-tabs-mode nil); Use spaces for tabs
-(setq tab-width 4); set tab width to 4 on every mode
 (global-whitespace-mode t)
 
 ;; Version control
@@ -52,6 +51,9 @@
 (setq vc-follow-symlinks t); Don't ask to follow symlinks, just do it.
 
 (defalias 'yes-or-no-p 'y-or-n-p); Ask for just one letter
+
+(setq-default fill-column 90); determines where the lines should end. (used by fci)
+(setq-default tab-width 4); set tab width to 4 on every mode
 
 ;; ----------------------------------------------------------------------- File management
 
@@ -65,6 +67,7 @@
 (setq auto-save-default nil)
 
 ;; History
+(require 'savehist)
 (setq savehist-file "~/.emacs.d/_history")
 (setq savehist-save-minibuffer-history 1)
 (setq history-length t)
@@ -78,6 +81,7 @@
 (recentf-mode 1)
 
 ;; Save the cursor position for every file.
+(require 'saveplace)
 (setq save-place-file "~/.emacs.d/_saveplace")
 (save-place-mode 1)
 
@@ -141,10 +145,10 @@
     ;; Use common key-bindings for zooming the frame.
     (use-package zoom-frm
         :ensure t
-	:config (progn
-	    ;; TODO: this doesn't do anything apparently.
-	    (setq zoom-frame/buffer 'buffer)
-	    ;; Disable default text-scaling (it messes up with FCI)
+        :config (progn
+            ;; TODO: this doesn't do anything apparently.
+            (setq zoom-frame/buffer 'buffer)
+            ;; Disable default text-scaling (it messes up with FCI)
             (global-set-key (kbd "C-x C-0") nil)
             (global-set-key (kbd "C-x C-=") nil)
             (global-set-key (kbd "C-x C-+") nil)
@@ -153,9 +157,10 @@
             (global-set-key (kbd "M-0") 'zoom-frm-unzoom)
             (global-set-key (kbd "M-+") 'zoom-frm-in)
             (global-set-key (kbd "M--") 'zoom-frm-out)
-	)
+        )
     )
-
+    ;; Show actual colors on color names
+    (use-package rainbow-mode :ensure t)
 ))
 
 ;; ---------------------------------------------------------------------------- MacOS only
@@ -164,7 +169,12 @@
 (use-package exec-path-from-shell
     :if (memq window-system '(mac ns))
     :ensure t
-    :config (exec-path-from-shell-initialize)
+    :init (setenv "SHELL" "/usr/local/bin/bash")
+    :config (progn
+        (setq exec-path-from-shell-check-startup-files nil); remove warning
+        (setq exec-path-from-shell-variables '("PATH" "MANPATH"))
+        (exec-path-from-shell-initialize)
+    )
 )
 
 ;; ------------------------------------------------------------------------------ Packages
@@ -191,26 +201,30 @@
     :config (which-key-mode)
 )
 
-;; TODO: Add the gruvbox colors to this theme (use darktooth-theme as reference too)
-;; TODO: Add theming for helm bar.
-(use-package birds-of-paradise-plus-theme
+;; Wait what? numbers don't get a highlight on emacs? fix it.
+(use-package highlight-numbers
     :ensure t
+    :diminish highlight-numbers-mode
+    :config (add-hook 'prog-mode-hook 'highlight-numbers-mode)
 )
+
+;; What? no highlighted quotes for lisp either? c'mon man!
+(use-package highlight-quoted
+    :ensure t
+    :diminish highlight-quoted-mode
+    :config (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode)
+)
+
+;; ;; TODO: Add the gruvbox colors to this theme (use darktooth-theme as reference too)
+;; ;; TODO: Add theming for helm bar.
+;; (use-package birds-of-paradise-plus-theme :ensure t)
+;; (use-package gruvbox-theme :ensure t)
+(load-theme 'etor)
 
 ;; VI rocks! there, I said it.
 (use-package evil
     :ensure t
     :config (progn
-        ;; Setup the colors for the cursor on different modes.
-        ;; TODO: Improve these colors.
-        (setq
-            evil-emacs-state-cursor '("red" box)
-            evil-normal-state-cursor '("black" box)
-            evil-visual-state-cursor '("orange" box)
-            evil-insert-state-cursor '("cyan" bar)
-            evil-replace-state-cursor '("blue" bar)
-            evil-operator-state-cursor '("red" hollow)
-        )
         ;; Have <tab> to work as it does on Vim
         (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
         ;; Enable evil-mode baby!
@@ -218,13 +232,13 @@
         ;; Enable tpope's vim-commentary port
         (use-package evil-commentary
             :ensure t
-	    :diminish evil-commentary-mode
+            :diminish evil-commentary-mode
             :config (add-hook 'prog-mode-hook 'evil-commentary-mode)
         )
         ;; Enable tpope's vim-surround port (globally)
         (use-package evil-surround
             :ensure t
-	    :diminish evil-surround-mode
+            :diminish evil-surround-mode
             :config (global-evil-surround-mode 1)
         )
         ;; Enable the <leader> key like in Vim
@@ -232,7 +246,15 @@
             :ensure t
             :config (progn
                 (evil-leader/set-leader "SPC")
+                (evil-leader/set-key "?" 'what-cursor-position)
                 (global-evil-leader-mode)
+            )
+        )
+        ;; Enable multiple-cursors
+        (use-package evil-mc
+            :ensure t
+            :config (progn
+                (global-evil-mc-mode 1)
             )
         )
     )
@@ -242,6 +264,11 @@
 (use-package helm
     :ensure t
     :diminish helm-mode
+    :init (progn
+        ;; For some reason, if these are set on :config, they won't work.
+        (evil-leader/set-key "SPC" 'helm-M-x)
+        (evil-leader/set-key "TAB" 'helm-mini)
+    )
     :config (progn
         (require 'helm-config)
         ;; Enable fuzzy matching
@@ -261,8 +288,6 @@
             helm-M-x-requires-pattern nil
             helm-ff-skip-boring-files t
         )
-        (evil-leader/set-key "SPC" 'helm-M-x)
-        (evil-leader/set-key "TAB" 'helm-mini)
         ; Disable the "I Do" mode, we have helm for that now.
         (ido-mode -1)
         (helm-mode 1)
@@ -271,8 +296,8 @@
         ("C-c C-c" . helm-mini); Find all
         ("C-h C-h" . helm-apropos); Find help
         ("C-c C-b" . helm-buffers-list)
-	("C-c C-f" . helm-find-files)
-	("C-c f" . helm-find)
+        ("C-c C-f" . helm-find-files)
+        ("C-c f" . helm-find)
         ("M-x" . helm-M-x)
         ("M-y" . helm-show-kill-ring)
         ("C-s" . helm-occur); Find ocurrences of pattern
@@ -310,7 +335,7 @@
     :config (progn
         (setq undo-tree-auto-save-history t)
         (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/_undotree")))
-	(global-undo-tree-mode 1)
+        (global-undo-tree-mode 1)
     )
     :bind (
         ("C-x u" . undo-tree-visualize)
@@ -322,7 +347,7 @@
     :diminish linum-relative-mode
     :config (progn
         (setq linum-relative-current-symbol ""); Show the current line-number
-        (setq linum-relative-format "%3s "); Add some spaces to numbers
+        (setq linum-relative-format " %3s"); Add some spaces to numbers
         (linum-relative-on)
         (add-hook 'prog-mode-hook 'linum-mode)
     )
@@ -334,6 +359,7 @@
     :diminish highlight-indent-guides-mode
     :config (progn
         (setq highlight-indent-guides-method 'character)
+        (setq highlight-indent-guides-auto-enabled nil); don't calculate color
         (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
     )
 )
@@ -350,7 +376,6 @@
     :diminish fci-mode
     :config (progn
         (setq fci-rule-width 1)
-        (setq fci-rule-color "#554040")
         (add-hook 'prog-mode-hook 'fci-mode)
     )
 )
@@ -380,17 +405,9 @@
     :diminish git-gutter-mode
     :config (progn
         (git-gutter:linum-setup); play along with linum-mode
-	;; Customize symbols and colors
-        (set-face-foreground 'git-gutter:modified "#54969a"); gruvbox's blue
-        (set-face-foreground 'git-gutter:added "#a8a521"); grubox's green
-        (set-face-foreground 'git-gutter:deleted "#d83925"); gruvbox's red
-	;; when to update
         (setq git-gutter:update-interval 2); Update git gutter after n secs idle
         (setq git-gutter:ask-p nil); Don't ask confirmation when committing or reverting
-        (setq git-gutter:modified-sign " ~")
-        (setq git-gutter:added-sign " +")
-        (setq git-gutter:deleted-sign " -")
-	(add-to-list 'git-gutter:update-hooks 'focus-in-hook)
+        (add-to-list 'git-gutter:update-hooks 'focus-in-hook)
         (add-to-list 'git-gutter:update-hooks 'magit-post-refresh-hook)
         (add-to-list 'git-gutter:update-hooks 'git-gutter:post-command-hook)
         (add-hook 'prog-mode-hook 'git-gutter-mode)
@@ -428,9 +445,22 @@
         (global-set-key (kbd "C-x 1") nil); delete other windows
         (global-set-key (kbd "C-x 2") nil); splits window horizontally
         (global-set-key (kbd "C-x 3") nil); splits window vertically
-        ;; Key bindings for evil-mode (window management related)
-        (evil-leader/set-key "|" 'split-window-horizontally)
-        (evil-leader/set-key "-" 'split-window-vertically)
+        ;; Split windows showing the scratch buffer instead of the same file
+        (evil-leader/set-key "w|" '(lambda ()
+            (interactive)
+            (split-window-horizontally)
+            (balance-windows)
+            (other-window 1 nil)
+            (switch-to-buffer "*scratch*")
+        ))
+        (evil-leader/set-key "w-" (lambda ()
+            (interactive)
+            (split-window-vertically)
+            (balance-windows)
+            (other-window 1 nil)
+            (switch-to-buffer "*scratch*")
+        ))
+        ;; Key bindings for evil-mode
         (evil-leader/set-key "ww" 'ace-window)
         (evil-leader/set-key "wh" 'windmove-left)
         (evil-leader/set-key "wj" 'windmove-down)
@@ -481,11 +511,11 @@
     :ensure t
     :diminish wakatime-mode "w"
     :config (progn
-	(setq
-	    wakatime-cli-path "/usr/local/bin/wakatime"
-	    wakatime-python-bin "/usr/local/bin/python"
-	)
-	(global-wakatime-mode 1)
+        (setq
+            wakatime-cli-path "/usr/local/bin/wakatime"
+            wakatime-python-bin "/usr/local/bin/python"
+        )
+        (global-wakatime-mode 1)
     )
 ))
 
@@ -493,11 +523,54 @@
 ;; TODO: Mode triggers until first calling
 (use-package hl-todo
     :ensure t
-    :config (global-hl-todo-mode t)
+    :commands global-hl-todo-mode
     :bind (
         ("C-c t n" . hl-todo-next)
-	("C-c t p" . hl-todo-previous)
-	("C-c C-t" . hl-todo-occur)
+        ("C-c t p" . hl-todo-previous)
+        ("C-c C-t" . hl-todo-occur)
+    )
+)
+
+;; Mame NVM available
+(use-package nvm
+    :if (file-exists-p "~/.nvm")
+    :ensure t
+    :config (nvm-use (caar (last (nvm--installed-versions))))
+)
+
+;; Syntax checking
+(use-package flycheck
+    :ensure t
+    :init (setq-default flycheck-disabled-checkers (append '(
+        javascript-jshint
+        javascript-jscs
+        javascript-standard
+    )))
+    :config (progn
+        (setq flycheck-temp-prefix ".flycheck")
+        (flycheck-add-mode 'javascript-eslint 'rjsx-mode)
+        (flycheck-add-mode 'javascript-eslint 'js2-mode)
+        (add-hook 'prog-mode-hook 'global-flycheck-mode)
+    )
+)
+
+;; Enable Javascript mode
+(use-package js2-mode
+    :ensure t
+    :defer t
+    :commands js2-mode
+    :mode (
+        ("\\.js\\'" . js2-mode)
+        ("\\.json\\'" . javascript-mode)
+    )
+    :config (progn
+        (setq-default
+            js2-basic-offset 4
+            js2-auto-indent-p t
+            js2-indent-switch-body t
+            js2-indent-on-enter-key t
+        )
+        (add-to-list 'interpreter-mode-alist (cons "node" 'js2-mode))
     )
 )
 
@@ -509,3 +582,6 @@
         (define-key rjsx-mode-map "<" nil); This behaviour made emacs hang, so disabled it
     )
 )
+
+(provide 'emacs)
+;;; emacs ends here
