@@ -90,7 +90,8 @@
 
 ;; Save all customisations to this file instead.
 ;; TODO: Find out why is not being read by emacs.
-(setq custom-file (expand-file-name "_custom.el" user-emacs-directory))
+(setq custom-file "~/.emacs.d/_custom.el")
+(load custom-file)
 
 ;; ------------------------------------------------------------------------------ GUI only
 
@@ -103,10 +104,6 @@
     (setq frame-title-format "emacs")
     (tool-bar-mode -1); Don't show the toolbar
     (scroll-bar-mode -1); Don't show the scrollbar
-    ;; Font appareance
-    (add-to-list 'default-frame-alist '(font . "Ubuntu Mono")); The default font
-
-    ; (setq mac-right-option-modifier 'none); Right Alt should not be Meta
 
     ;; Save the frame size and position when exiting, and load'em on boot.
     ;; TODO: This should be a plugin.
