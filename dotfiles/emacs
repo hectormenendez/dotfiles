@@ -182,6 +182,9 @@
 ;; Try packages before installing.
 (use-package try :ensure t)
 
+;; Adds a command for restarting emacs
+(use-package restart-emacs :ensure t)
+
 ;; Hide minor modes from line-mode (used by 'use-package')
 (use-package diminish
     :ensure t
