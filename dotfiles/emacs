@@ -435,11 +435,36 @@
 (use-package neotree
     :ensure t
     :config (progn
-        (evil-leader/set-key "tn" 'neotree-toggle)
         ;; Allow to use evil mode with neotree
         (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
+        (evil-define-key 'normal neotree-mode-map (kbd "<f5>") 'neotree-refresh)
+        (evil-define-key 'normal neotree-mode-map (kbd "<escape>") 'neotree-toggle)
         ;; (evil-define-ket 'normal neotree-mode-map (kbd "|") 'neotree-)
         (setq neo-smart-open t); let neotree find the current file and jump to it.
+        ;; work along with projectile
+        (setq projectile-switch-project-action 'neotree-projectile-action)
+        ;; show hidden files by default
+        (setq-default neo-show-hidden-files t)
+        ;; Use ffip to determine the project root and open neotree relative to it.
+        (use-package find-file-in-project
+            :ensure t
+            :config (evil-leader/set-key "RET" (lambda ()
+                (interactive)
+                (let
+                    (
+                        (project-dir (ffip-project-root))
+                        (file-name (buffer-file-name))
+                    )
+                    (if project-dir
+                        (progn
+                            (neotree-dir project-dir)
+                            (neotree-find file-name)
+                        )
+                        (message "Could not find git project root.")
+                    )
+                )
+            ))
+        )
     )
 )
 
