@@ -293,11 +293,24 @@
         ("C-c C-c" . helm-mini); Find all
         ("C-h C-h" . helm-apropos); Find help
         ("C-c C-b" . helm-buffers-list)
-        ("C-c C-f" . helm-find-files)
-        ("C-c f" . helm-find)
         ("M-x" . helm-M-x)
         ("M-y" . helm-show-kill-ring)
         ("C-s" . helm-occur); Find ocurrences of pattern
+    )
+)
+
+;; Quick switching files
+(use-package projectile
+    :ensure t
+    :config (progn
+        (use-package helm-projectile
+            :ensure t
+            :commands helm-projectile-on
+            :bind (
+                ("C-c C-f" . helm-projectile-find-file)
+                ("C-c C-d" . helm-projectile-find-dir)
+            )
+        )
     )
 )
 
