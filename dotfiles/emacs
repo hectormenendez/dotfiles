@@ -349,7 +349,21 @@
     :ensure t
     :diminish company-mode
     :config (progn
+        ;; Enable company in any programming mode
         (add-hook 'prog-mode-hook 'company-mode)
+        ;; Enable tern
+        (use-package tern
+            :ensure t
+            :config (progn
+                (add-hook 'js2-mode-hook 'tern-mode)
+                (setq tern-command (append tern-command '("--no-port-file")))
+            )
+        )
+        (use-package company-tern
+            :ensure t
+            :init (add-to-list 'company-backends 'company-tern)
+            :config (setq company-tern-property-marker nil)
+        )
     )
 )
 
