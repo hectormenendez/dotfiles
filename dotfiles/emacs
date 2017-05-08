@@ -257,6 +257,18 @@
                 (global-evil-mc-mode 1)
             )
         )
+        ;;Use evil on dired mode
+        (eval-after-load 'dired '(progn
+            (evil-make-overriding-map dired-mode-map 'normal t); the standard bindings
+            (evil-define-key 'normal dired-mode-map
+                "h" 'evil-backward-char
+                "j" 'evil-next-line
+                "k" 'evil-previous-line
+                "l" 'evil-forward-char
+                "w" 'evil-forward-word-begin
+                "b" 'evil-backward-word-begin
+            )
+        ))
     )
 )
 
