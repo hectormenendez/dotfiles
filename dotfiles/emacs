@@ -593,13 +593,14 @@
 )
 
 ;; Enable Javascript mode
+(use-package json-mode :ensure t)
 (use-package js2-mode
     :ensure t
     :defer t
     :commands js2-mode
     :mode (
         ("\\.js\\'" . js2-mode)
-        ("\\.json\\'" . javascript-mode)
+        ("\\.json\\'" . json-mode)
     )
     :config (progn
         (setq-default
