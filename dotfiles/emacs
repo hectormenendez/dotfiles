@@ -1,4 +1,4 @@
-;-*-Emacs-Lisp-*-
+;p-*-Emacs-Lisp-*-
 
 ; ------------------------------------------------------------------------ Package Manager
 
@@ -41,19 +41,27 @@
 (show-paren-mode 1); Show matching parenthesis
 
 ; Whitespace management
-(require 'whitespace)
-(setq whitespace-style '(face empty tabs trailing))
-(setq indent-tabs-mode nil); Use spaces for tabs
+(setq-default
+   fill-column 90
+   indent-tabs-mode nil; Use spaces for tabs
+   require-final-newline nil; Don't end files with newline
+   tab-always-indent t; The tab key will always indent (duh)
+   tab-width 4; Use 4 spaces as indentation
+   whitespace-style '(face tabs tab-mark trailing lines-tail); Highlight these
+   whitespace-line-column fill-column; Use the fill-column to mark overflowed character
+   whitespace-display-mappings '(; Customize the look of these character
+       (tab-mark ?\t [?› ?\t])
+       (newline-mark 10  [36 10])
+   )
+)
 (global-whitespace-mode t)
+(electric-indent-mode -1); don't auto-indent on the fly
 
 ;; Version control
 (setq version-control t)
 (setq vc-follow-symlinks t); Don't ask to follow symlinks, just do it.
 
 (defalias 'yes-or-no-p 'y-or-n-p); Ask for just one letter
-
-(setq-default fill-column 90); determines where the lines should end. (used by fci)
-(setq-default tab-width 4); set tab width to 4 on every mode
 
 ;; ----------------------------------------------------------------------- File management
 
@@ -158,45 +166,6 @@
     )
     ;; Show actual colors on color names
     (use-package rainbow-mode :ensure t)
-
-    ;; The tab bar to control open buffers
-    (use-package tabbar
-        :ensure t
-        :config (progn
-            (tabbar-mode 1)
-            (tabbar-mwheel-mode -1)
-            (setq tabbar-separator '(1))
-            ;; Remove extra-buttons
-            (dolist
-                (btn '(
-                    tabbar-buffer-home-button
-                    tabbar-scroll-left-button
-                    tabbar-scroll-right-button
-                ))
-                (set btn (cons (cons "" nil) (cons "" nil)))
-            )
-            ;; Add padding to each tab using spaces
-            (defun tabbar-buffer-tab-label
-                (tab)
-                (let
-                    ((label
-                        (if tabbar--buffer-show-groups
-                            (format "  %s  " (tabbar-tab-tabset tab))
-                            (format "  %s  " (tabbar-tab-value tab))
-                        )
-                    ))
-                    (if tabbar-auto-scroll-flag label (
-                        tabbar-shorten
-                        label
-                        (max 1 (/
-                            (window-width)
-                            (length (tabbar-view (tabbar-current-tabset)))
-                        ))
-                    ))
-                )
-            )
-        )
-    )
 ))
 
 ;; ---------------------------------------------------------------------------- MacOS only
@@ -294,6 +263,13 @@
             :ensure t
             :config (progn
                 (global-evil-mc-mode 1)
+            )
+        )
+        ;; Enable tab commands (also installs elscreen)
+        (use-package evil-tabs
+            :ensure t
+            :config (progn
+                (global-evil-tabs-mode 1)
             )
         )
         ;;Use evil on dired mode
