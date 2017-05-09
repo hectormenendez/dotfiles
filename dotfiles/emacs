@@ -158,6 +158,45 @@
     )
     ;; Show actual colors on color names
     (use-package rainbow-mode :ensure t)
+
+    ;; The tab bar to control open buffers
+    (use-package tabbar
+        :ensure t
+        :config (progn
+            (tabbar-mode 1)
+            (tabbar-mwheel-mode -1)
+            (setq tabbar-separator '(1))
+            ;; Remove extra-buttons
+            (dolist
+                (btn '(
+                    tabbar-buffer-home-button
+                    tabbar-scroll-left-button
+                    tabbar-scroll-right-button
+                ))
+                (set btn (cons (cons "" nil) (cons "" nil)))
+            )
+            ;; Add padding to each tab using spaces
+            (defun tabbar-buffer-tab-label
+                (tab)
+                (let
+                    ((label
+                        (if tabbar--buffer-show-groups
+                            (format "  %s  " (tabbar-tab-tabset tab))
+                            (format "  %s  " (tabbar-tab-value tab))
+                        )
+                    ))
+                    (if tabbar-auto-scroll-flag label (
+                        tabbar-shorten
+                        label
+                        (max 1 (/
+                            (window-width)
+                            (length (tabbar-view (tabbar-current-tabset)))
+                        ))
+                    ))
+                )
+            )
+        )
+    )
 ))
 
 ;; ---------------------------------------------------------------------------- MacOS only
