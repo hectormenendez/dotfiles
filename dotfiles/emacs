@@ -34,6 +34,15 @@
 (setq visible-bell t); don't make sounds, show bells.
 (setq custom-safe-themes t); Don't ask for confirmation when loading themes
 
+;; Charset has to be unicode, like, always
+(set-charset-priority 'unicode)
+(prefer-coding-system        'utf-8)
+(set-terminal-coding-system  'utf-8)
+(set-keyboard-coding-system  'utf-8)
+(set-selection-coding-system 'utf-8)
+(setq locale-coding-system   'utf-8)
+(setq-default buffer-file-coding-system 'utf-8)
+
 (column-number-mode 1); Show the current-column too
 (global-hl-line-mode 1); Highlight the current line
 (global-auto-revert-mode 1); Update buffers whenever the file changes on disk
