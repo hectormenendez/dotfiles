@@ -274,13 +274,6 @@
                 (global-evil-mc-mode 1)
             )
         )
-        ;; Enable tab commands (also installs elscreen)
-        (use-package evil-tabs
-            :ensure t
-            :config (progn
-                (global-evil-tabs-mode 1)
-            )
-        )
         ;;Use evil on dired mode
         (eval-after-load 'dired '(progn
             (evil-make-overriding-map dired-mode-map 'normal t); the standard bindings
@@ -335,6 +328,36 @@
         ("M-x" . helm-M-x)
         ("M-y" . helm-show-kill-ring)
         ("C-s" . helm-occur); Find ocurrences of pattern
+    )
+)
+
+;; Workspace management via perspectives
+(use-package persp-mode
+    :ensure t
+    :config (progn
+        (setq
+            persp-autokill-buffer-on-remove 'kill-weak; kill the buffer when closed
+            persp-nil-name "main"; The name of the default perspective
+            persp-save-dir "~/.emacs.d/_perspectives/"
+            persp-auto-save-fname "autosave"
+            persp-set-last-persp-for-new-frames nil; don't use last persp for new frames
+            persp-auto-save-opt 1; Auto-save perspective on buffer kill
+            persp-auto-resume-time 1; Load perspectives on startup
+        )
+        ;; Integrate with projectile
+        (use-package persp-mode-projectile-bridge
+            :ensure t
+            :config (add-hook 'persp-mode-projectile-mode-hook '(lambda ()
+                (if persp-mode-projectile-bridge-mode
+                    (persp-mode-projectile-bridge-find-perspectives-for-all-buffers)
+                    (persp-mode-projectile-bridge-kill-perspectives)
+                )
+            ))
+        )
+        (add-hook 'after-init-hook '(lambda ()
+            (persp-mode 1)
+            (persp-mode-projectile-bridge-mode 1)
+        ))
     )
 )
 
