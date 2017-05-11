@@ -270,6 +270,7 @@
         ;; Enable multiple-cursors
         (use-package evil-mc
             :ensure t
+            :diminish evil-mc-mode
             :config (progn
                 (global-evil-mc-mode 1)
             )
