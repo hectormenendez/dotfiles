@@ -344,6 +344,10 @@
 ;; Workspace management via perspectives
 (use-package persp-mode
     :ensure t
+    :init (progn
+        ;; quick perspective switch
+        (evil-leader/set-key "TAB" 'persp-switch)
+    )
     :config (progn
         (setq
             persp-autokill-buffer-on-remove 'kill-weak; kill the buffer when closed
