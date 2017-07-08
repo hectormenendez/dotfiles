@@ -202,6 +202,9 @@
 ;; Adds a command for restarting emacs
 (use-package restart-emacs :ensure t)
 
+;; Improve default functionality for dired
+(use-package dired+ :ensure t)
+
 ;; Hide minor modes from line-mode (used by 'use-package')
 (use-package diminish
     :ensure t
