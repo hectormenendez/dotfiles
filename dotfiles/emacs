@@ -299,11 +299,10 @@
     :diminish helm-mode
     :init (progn
         ;; For some reason, if these are set on :config, they won't work.
-        (evil-leader/set-key "SPC" 'helm-M-x)
+        (evil-leader/set-key "SPC" 'helm-mini)
         ;; Disable mappings that would override custom helm ones.
         (eval-after-load 'evil-maps
             '(progn
-                (define-key evil-motion-state-map (kbd "C-f") nil); scroll up
                 (define-key evil-motion-state-map (kbd "C-b") nil); scroll down
             )
         )
@@ -378,13 +377,22 @@
 ;; Quick switching files
 (use-package projectile
     :ensure t
+    :init (progn
+        ;; Disable mappings that would override custom helm ones.
+        (eval-after-load 'evil-maps
+            '(progn
+                (define-key evil-motion-state-map (kbd "C-f") nil); scroll up
+                (define-key evil-motion-state-map (kbd "C-d") nil); scroll down
+            )
+        )
+    )
     :config (progn
         (use-package helm-projectile
             :ensure t
             :commands helm-projectile-on
             :bind (
-                ("C-c C-f" . helm-projectile-find-file)
-                ("C-c C-d" . helm-projectile-find-dir)
+                ("C-f" . helm-projectile)
+                ("C-d" . helm-projectile-find-dir)
             )
         )
     )
