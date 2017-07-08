@@ -593,20 +593,18 @@
         (global-set-key (kbd "C-x 1") nil); delete other windows
         (global-set-key (kbd "C-x 2") nil); splits window horizontally
         (global-set-key (kbd "C-x 3") nil); splits window vertically
-        ;; Split windows showing the scratch buffer instead of the same file
+        ;; when splitting windows, always balance windows
         (evil-leader/set-key "w|" '(lambda ()
             (interactive)
             (split-window-horizontally)
             (balance-windows)
             (other-window 1 nil)
-            (switch-to-buffer "*scratch*")
         ))
         (evil-leader/set-key "w-" (lambda ()
             (interactive)
             (split-window-vertically)
             (balance-windows)
             (other-window 1 nil)
-            (switch-to-buffer "*scratch*")
         ))
         ;; Key bindings for evil-mode
         (evil-leader/set-key "ww" 'ace-window)
