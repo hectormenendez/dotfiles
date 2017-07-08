@@ -205,6 +205,9 @@
 ;; Improve default functionality for dired
 (use-package dired+
     :ensure t
+    :init (progn
+        (evil-leader/set-key "." 'dired-jump-other-window)
+    )
     :config (progn
         (diredp-toggle-find-file-reuse-dir 1)
     )
