@@ -304,7 +304,8 @@
     :diminish helm-mode
     :init (progn
         ;; For some reason, if these are set on :config, they won't work.
-        (evil-leader/set-key "SPC" 'helm-mini)
+        (evil-leader/set-key "DEL" 'helm-mini)
+        (evil-leader/set-key "SPC" 'helm-M-x)
         ;; Disable mappings that would override custom helm ones.
         (eval-after-load 'evil-maps
             '(progn
