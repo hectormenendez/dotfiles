@@ -529,12 +529,8 @@
         ;; show hidden files by default
         (setq-default neo-show-hidden-files t)
         ;; Enable theme
-        (use-package all-the-icons
-            :ensure t
-            :config (setq neo-theme (
-                (if (display-graphic-p) 'icons 'arrow)
-            ))
-        )
+        (use-package all-the-icons :ensure t)
+        (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
         ;; Use ffip to determine the project root and open neotree relative to it.
         (use-package find-file-in-project
             :ensure t
