@@ -203,7 +203,12 @@
 (use-package restart-emacs :ensure t)
 
 ;; Improve default functionality for dired
-(use-package dired+ :ensure t)
+(use-package dired+
+    :ensure t
+    :config (progn
+        (diredp-toggle-find-file-reuse-dir 1)
+    )
+)
 
 ;; Hide minor modes from line-mode (used by 'use-package')
 (use-package diminish
