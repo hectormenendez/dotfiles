@@ -335,6 +335,8 @@
             helm-M-x-requires-pattern nil
             helm-ff-skip-boring-files t
         )
+        ;; Make sure helm-sirver-searcher is installed
+        (use-package helm-ag :ensure t)
         ; Disable the "I Do" mode, we have helm for that now.
         (ido-mode -1)
         (helm-mode 1)
@@ -387,6 +389,8 @@
 (use-package projectile
     :ensure t
     :init (progn
+        ;; make C-/ trigger helm-ag instead of undo-tree's undo
+        (define-key undo-tree-map (kbd "C-/") nil)
         ;; Disable mappings that would override custom helm ones.
         (eval-after-load 'evil-maps
             '(progn
@@ -402,6 +406,7 @@
             :bind (
                 ("C-f" . helm-projectile)
                 ("C-d" . helm-projectile-find-dir)
+                ("C-/" . helm-projectile-ag); Find ocurrences of pattern across project
             )
         )
     )
