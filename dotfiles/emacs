@@ -521,6 +521,7 @@
         (evil-define-key 'normal neotree-mode-map (kbd "<escape>") 'neotree-toggle)
         (evil-define-key 'normal neotree-mode-map (kbd "m") 'neotree-rename-node)
         (evil-define-key 'normal neotree-mode-map (kbd "d") 'neotree-delete-node)
+        (evil-define-key 'normal neotree-mode-map (kbd "n") 'neotree-create-node)
         ;; (evil-define-ket 'normal neotree-mode-map (kbd "|") 'neotree-)
         (setq neo-smart-open t); let neotree find the current file and jump to it.
         ;; work along with projectile
