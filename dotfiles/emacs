@@ -300,7 +300,13 @@
     :init (progn
         ;; For some reason, if these are set on :config, they won't work.
         (evil-leader/set-key "SPC" 'helm-M-x)
-        (evil-leader/set-key "TAB" 'helm-mini)
+        ;; Disable mappings that would override custom helm ones.
+        (eval-after-load 'evil-maps
+            '(progn
+                (define-key evil-motion-state-map (kbd "C-f") nil); scroll up
+                (define-key evil-motion-state-map (kbd "C-b") nil); scroll down
+            )
+        )
     )
     :config (progn
         (require 'helm-config)
@@ -326,9 +332,9 @@
         (helm-mode 1)
     )
     :bind (
-        ("C-c C-c" . helm-mini); Find all
         ("C-h C-h" . helm-apropos); Find help
-        ("C-c C-b" . helm-buffers-list)
+        ("C-f" . helm-mini)
+        ("C-b" . helm-buffers-list)
         ("M-x" . helm-M-x)
         ("M-y" . helm-show-kill-ring)
         ("C-s" . helm-occur); Find ocurrences of pattern
