@@ -58,7 +58,7 @@ shopt -s nocaseglob # case insensitive globbing
 shopt -s cdspell # Autocorrect typos in path names when using cd
 shopt -s histappend # don't overwrite history on login, append to it.
 set -o vi # Enable vi mode
-umask 077 # Set the creation mask, so files are created with 600 and dirs as 700
+umask 022 # Set the creation mask, so files are created with 600 and dirs as 700
 eval `dircolors $HOME/.dir_colors` # colorize files by type
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)" # enable lesspipe
 
