@@ -1,40 +1,42 @@
 [core]
     whitespace   = fix,-indent-with-non-tab,trailing-space,cr-at-eol
     editor       = nvim
-	excludesfile = /Users/etor/.gitignore
+    excludesfile = ~/.gitconfig
 
 [push]
     # 'git push' should only do the current branch, not all
     default = current
 
 [advice]
+    # No need for hints on status
     statushints = false
 
 [apply]
+    # Remove unnecesary whitespace before commit
     whitespace = strip
 
 [alias]
-    br      = branch -vv
-    su      = branch --set-upstream-to
-    ci      = commit -m
-    cin     = commit --no-verify -m
-    co      = checkout
-    st      = status
-    sku     = stash -k -u
-    add     = add -v
+    br = branch -vv
+    su = branch --set-upstream-to
+    ci = commit -m
+    ca = commit -a --amend -C HEAD
+    cin = commit --no-verify -m
+    co = checkout
+    st = status
+    sku = stash -k -u
+    add = add -v
     tagshow = !sh -c 'git rev-list $0 | head -n 1'
-    lsf     = !sh -c 'git-logfile'
-    ls      = !git log \
-	--graph          \
-	--date=relative  \
-	--pretty=tformat:'%C(bold blue)%h%C(reset) %C(bold green)%>(8,trunc)%ar%C(reset) %C(bold dim white)%>(8,trunc)%an%C(reset) %C(white)%s%C(reset)%C(auto)%d%C(reset)'
+    lsf = !sh -c 'git-logfile'
+    ls = !git log\
+        --graph\
+        --date=relative\
+        --pretty=tformat:'%C(bold blue)%h%C(reset) %C(bold green)%>(8,trunc)%ar%C(reset) %C(bold dim white)%>(8,trunc)%an%C(reset) %C(white)%s%C(reset)%C(auto)%d%C(reset)'
     lsa = !git ls --all
-lsa = !git ls --all
+    lg = !git log\
+        --graph\
+        --date=relative\
+        --pretty=tformat:'%>|(18)%C(auto)%h%C(reset)   %C(white)%an%C(reset) %C(bold dim white)%ar%C(reset) %C(auto)%d%C(reset)%n %>|(19)%C(dim black)%m%C(reset) %<(60,trunc)%C(dim white)%s%C(reset)%n' \
     lga = !git lg --all
-    lg  = !git log   \
-	--graph          \
-	--date=relative  \
-	--pretty=tformat:'%>|(18)%C(auto)%h%C(reset)   %C(white)%an%C(reset) %C(bold dim white)%ar%C(reset) %C(auto)%d%C(reset)%n %>|(19)%C(dim black)%m%C(reset) %<(60,trunc)%C(dim white)%s%C(reset)%n' \
 
 [color]
     ui = true
@@ -64,13 +66,3 @@ lsa = !git ls --all
     clean    = git-lfs clean %f
     smudge   = git-lfs smudge %f
     required = true
-
-[user]
-	email = etor.mx@gmail.com
-	name = Héctor Menéndez
-[difftool "sourcetree"]
-	cmd = /usr/local/bin/ksdiff -w \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /usr/local/bin/ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
-	trustExitCode = true
