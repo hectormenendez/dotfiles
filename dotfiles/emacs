@@ -345,7 +345,7 @@
         ("C-h C-h" . helm-apropos); Find help
         ("C-f" . helm-mini)
         ("M-x" . helm-M-x)
-        ("M-y" . helm-show-kill-ring)
+        ("M-v" . helm-show-kill-ring)
         ("C-s" . helm-occur); Find ocurrences of pattern
     )
 )
@@ -540,7 +540,10 @@
 (use-package centered-cursor-mode
     :ensure t
     :diminish centered-cursor-mode
-    :config (add-hook 'prog-mode-hook 'centered-cursor-mode)
+    :config (progn
+        (define-key ccm-map [(meta v)] nil); disable keymap so it can be used elsewhere
+        (add-hook 'prog-mode-hook 'centered-cursor-mode)
+    )
 )
 
 ;; Show a file-tree ala Vim
