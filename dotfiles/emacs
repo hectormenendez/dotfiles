@@ -344,7 +344,6 @@
     :bind (
         ("C-h C-h" . helm-apropos); Find help
         ("C-f" . helm-mini)
-        ("C-b" . helm-buffers-list)
         ("M-x" . helm-M-x)
         ("M-y" . helm-show-kill-ring)
         ("C-s" . helm-occur); Find ocurrences of pattern
@@ -405,6 +404,7 @@
             :commands helm-projectile-on
             :bind (
                 ("C-f" . helm-projectile)
+                ("C-b" . helm-projectile-switch-to-buffer)
                 ("C-d" . helm-projectile-find-dir)
                 ("C-/" . helm-projectile-ag); Find ocurrences of pattern across project
             )
