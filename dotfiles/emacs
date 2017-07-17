@@ -274,7 +274,7 @@
             :ensure t
             :config (progn
                 (evil-leader/set-leader "SPC")
-                (evil-leader/set-key "?" 'what-cursor-position)
+                (evil-leader/set-key "?" 'which-key-show-top-level)
                 (global-evil-leader-mode)
             )
         )
