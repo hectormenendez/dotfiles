@@ -561,8 +561,35 @@
         (setq neo-smart-open t); let neotree find the current file and jump to it.
         ;; work along with projectile
         (setq projectile-switch-project-action 'neotree-projectile-action)
-        ;; show hidden files by default
-        (setq-default neo-show-hidden-files t)
+        ;; Don't show hidden files (they will be excluded by git)
+        (setq-default neo-show-hidden-files nil)
+        ;; overwrite the default hidden file filter, so it uses .gitignore
+        (defun neo-util--hidden-path-filter (node)
+            "it reads each nodule on the list, and determines if its ignored by git."
+            (if neo-buffer--show-hidden-file-p
+                ;; all files should be shown
+                node
+                ;; hiding is enabled, use git check-ignore to determeine which to show
+                (if
+                    ;; if the output is empty (file should be shown) return the node
+                    (string=
+                        (string-trim
+                            (shell-command-to-string
+                                (format
+                                    "git -C %s check-ignore %s"
+                                    (file-name-directory node)
+                                    node
+                                )
+                            )
+                        )
+                        ""
+                    )
+                    node
+                    ;; git outputed something, file shold be hidden
+                    nil
+                )
+            )
+        )
         ;; Enable theme
         (use-package all-the-icons :ensure t)
         (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
