@@ -765,5 +765,17 @@
     )
 )
 
+(use-package markdown-mode
+    :ensure t
+    :config (progn
+        (add-hook 'prog-mode-hook 'markdown-mode)
+    )
+    :mode (
+        ("README\\.md\\'" . gfm-mode)
+        ("\\.md\\'" . markdown-mode)
+        ("\\.markdown\\'" . markdown-mode)
+    )
+)
+
 (provide 'emacs)
 ;;; emacs ends here
