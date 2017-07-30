@@ -769,6 +769,7 @@
     :ensure t
     :config (progn
         (add-hook 'prog-mode-hook 'markdown-mode)
+        (add-hook 'prog-mode-hook 'gfm-mode)
     )
     :mode (
         ("README\\.md\\'" . gfm-mode)
