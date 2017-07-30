@@ -778,5 +778,12 @@
     )
 )
 
+(use-package typescript-mode
+    :ensure t
+    :config (progn
+        (setq typescript-indent-level 2)
+    )
+)
+
 (provide 'emacs)
 ;;; emacs ends here
