@@ -704,7 +704,7 @@
 ;; TODO: Mode triggers until first calling
 (use-package hl-todo
     :ensure t
-    :commands global-hl-todo-mode
+    :init (add-hook 'prog-mode-hook #'hl-todo-mode)
     :bind (
         ("C-c t n" . hl-todo-next)
         ("C-c t p" . hl-todo-previous)
