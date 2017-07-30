@@ -106,9 +106,10 @@
 (add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/")
 
 ;; Save all customisations to this file instead.
-;; TODO: Find out why is not being read by emacs.
 (setq custom-file "~/.emacs.d/_custom.el")
 (load custom-file)
+
+(load-theme 'etor)
 
 ;; ------------------------------------------------------------------------------ GUI only
 
@@ -160,7 +161,6 @@
     (use-package zoom-frm
         :ensure t
         :config (progn
-            ;; TODO: this doesn't do anything apparently.
             (setq zoom-frame/buffer 'buffer)
             ;; Disable default text-scaling (it messes up with FCI)
             (global-set-key (kbd "C-x C-0") nil)
@@ -242,12 +242,6 @@
     :diminish highlight-quoted-mode
     :config (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode)
 )
-
-;; ;; TODO: Add the gruvbox colors to this theme (use darktooth-theme as reference too)
-;; ;; TODO: Add theming for helm bar.
-;; (use-package birds-of-paradise-plus-theme :ensure t)
-;; (use-package gruvbox-theme :ensure t)
-(load-theme 'etor)
 
 ;; VI rocks! there, I said it.
 (use-package evil
@@ -521,7 +515,6 @@
 )
 
 ;; Adds a gutter with the git status of each file (duh)
-;; TODO: the gutter doesn't update when loading files
 (use-package git-gutter
     :ensure t
     :diminish git-gutter-mode
@@ -662,7 +655,6 @@
 )
 
 ;; A Powerline replacement.
-;; TODO: The colors for evil-mode look awful, replace this with smartline maybe?
 (use-package telephone-line
     :ensure t
     :config (progn
@@ -701,7 +693,6 @@
 ))
 
 ;; Highlight TODOs
-;; TODO: Mode triggers until first calling
 (use-package hl-todo
     :ensure t
     :init (add-hook 'prog-mode-hook #'hl-todo-mode)
