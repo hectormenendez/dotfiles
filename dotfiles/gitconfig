@@ -2,6 +2,7 @@
     whitespace   = fix,-indent-with-non-tab,trailing-space,cr-at-eol
     editor       = nvim
     excludesfile = ~/.gitconfig
+	autocrlf = input
 
 [push]
     # 'git push' should only do the current branch, not all
@@ -26,16 +27,22 @@
     sku = stash -k -u
     add = add -v
     tagshow = !sh -c 'git rev-list $0 | head -n 1'
-    lsf = !sh -c 'git-logfile'
-    ls = !git log\
-        --graph\
-        --date=relative\
-        --pretty=tformat:'%C(bold blue)%h%C(reset) %C(bold green)%>(8,trunc)%ar%C(reset) %C(bold dim white)%>(8,trunc)%an%C(reset) %C(white)%s%C(reset)%C(auto)%d%C(reset)'
-    lsa = !git ls --all
+
+    # list-files
+    # i: ignored, but added to stage/index
+    # s: staged only
+    # m: modified only (not staged)
+    # u: untracked only
+    ls = ls-files
+    lss = diff --cached --name-only
+    lsi = ls-files --exclude-standard -i
+    lsm = ls-files --exclude-standard -m
+    lsu = ls-files --exclude-standard --other
+
     lg = !git log\
         --graph\
         --date=relative\
-        --pretty=tformat:'%>|(18)%C(auto)%h%C(reset)   %C(white)%an%C(reset) %C(bold dim white)%ar%C(reset) %C(auto)%d%C(reset)%n %>|(19)%C(dim black)%m%C(reset) %<(60,trunc)%C(dim white)%s%C(reset)%n' \
+        --pretty=tformat:'%C(bold blue)%h%C(reset) %C(bold green)%>(8,trunc)%ar%C(reset) %C(bold dim white)%>(8,trunc)%an%C(reset) %C(white)%s%C(reset)%C(auto)%d%C(reset)'
     lga = !git lg --all
 
 [color]
