@@ -22,6 +22,9 @@
 (require 'diminish); for :diminish
 (require 'bind-key); for :bind
 
+(set-language-environment "UTF-8")
+(set-default-coding-systems 'utf-8)
+
 ;; -------------------------------------------------------------------------------- Server
 
 (require 'server)
@@ -46,7 +49,6 @@
 (column-number-mode 1); Show the current-column too
 (global-hl-line-mode 1); Highlight the current line
 (global-auto-revert-mode 1); Update buffers whenever the file changes on disk
-(global-prettify-symbols-mode 1); Convert lambda to λ
 (show-paren-mode 1); Show matching parenthesis
 
 ; Whitespace management
@@ -109,7 +111,52 @@
 (setq custom-file "~/.emacs.d/_custom.el")
 (load custom-file)
 
+;; --------------------------------------------------------------------------------- Theme
+
 (load-theme 'etor)
+
+;; Normally prettify-symbols makes a good work replacing symbols, sadly, this breaks
+;; the ligature functionallity of fonts that have it (like Fira Code). Personally
+;; I think Fira's ligature is superior, since it's the same actual font doing it.
+;; But I actually like the lambda replacement on Lisp, and that's not available with Fira
+;; I'm gonna use a plugin for this (a very old one, that is)
+(global-prettify-symbols-mode 0)
+;; Setup ligatures
+(let
+    ((alist '(
+        (33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+        (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+        (36 . ".\\(?:>\\)")
+        (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+        (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+        (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
+        (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+        (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+        (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+        (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
+        (48 . ".\\(?:x[a-zA-Z]\\)")
+        (58 . ".\\(?:::\\|[:=]\\)")
+        (59 . ".\\(?:;;\\|;\\)")
+        (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
+        (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+        (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+        (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+        (91 . ".\\(?:]\\)")
+        (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+        (94 . ".\\(?:=\\)")
+        (119 . ".\\(?:ww\\)")
+        (123 . ".\\(?:-\\)")
+        (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+        (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
+    )))
+    (dolist
+        (char-regexp alist)
+        (set-char-table-range composition-function-table
+            (car char-regexp)
+            `([,(cdr char-regexp) 0 font-shape-gstring])
+        )
+    )
+)
 
 ;; ------------------------------------------------------------------------------ GUI only
 
@@ -691,6 +738,14 @@
         (global-wakatime-mode 1)
     )
 ))
+
+;; Replace the word lambda with the greek character (without using pretty symbols)
+(use-package pretty-lambdada
+    :ensure t
+    :config (progn
+        (add-hook 'prog-mode-hook #'pretty-lambda-mode)
+    )
+)
 
 ;; Highlight TODOs
 (use-package hl-todo
