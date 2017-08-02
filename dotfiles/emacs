@@ -758,11 +758,26 @@
     )
 )
 
-;; Mame NVM available
+;; Make NVM available
 (use-package nvm
     :if (file-exists-p "~/.nvm")
     :ensure t
     :config (nvm-use (caar (last (nvm--installed-versions))))
+)
+
+;; enable jump-to definition
+(use-package dumb-jump
+    :ensure t
+    :init (add-hook 'prog-mode-hook #'dumb-jump-mode)
+    :config (progn
+        (setq-default
+            dumb-jump-prefer-searcher 'ag
+            dumb-jump-selector 'helm
+        )
+        ;; Key bindings for evil-mode
+        (evil-leader/set-key "jj" 'dumb-jump-go)
+        (evil-leader/set-key "jJ" 'dumb-jump-back)
+    )
 )
 
 ;; Syntax checking
