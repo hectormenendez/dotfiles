@@ -785,7 +785,6 @@
 (use-package json-mode :ensure t)
 (use-package js2-mode
     :ensure t
-    :defer t
     :commands js2-mode
     :mode (
         ("\\.js\\'" . js2-mode)
@@ -794,9 +793,13 @@
     :config (progn
         (setq-default
             js2-basic-offset 4
+            js2-highlight-level 3
             js2-auto-indent-p t
             js2-indent-switch-body t
             js2-indent-on-enter-key t
+            js2-include-browser-externs t
+            js2-include-node-externs t
+            js2-warn-about-unused-function-arguments t
         )
         (add-to-list 'interpreter-mode-alist (cons "node" 'js2-mode))
     )
@@ -824,6 +827,7 @@
     )
 )
 
+;; Enable typescript syntax-support
 (use-package typescript-mode
     :ensure t
     :config (progn
