@@ -577,14 +577,14 @@
 )
 
 ;; Keeps current line always vertically centered to the screen
-(use-package centered-cursor-mode
-    :ensure t
-    :diminish centered-cursor-mode
-    :config (progn
-        (define-key ccm-map [(meta v)] nil); disable keymap so it can be used elsewhere
-        (add-hook 'prog-mode-hook 'centered-cursor-mode)
-    )
-)
+;; (use-package centered-cursor-mode
+;;     :ensure t
+;;     :diminish centered-cursor-mode
+;;     :config (progn
+;;         (define-key ccm-map [(meta v)] nil); disable keymap so it can be used elsewhere
+;;         (add-hook 'prog-mode-hook 'centered-cursor-mode)
+;;     )
+;; )
 
 ;; Show a file-tree ala Vim
 (use-package neotree
