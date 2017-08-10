@@ -403,7 +403,7 @@
     )
     :config (progn
         (setq
-            persp-autokill-buffer-on-remove 'kill-weak; kill the buffer when closed
+            persp-autokill-buffer-on-remove 'kill ; kill the buffer when closed
             persp-nil-name "main"; The name of the default perspective
             persp-save-dir "~/.emacs.d/_perspectives/"
             persp-auto-save-fname "autosave"
@@ -834,14 +834,14 @@
 
 (use-package markdown-mode
     :ensure t
-    :config (progn
-        (add-hook 'prog-mode-hook 'markdown-mode)
-        (add-hook 'prog-mode-hook 'gfm-mode)
-    )
     :mode (
         ("README\\.md\\'" . gfm-mode)
         ("\\.md\\'" . markdown-mode)
         ("\\.markdown\\'" . markdown-mode)
+    )
+    :config (progn
+        (add-hook 'prog-mode-hook 'markdown-mode)
+        (add-hook 'prog-mode-hook 'gfm-mode)
     )
 )
 
@@ -850,6 +850,27 @@
     :ensure t
     :config (progn
         (setq typescript-indent-level 2)
+    )
+)
+
+;; Enable better handling of xml files (not need of ensuring, it's already included)
+(use-package nxml-mode
+    :defer t
+    :mode (
+        ("\\.plist\\'" . nxml-mode)
+        ("\\.svg\\'" . nxml-mode)
+        ("\\.xml\\'" . nxml-mode)
+        ("\\.xslt\\'" . nxml-mode)
+    )
+    :config (progn
+        (setq
+            magic-mode-alist (cons '("<\\?xml " . nxml-mode) magic-mode-alist)
+            nxml-slash-auto-complete-flag t
+            nxml-auto-insert-xml-declaration-flag t
+            nxml-child-indent 4
+        )
+        (fset 'xml-mode 'nxml-mode)
+        (add-hook 'nxml-mode-hook (lambda () (run-hooks 'prog-mode-hook)))
     )
 )
 
