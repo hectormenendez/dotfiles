@@ -17,6 +17,8 @@
     whitespace = strip
 
 [alias]
+    sm = submodule
+    smf = submodule foreach
     br = branch -vv
     su = branch --set-upstream-to
     ci = commit -m
