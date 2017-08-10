@@ -58,6 +58,8 @@
    require-final-newline nil; Don't end files with newline
    tab-always-indent t; The tab key will always indent (duh)
    tab-width 4; Use 4 spaces as indentation
+   c-basic-offset 4; the indentation for c-like syntaxes
+   tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96)
    whitespace-style '(face tabs tab-mark trailing lines-tail); Highlight these
    whitespace-line-column fill-column; Use the fill-column to mark overflowed character
    whitespace-display-mappings '(; Customize the look of these character
@@ -66,7 +68,7 @@
    )
 )
 (global-whitespace-mode t)
-(electric-indent-mode -1); don't auto-indent on the fly
+(electric-indent-mode +1); when pressing return auto-indent according to settings
 
 ;; Version control
 (setq version-control t)
