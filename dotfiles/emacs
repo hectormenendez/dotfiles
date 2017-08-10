@@ -298,6 +298,9 @@
         (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
         ;; Enable evil-mode baby!
         (evil-mode 1)
+        ;; Auto indent after paste
+        (fset 'indent-pasted-text "`[v`]=")
+        (evil-leader/set-key "p" 'indent-pasted-text)
         ;; Enable tpope's vim-commentary port
         (use-package evil-commentary
             :ensure t
