@@ -819,22 +819,6 @@
     )
 )
 
-;; Syntax checking
-(use-package flycheck
-    :ensure t
-    :init (setq-default flycheck-disabled-checkers (append '(
-        javascript-jshint
-        javascript-jscs
-        javascript-standard
-    )))
-    :config (progn
-        (setq flycheck-temp-prefix ".flycheck")
-        (flycheck-add-mode 'javascript-eslint 'rjsx-mode)
-        (flycheck-add-mode 'javascript-eslint 'js2-mode)
-        (add-hook 'prog-mode-hook 'global-flycheck-mode)
-    )
-)
-
 ;; Enable Json mode
 (use-package json-mode
     :ensure t
@@ -845,9 +829,27 @@
 ;; Enable Javascript mode
 (use-package js2-mode
     :ensure t
-    :commands js2-mode
+    :interpreter "node"
     :mode (("\\.js\\'" . js2-mode))
     :config (progn
+        (use-package skewer-mode
+            :ensure t
+            :diminish skewer-mode
+            :init (use-package simple-httpd :ensure t)
+            :config (progn
+                (add-hook 'js2-mode-hook 'skewer-mode)
+                (add-hook 'css-mode-hook 'skewer-css-mode)
+                (add-hook 'html-mode-hook 'skewer-html-mode)
+            )
+        )
+        ;; Enable contex-sensitive auto-completion (depends on skewer-mode too)
+        (use-package ac-js2
+            :ensure t
+            :config (progn
+                (setq ac-js2-evaluate-calls t)
+                (add-hook 'js2-mode-hook 'ac-js2-mode)
+            )
+        )
         ;; Enable tern
         (use-package tern
             :ensure t
@@ -882,6 +884,23 @@
     :config (progn
         (with-eval-after-load 'rjsx)
         (define-key rjsx-mode-map "<" nil); This behaviour made emacs hang, so disabled it
+    )
+)
+
+
+;; Syntax checking
+(use-package flycheck
+    :ensure t
+    :init (setq-default flycheck-disabled-checkers (append '(
+        javascript-jshint
+        javascript-jscs
+        javascript-standard
+    )))
+    :config (progn
+        (setq flycheck-temp-prefix ".flycheck")
+        (flycheck-add-mode 'javascript-eslint 'rjsx-mode)
+        (flycheck-add-mode 'javascript-eslint 'js2-mode)
+        (add-hook 'prog-mode-hook 'global-flycheck-mode)
     )
 )
 
