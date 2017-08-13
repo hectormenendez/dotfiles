@@ -4,6 +4,7 @@
 
 ;; Disable the default packaage-manager at startup
 (require 'package)
+
 (setq package-enable-at-startup nil)
 
 ;; The repositories to fetch packages-from.
@@ -255,15 +256,27 @@
 (use-package help+ :ensure t)
 (use-package help-fns+ :ensure t)
 (use-package help-mode+ :ensure t)
+(use-package help-macro+ :ensure t)
 
 ;; Improve default functionality for dired
 (use-package dired+
     :ensure t
-    :init (progn
-        (evil-leader/set-key "." 'dired-jump-other-window)
-    )
     :config (progn
         (diredp-toggle-find-file-reuse-dir 1)
+        ;;Use evil on dired mode
+        (eval-after-load 'dired '(lambda ()
+            (add-hook 'evil-local-mode-hook '(lambda ()
+                (evil-make-overriding-map dired-mode-map 'normal t); the standard bindings
+                (evil-define-key 'normal dired-mode-map
+                    "h" 'evil-backward-char
+                    "j" 'evil-next-line
+                    "k" 'evil-previous-line
+                    "l" 'evil-forward-char
+                    "w" 'evil-forward-word-begin
+                    "b" 'evil-backward-word-begin
+                )
+            ))
+        ))
     )
 )
 
@@ -301,34 +314,29 @@
 (use-package evil
     :ensure t
     :config (progn
-        ;; Have <tab> to work as it does on Vim
-        (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
-        ;; Enable evil-mode baby!
-        (evil-mode 1)
-        ;; Auto indent after paste
-        (fset 'indent-pasted-text "`[v`]=")
-        (evil-leader/set-key "p" 'indent-pasted-text)
         ;; Enable tpope's vim-commentary port
         (use-package evil-commentary
             :ensure t
             :diminish evil-commentary-mode
             :config (add-hook 'prog-mode-hook 'evil-commentary-mode)
         )
+
         ;; Enable tpope's vim-surround port (globally)
         (use-package evil-surround
             :ensure t
             :diminish evil-surround-mode
             :config (global-evil-surround-mode 1)
         )
+
         ;; Enable the <leader> key like in Vim
         (use-package evil-leader
             :ensure t
             :config (progn
+                (global-evil-leader-mode 1)
                 (evil-leader/set-leader "SPC")
-                (evil-leader/set-key "?" 'which-key-show-top-level)
-                (global-evil-leader-mode)
             )
         )
+
         ;; Enable multiple-cursors
         (use-package evil-mc
             :ensure t
@@ -368,19 +376,20 @@
                 )
                 (global-evil-mc-mode 1)
             )
+            ;; Enable evil-mode baby!
+            (evil-mode 1)
+            ;; To avoid issues load these after emacs has initialized
+            (add-hook 'evil-local-mode-hook '(lambda ()
+                ;; Auto indent after paste
+                (fset 'indent-pasted-text "`[v`]=")
+                (evil-leader/set-key "p" 'indent-pasted-text)
+                ;; TODO: What does this do?
+                (evil-leader/set-key "?" 'which-key-show-top-level)
+                ;; Have <tab> to work as it does on Vim
+                (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+                (define-key evil-motion-state-map (kbd "C-b") nil); scroll down
+            ))
         )
-        ;;Use evil on dired mode
-        (eval-after-load 'dired '(progn
-            (evil-make-overriding-map dired-mode-map 'normal t); the standard bindings
-            (evil-define-key 'normal dired-mode-map
-                "h" 'evil-backward-char
-                "j" 'evil-next-line
-                "k" 'evil-previous-line
-                "l" 'evil-forward-char
-                "w" 'evil-forward-word-begin
-                "b" 'evil-backward-word-begin
-            )
-        ))
     )
 )
 
@@ -388,29 +397,18 @@
 (use-package helm
     :ensure t
     :diminish helm-mode
-    :init (progn
-        ;; For some reason, if these are set on :config, they won't work.
-        (evil-leader/set-key "DEL" 'helm-mini)
-        (evil-leader/set-key "SPC" 'helm-M-x)
-        ;; Disable mappings that would override custom helm ones.
-        (eval-after-load 'evil-maps
-            '(progn
-                (define-key evil-motion-state-map (kbd "C-b") nil); scroll down
-            )
-        )
-    )
     :config (progn
         (require 'helm-config)
+        ;; Make sure helm-silver-searcher is installed
+        (use-package helm-ag :ensure t)
         ;; Enable fuzzy matching
-        (setq
+        (setq-default
             helm-candidate-number-limit 100
             helm-mode-fuzzy-match t
             helm-completion-in-region-fuzzy-match t
-        )
-        (setq helm-autoresize-mode t)
-        (setq helm-buffer-max-length 50)
-        ;; Try to update faster when hitting RET too quickly
-        (setq
+            helm-autoresize-mode t
+            helm-buffer-max-length 50
+            ;; Try to update faster when hitting RET too quickly
             helm-idle-delay 0.0
             helm-input-idle-delay 0.0
             helm-yas-display-key-on-candidate t
@@ -418,27 +416,30 @@
             helm-M-x-requires-pattern nil
             helm-ff-skip-boring-files t
         )
-        ;; Make sure helm-sirver-searcher is installed
-        (use-package helm-ag :ensure t)
+        (add-hook 'evil-local-mode-hook '(lambda ()
+            (evil-leader/set-key "DEL" 'helm-mini)
+            (evil-leader/set-key "SPC" 'helm-M-x)
+            ;; Map the helm help
+            (global-set-key (kbd "C-x c a") nil); The original helm-apropos binding
+            (global-set-key (kbd "C-h C-h") nil); The emacs help for help
+            (global-set-key (kbd "C-h C-h") 'helm-apropos)
+            ;; Map the dynamic kill-ring
+            (global-set-key (kbd "M-v") nil); The scroll-down-command
+            (global-set-key (kbd "C-x c M-y") nil); The original helm-show-kill-ring
+            (global-set-key (kbd "M-v") 'helm-show-kill-ring)
+            ;; Map the dynamic-text search
+            (global-set-key (kbd "C-s") nil); isearch-forward
+            (global-set-key (kbd "C-s") 'helm-occur)
+        ))
         ; Disable the "I Do" mode, we have helm for that now.
         (ido-mode -1)
         (helm-mode 1)
-    )
-    :bind (
-        ("C-h C-h" . helm-apropos); Find help
-        ("C-f" . helm-mini)
-        ("M-v" . helm-show-kill-ring)
-        ("C-s" . helm-occur); Find ocurrences of pattern
     )
 )
 
 ;; Workspace management via perspectives
 (use-package persp-mode
     :ensure t
-    :init (progn
-        ;; quick perspective switch
-        (evil-leader/set-key "TAB" 'persp-switch)
-    )
     :config (progn
         (setq
             persp-autokill-buffer-on-remove 'kill ; kill the buffer when closed
@@ -459,9 +460,14 @@
                 )
             ))
         )
+
+        (add-hook 'evil-local-mode-hook '(lambda ()
+            (evil-leader/set-key "TAB" 'persp-switch);; quick perspective switch
+        ))
+
         (add-hook 'after-init-hook '(lambda ()
-            (persp-mode 1)
             (persp-mode-projectile-bridge-mode 1)
+            (persp-mode 1)
         ))
     )
 )
@@ -469,35 +475,28 @@
 ;; Quick switching files
 (use-package projectile
     :ensure t
-    :init (progn
-        ;; make C-/ trigger helm-ag instead of undo-tree's undo
-        (define-key undo-tree-map (kbd "C-/") nil)
-        ;; Disable mappings that would override custom helm ones.
-        (eval-after-load 'evil-maps
-            '(progn
-                (define-key evil-motion-state-map (kbd "C-f") nil); scroll up
-                (define-key evil-motion-state-map (kbd "C-d") nil); scroll down
-            )
-        )
-    )
     :config (progn
-        (use-package helm-projectile
-            :ensure t
-            :commands helm-projectile-on
-            :bind (
-                ("C-f" . helm-projectile)
-                ("C-b" . helm-projectile-switch-to-buffer)
-                ("C-d" . helm-projectile-find-dir)
-                ("C-/" . helm-projectile-ag); Find ocurrences of pattern across project
-            )
-        )
+        ;; Enable helm-projectile-integration
+        (use-package helm-projectile :ensure t)
+        (add-hook 'evil-local-mode-hook '(lambda ()
+            ;; make C-/ trigger helm-ag instead of undo-tree's undo
+            (define-key undo-tree-map (kbd "C-/") nil); undo-tree-undo
+            (global-set-key (kbd "C-/") 'helm-projectile-ag)
+            ;; Enable helm-projectile
+            (define-key evil-motion-state-map (kbd "C-f") nil); scroll up
+            (global-set-key (kbd "C-f") 'helm-projectile)
+            ;; Enable finding directories
+            (define-key evil-motion-state-map (kbd "C-d") nil); scroll down
+            (global-set-key (kbd "C-d") 'helm-projectile-find-dir)
+
+        ))
     )
 )
 
 ;; Enable version control using Magit (fugitive alternative)
 (use-package magit
     :ensure t
-    :config (progn
+    :config (add-hook 'evil-local-mode-hook '(lambda ()
         (evil-leader/set-key "gs" 'magit-status)
         (evil-leader/set-key "gc" 'magit-commit)
         (evil-leader/set-key "gp" 'magit-push)
@@ -506,7 +505,7 @@
         (evil-leader/set-key "g-" 'git-gutter:revert-hunk)
         (evil-leader/set-key "g}" 'git-gutter:next-hunk)
         (evil-leader/set-key "g{" 'git-gutter:previous-hunk)
-    )
+    ))
 )
 
 ;; Autocompletion
@@ -618,13 +617,31 @@
 (use-package neotree
     :ensure t
     :config (progn
-        ;; Allow to use evil mode with neotree
-        (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
-        (evil-define-key 'normal neotree-mode-map (kbd "<f5>") 'neotree-refresh)
-        (evil-define-key 'normal neotree-mode-map (kbd "<escape>") 'neotree-toggle)
-        (evil-define-key 'normal neotree-mode-map (kbd "m") 'neotree-rename-node)
-        (evil-define-key 'normal neotree-mode-map (kbd "d") 'neotree-delete-node)
-        (evil-define-key 'normal neotree-mode-map (kbd "n") 'neotree-create-node)
+        ;; Enable theme
+        (use-package all-the-icons :ensure t)
+        (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+        ;; Use ffip to determine the project root and open neotree relative to it.
+        (use-package find-file-in-project
+            :ensure t
+            :config (add-hook 'evil-local-mode-hook '(lambda ()
+                (evil-leader/set-key "RET" (lambda ()
+                    (interactive)
+                    (let
+                        (
+                            (project-dir (ffip-project-root))
+                            (file-name (buffer-file-name))
+                        )
+                        (if project-dir
+                            (progn
+                                (neotree-dir project-dir)
+                                (neotree-find file-name)
+                            )
+                            (message "Could not find git project root.")
+                        )
+                    )
+                ))
+            ))
+        )
         ;; (evil-define-ket 'normal neotree-mode-map (kbd "|") 'neotree-)
         (setq neo-smart-open t); let neotree find the current file and jump to it.
         ;; work along with projectile
@@ -640,47 +657,26 @@
                 ;; hiding is enabled, use git check-ignore to determeine which to show
                 (if
                     ;; if the output is empty (file should be shown) return the node
-                    (string=
-                        (string-trim
-                            (shell-command-to-string
-                                (format
-                                    "git -C %s check-ignore %s"
-                                    (file-name-directory node)
-                                    node
-                                )
-                            )
-                        )
-                        ""
-                    )
+                    (string= (string-trim (shell-command-to-string (format
+                        "git -C %s check-ignore %s"
+                        (file-name-directory node)
+                        node
+                    ))) "")
                     node
                     ;; git outputed something, file shold be hidden
                     nil
                 )
             )
         )
-        ;; Enable theme
-        (use-package all-the-icons :ensure t)
-        (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-        ;; Use ffip to determine the project root and open neotree relative to it.
-        (use-package find-file-in-project
-            :ensure t
-            :config (evil-leader/set-key "RET" (lambda ()
-                (interactive)
-                (let
-                    (
-                        (project-dir (ffip-project-root))
-                        (file-name (buffer-file-name))
-                    )
-                    (if project-dir
-                        (progn
-                            (neotree-dir project-dir)
-                            (neotree-find file-name)
-                        )
-                        (message "Could not find git project root.")
-                    )
-                )
-            ))
-        )
+        (add-hook 'evil-local-mode-hook '(lambda ()
+            ;; Allow to use evil mode with neotree
+            (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
+            (evil-define-key 'normal neotree-mode-map (kbd "<f5>") 'neotree-refresh)
+            (evil-define-key 'normal neotree-mode-map (kbd "<escape>") 'neotree-toggle)
+            (evil-define-key 'normal neotree-mode-map (kbd "m") 'neotree-rename-node)
+            (evil-define-key 'normal neotree-mode-map (kbd "d") 'neotree-delete-node)
+            (evil-define-key 'normal neotree-mode-map (kbd "n") 'neotree-create-node)
+        ))
     )
 )
 
@@ -689,35 +685,6 @@
     :ensure t
     :diminish ace-window-mode
     :config (progn
-        ;; Replace "other-window"
-        (global-set-key [remap other-window] 'ace-window)
-        ;; Disable the usual bindings for window management
-        (global-set-key (kbd "C-x 0") nil); closes window
-        (global-set-key (kbd "C-x 1") nil); delete other windows
-        (global-set-key (kbd "C-x 2") nil); splits window horizontally
-        (global-set-key (kbd "C-x 3") nil); splits window vertically
-        ;; when splitting windows, always balance windows
-        (evil-leader/set-key "w|" '(lambda ()
-            (interactive)
-            (split-window-horizontally)
-            (balance-windows)
-            (other-window 1 nil)
-        ))
-        (evil-leader/set-key "w-" (lambda ()
-            (interactive)
-            (split-window-vertically)
-            (balance-windows)
-            (other-window 1 nil)
-        ))
-        ;; Key bindings for evil-mode
-        (evil-leader/set-key "ww" 'ace-window)
-        (evil-leader/set-key "wh" 'windmove-left)
-        (evil-leader/set-key "wj" 'windmove-down)
-        (evil-leader/set-key "wk" 'windmove-up)
-        (evil-leader/set-key "wl" 'windmove-right)
-        (evil-leader/set-key "wq" 'delete-window)
-        (evil-leader/set-key "wo" 'delete-other-windows)
-        (evil-leader/set-key "w=" 'balance-windows)
         ;; Set the font-face for the ace-window indicator
         (custom-set-faces
             '(aw-leading-char-face ((t (
@@ -726,6 +693,37 @@
                 :height 3.0))
             ))
         )
+        (add-hook 'evil-local-mode-hook '(lambda ()
+            ;; Replace "other-window"
+            (global-set-key [remap other-window] 'ace-window)
+            ;; Disable the usual bindings for window management
+            (global-set-key (kbd "C-x 0") nil); closes window
+            (global-set-key (kbd "C-x 1") nil); delete other windows
+            (global-set-key (kbd "C-x 2") nil); splits window horizontally
+            (global-set-key (kbd "C-x 3") nil); splits window vertically
+            ;; when splitting windows, always balance windows
+            (evil-leader/set-key "w|" '(lambda ()
+                (interactive)
+                (split-window-horizontally)
+                (balance-windows)
+                (other-window 1 nil)
+            ))
+            (evil-leader/set-key "w-" (lambda ()
+                (interactive)
+                (split-window-vertically)
+                (balance-windows)
+                (other-window 1 nil)
+            ))
+            ;; Key bindings for evil-mode
+            (evil-leader/set-key "ww" 'ace-window)
+            (evil-leader/set-key "wh" 'windmove-left)
+            (evil-leader/set-key "wj" 'windmove-down)
+            (evil-leader/set-key "wk" 'windmove-up)
+            (evil-leader/set-key "wl" 'windmove-right)
+            (evil-leader/set-key "wq" 'delete-window)
+            (evil-leader/set-key "wo" 'delete-other-windows)
+            (evil-leader/set-key "w=" 'balance-windows)
+        ))
     )
 )
 
@@ -771,14 +769,14 @@
 (use-package pretty-lambdada
     :ensure t
     :config (progn
-        (add-hook 'prog-mode-hook #'pretty-lambda-mode)
+        (add-hook 'prog-mode-hook 'pretty-lambda-mode)
     )
 )
 
 ;; Highlight TODOs
 (use-package hl-todo
     :ensure t
-    :init (add-hook 'prog-mode-hook #'hl-todo-mode)
+    :init (add-hook 'prog-mode-hook 'hl-todo-mode)
     :bind (
         ("C-c t n" . hl-todo-next)
         ("C-c t p" . hl-todo-previous)
@@ -796,15 +794,17 @@
 ;; enable jump-to definition
 (use-package dumb-jump
     :ensure t
-    :init (add-hook 'prog-mode-hook #'dumb-jump-mode)
     :config (progn
         (setq-default
             dumb-jump-prefer-searcher 'ag
             dumb-jump-selector 'helm
         )
-        ;; Key bindings for evil-mode
-        (evil-leader/set-key "jj" 'dumb-jump-go)
-        (evil-leader/set-key "jJ" 'dumb-jump-back)
+        (add-hook 'evil-local-mode-hook '(lambda ()
+            ;; Key bindings for evil-mode
+            (evil-leader/set-key "jj" 'dumb-jump-go)
+            (evil-leader/set-key "jJ" 'dumb-jump-back)
+        ))
+        (add-hook 'prog-mode-hook 'dumb-jump-mode)
     )
 )
 
