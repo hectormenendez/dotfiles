@@ -443,12 +443,13 @@
     :config (progn
         (setq
             persp-autokill-buffer-on-remove 'kill ; kill the buffer when closed
-            persp-nil-name "main"; The name of the default perspective
+            persp-nil-name "nil"; The name of the default perspective
             persp-save-dir "~/.emacs.d/_perspectives/"
             persp-auto-save-fname "autosave"
             persp-set-last-persp-for-new-frames nil; don't use last persp for new frames
             persp-auto-save-opt 1; Auto-save perspective on buffer kill
             persp-auto-resume-time 1; Load perspectives on startup
+            persp-nil-hidden t; hide the nil perspective
         )
         ;; Integrate with projectile
         (use-package persp-mode-projectile-bridge
@@ -465,12 +466,20 @@
             (evil-leader/set-key "TAB" 'persp-switch);; quick perspective switch
             (global-set-key (kbd "C-b") nil); backward_char
             (global-set-key (kbd "C-b") 'persp-switch-to-buffer)
+            (global-set-key (kbd "C-B") 'persp-kill-buffer)
+            (global-set-key (kbd "M-w") nil); kill-ring-save
+            (global-set-key (kbd "M-w") 'kill-this-buffer)
         ))
 
         (add-hook 'after-init-hook '(lambda ()
             (persp-mode-projectile-bridge-mode 1)
             (persp-mode 1)
         ))
+
+        ;; always kill buffer using persp-mode
+        (with-eval-after-load "persp-mode"
+            (substitute-key-definition #'kill-buffer #'persp-kill-buffer global-map)
+        )
     )
 )
 
