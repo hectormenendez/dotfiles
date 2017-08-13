@@ -262,7 +262,11 @@
 (use-package dired+
     :ensure t
     :config (progn
-        (diredp-toggle-find-file-reuse-dir 1)
+        (add-hook 'evil-local-mode-hook '(lambda ()
+            ;; Add jump to current file's folder
+            (global-set-key (kbd "C-x C-j") nil);original binding
+            (evil-leader/set-key "." 'dired-jump)
+        ))
         ;;Use evil on dired mode
         (eval-after-load 'dired '(lambda ()
             (add-hook 'evil-local-mode-hook '(lambda ()
@@ -277,6 +281,8 @@
                 )
             ))
         ))
+        ;; reuse the dired buffer when moving betweenn directories
+        (diredp-toggle-find-file-reuse-dir 1)
     )
 )
 
@@ -832,10 +838,10 @@
     :interpreter "node"
     :mode (("\\.js\\'" . js2-mode))
     :config (progn
+        (use-package simple-httpd :ensure t)
         (use-package skewer-mode
             :ensure t
             :diminish skewer-mode
-            :init (use-package simple-httpd :ensure t)
             :config (progn
                 (add-hook 'js2-mode-hook 'skewer-mode)
                 (add-hook 'css-mode-hook 'skewer-css-mode)
