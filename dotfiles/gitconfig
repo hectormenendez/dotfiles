@@ -46,6 +46,10 @@
         --date=relative\
         --pretty=tformat:'%C(bold blue)%h%C(reset) %C(bold green)%>(8,trunc)%ar%C(reset) %C(bold dim white)%>(8,trunc)%an%C(reset) %C(white)%s%C(reset)%C(auto)%d%C(reset)'
     lga = !git lg --all
+    tree = !git log\
+	--graph\
+	--date=relative\
+	--pretty=tformat:'%>|(18)%C(auto)%h%C(reset)   %C(white)%an%C(reset) %C(bold dim white)%ar%C(reset) %C(auto)%d%C(reset)%n %>|(19)%C(dim black)%m%C(reset) %<(60,trunc)%C(dim white)%s%C(reset)%n'
 
 [color]
     ui = true
