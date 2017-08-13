@@ -68,7 +68,7 @@
    )
 )
 (global-whitespace-mode t)
-(electric-indent-mode +1); when pressing return auto-indent according to settings
+(electric-indent-mode -1); when pressing return auto-indent according to settings
 
 ;; Version control
 (setq version-control t)
