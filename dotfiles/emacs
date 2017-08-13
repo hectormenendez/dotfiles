@@ -251,6 +251,11 @@
 ;; Adds a command for restarting emacs
 (use-package restart-emacs :ensure t)
 
+;; Improve emacs' help system
+(use-package help+ :ensure t)
+(use-package help-fns+ :ensure t)
+(use-package help-mode+ :ensure t)
+
 ;; Improve default functionality for dired
 (use-package dired+
     :ensure t
