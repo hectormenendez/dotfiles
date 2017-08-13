@@ -463,6 +463,8 @@
 
         (add-hook 'evil-local-mode-hook '(lambda ()
             (evil-leader/set-key "TAB" 'persp-switch);; quick perspective switch
+            (global-set-key (kbd "C-b") nil); backward_char
+            (global-set-key (kbd "C-b") 'persp-switch-to-buffer)
         ))
 
         (add-hook 'after-init-hook '(lambda ()
