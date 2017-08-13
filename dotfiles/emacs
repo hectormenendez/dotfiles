@@ -334,6 +334,38 @@
             :ensure t
             :diminish evil-mc-mode
             :config (progn
+                (let
+                    ((keys '(
+                        ("grm" . nil)
+                        ("gru" . nil)
+                        ("grs" . nil)
+                        ("grr" . nil)
+                        ("grf" . nil)
+                        ("grl" . nil)
+                        ("grh" . nil)
+                        ("grj" . nil)
+                        ("grk" . nil)
+                        ("grN" . nil)
+                        ("grn" . nil)
+                        ("grp" . nil)
+                        ("grP" . nil)
+                        ("M-j" . evil-mc-make-cursor-move-next-line)
+                        ("M-k" . evil-mc-make-cursor-move-prev-line)
+                        ("M-P" . evil-mc-make-and-goto-prev-cursor)
+                        ("M-N" . evil-mc-make-and-goto-next-cursor)
+                        ("M-n" . evil-mc-make-and-goto-next-match)
+                        ("M-p" . evil-mc-make-and-goto-prev-match)
+                        ("M-x" . evil-mc-skip-and-goto-next-match)
+                        ("M-X" . evil-mc-undo-all-cursors)
+                        ("C-n" . nil)
+                        ("C-p" . nil)
+                        ("C-t" . nil)
+                    )))
+                    (dolist (key-data keys)
+                        (evil-define-key 'normal evil-mc-key-map (kbd (car key-data)) (cdr key-data))
+                        (evil-define-key 'visual evil-mc-key-map (kbd (car key-data)) (cdr key-data))
+                    )
+                )
                 (global-evil-mc-mode 1)
             )
         )
@@ -395,7 +427,6 @@
     :bind (
         ("C-h C-h" . helm-apropos); Find help
         ("C-f" . helm-mini)
-        ("M-x" . helm-M-x)
         ("M-v" . helm-show-kill-ring)
         ("C-s" . helm-occur); Find ocurrences of pattern
     )
