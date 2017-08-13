@@ -19,8 +19,6 @@ fi
 # ---------------------------------------------------------------------------- ENVIRONMENT
 
 # get these vars from $_path/private/env (so their values aren't published on git)
-setEnv "GIT_AUTHOR_NAME"
-setEnv "GIT_AUTHOR_EMAIL"
 setEnv "HOMEBREW_GITHUB_API_TOKEN"
 
 # Common
@@ -29,9 +27,6 @@ export LANG=$LC_ALL
 
 export NVM_DIR=$HOME/.nvm
 export PATH=~/.bin:$DOTFILES_BIN:$NVM_DIR/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
-
-export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"    # Alias for git
-export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"  # Alias for git
 
 # Fuzzy finder settings
 export FZF_TMUX=0                                # don't use a split in tmyx for FZF
