@@ -507,6 +507,7 @@
             (global-set-key (kbd "C-d") 'helm-projectile-find-dir)
 
         ))
+        (projectile-mode 1)
     )
 )
 
