@@ -3,6 +3,8 @@ alias sudo='sudo '
 
 # Navigation
 alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 alias -- --='cd -'
 
 alias ssh='TERM=xterm ssh'
