@@ -1,14 +1,33 @@
-;p-*-Emacs-Lisp-*-
+;;; init.el --- Personal emac configuration of Héctor Menéndez
 
-; ------------------------------------------------------------------------ Package Manager
+;;; Commentary:
+;;  Personal Emacs configuration of Héctor Menéndez
+
+;;; Code:
+
+;; ----------------------------------------------------------------------- Core settings
+(setq
+    ;; Core
+    visible-bell t; don't make sounds, show bells.
+    message-log-max 10000
+    load-prefer-newer t; Don't load outdated byte code
+    gc-cons-threshold 2000000; no need of garbage collect that often
+    ;; Startup
+    inhibit-startup-screen 1; Don't show the welcome screen
+    initial-scratch-message nil; Don't show a message on *scratch* mode
+)
+
+; Ask for just one letter when confirmation needed
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+
+;; ----------------------------------------------------------------------- Package Manager
 
 ;; Disable the default packaage-manager at startup
 (require 'package)
-
 (setq package-enable-at-startup nil)
 
 ;; The repositories to fetch packages-from.
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
 ;; This will be added no matter what, so, add it.
@@ -20,231 +39,271 @@
     (package-install 'use-package)
 )
 (eval-when-compile (require 'use-package))
-(require 'diminish); for :diminish
-(require 'bind-key); for :bind
 
-(set-language-environment "UTF-8")
-(set-default-coding-systems 'utf-8)
+(use-package bind-key :demand t); Allows the  use of :bind
+(use-package delight :ensure t); Diminish alternative, allows to rename mode names
 
-;; -------------------------------------------------------------------------------- Server
+;; ---------------------------------------------------------------------- Packages: Native
 
-(require 'server)
-(unless (server-running-p) (server-start))
-
-;; -------------------------------------------------------------------------------- Editor
-
-(setq inhibit-startup-screen 1)
-(setq initial-scratch-message nil); Don't show a message on *scratch* mode
-(setq visible-bell t); don't make sounds, show bells.
-(setq custom-safe-themes t); Don't ask for confirmation when loading themes
-
-;; Charset has to be unicode, like, always
-(set-charset-priority 'unicode)
-(prefer-coding-system        'utf-8)
-(set-terminal-coding-system  'utf-8)
-(set-keyboard-coding-system  'utf-8)
-(set-selection-coding-system 'utf-8)
-(setq locale-coding-system   'utf-8)
-(setq-default buffer-file-coding-system 'utf-8)
-
-(column-number-mode 1); Show the current-column too
-(global-hl-line-mode 1); Highlight the current line
-(global-auto-revert-mode 1); Update buffers whenever the file changes on disk
-(show-paren-mode 1); Show matching parenthesis
-
-; Whitespace management
-(setq-default
-   fill-column 90
-   indent-tabs-mode nil; Use spaces for tabs
-   require-final-newline nil; Don't end files with newline
-   tab-always-indent t; The tab key will always indent (duh)
-   tab-width 4; Use 4 spaces as indentation
-   c-basic-offset 4; the indentation for c-like syntaxes
-   tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96)
-   whitespace-style '(face tabs tab-mark trailing lines-tail); Highlight these
-   whitespace-line-column fill-column; Use the fill-column to mark overflowed character
-   whitespace-display-mappings '(; Customize the look of these character
-       (tab-mark ?\t [?› ?\t])
-       (newline-mark 10  [36 10])
-   )
+;; Basic editor configuration
+(use-package simple
+    :demand t
+    :config (progn
+        (column-number-mode 1); Show the current-column number
+        (global-hl-line-mode 1); Highlight the current line
+    )
 )
-(global-whitespace-mode t)
-(electric-indent-mode -1); when pressing return auto-indent according to settings
 
-;; Version control
-(setq version-control t)
-(setq vc-follow-symlinks t); Don't ask to follow symlinks, just do it.
+;; Enable Emacs server so clients can connect to current session
+(use-package server
+    :demand t
+    :config (add-hook 'after-init-hook '(lambda ()
+        (unless (server-running-p) (server-start))
+    ))
+)
 
-(defalias 'yes-or-no-p 'y-or-n-p); Ask for just one letter
-
-;; ----------------------------------------------------------------------- File management
-
-;; Backing up
-(setq make-backup-files t)
-(setq delete-old-versions t)
-(setq backup-directory-alist '(("." . "~/.emacs.d/_backups")))
-
-;; Auto saving (disabled)
-(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/_auto-save/" t)))
-(setq auto-save-default nil)
+;; File handling
+(use-package files
+    :demand t
+    :config (setq
+        make-backup-files t
+        delete-old-versions t
+        version-control t; Keep control of backups
+        vc-follow-symlinks t; Don't ask to follow symlinks, just do it.
+        backup-directory-alist '(("." . "~/.emacs.d/_backups"))
+        auto-save-file-name-transforms'((".*" "~/.emacs.d/_auto-save/" t));  where to save
+        auto-save-default nil; Disable auto-saving
+        require-final-newline nil; Don't end files with newline
+    )
+)
 
 ;; History
-(require 'savehist)
-(setq savehist-file "~/.emacs.d/_history")
-(setq savehist-save-minibuffer-history 1)
-(setq history-length t)
-(setq history-delete-duplicates t)
-(savehist-mode 1)
+(use-package savehist
+    :demand t
+    :config (progn
+        (setq
+            savehist-file "~/.emacs.d/_history"
+            savehist-save-minibuffer-history 1
+            history-length t
+            history-delete-duplicates t
+        )
+        (savehist-mode 1)
+    )
+)
 
 ;; Track opened files
-(require 'recentf)
-(setq recentf-save-file "~/.emacs.d/_recentf")
-(setq recentf-filename-handlers '(abbreviate-file-name))
-(recentf-mode 1)
+(use-package recentf
+    :demand t
+    :config (progn
+        (setq
+            recentf-save-file "~/.emacs.d/_recentf"
+            recentf-filename-handlers '(abbreviate-file-name)
+        )
+        (recentf-mode 1)
+    )
+)
 
 ;; Save the cursor position for every file.
-(require 'saveplace)
-(setq save-place-file "~/.emacs.d/_saveplace")
-(save-place-mode 1)
+(use-package saveplace
+    :demand t
+    :config (progn
+        (setq save-place-file "~/.emacs.d/_saveplace")
+        (save-place-mode 1)
+    )
+)
 
-;; Themes location
-(add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/")
+;; Auto update files when modified outside Emacs
+(use-package autorevert
+    ;; Update buffers whenever the file changes on disk
+    :delight (auto-revert-mode)
+    :config (progn
+        (setq
+            auto-revert-verbose nil
+            global-auto-revert-non-file-buffers t; Enable autorevert on dired buffers
+        )
+        (global-auto-revert-mode 1)
+    )
+)
 
-;; Save all customisations to this file instead.
-(setq custom-file "~/.emacs.d/_custom.el")
-(load custom-file)
+;; Customisations (mostly themes)
+(use-package custom
+    ;; TODO: validate the existence of the theme before trying to load it
+    :demand t
+    :config (progn
+        (setq
+            custom-safe-themes t; Don't ask for confirmations when loading themes
+            custom-file "~/.emacs.d/_custom.el"; Save customisations to this file
+        )
+        (add-to-list 'custom-theme-load-path "~/.emacs.d/_themes/"); Themes location
+        (load custom-file)
+    )
+)
 
-;; --------------------------------------------------------------------------------- Theme
+;; Multilingual support (set everything to utf-8, basically)
+(use-package mule
+    :demand t
+    :config (progn
+        (setq
+            locale-coding-system 'utf-8
+            buffer-file-coding-system 'utf-8
+        )
+        (prefer-coding-system 'utf-8)
+        (set-charset-priority 'unicode)
+        (set-language-environment 'utf-8)
+        (set-default-coding-systems 'utf-8)
+        (set-terminal-coding-system 'utf-8)
+        (set-keyboard-coding-system 'utf-8)
+        (set-selection-coding-system 'utf-8)
+    )
+)
 
-(load-theme 'etor)
+;; Show invalid whitespaces
+(use-package whitespace
+    :demand t
+    :delight (global-whitespace-mode)
+    :init (setq-default ;; These are core & indent vars
+        fill-column 90
+        tab-width 4; Use 4 spaces as indentation
+        indent-tabs-mode nil; Use spaces for tabs
+        tab-always-indent t; The tab key will always indent (duh)
+        tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88)
+    )
+    :config (progn
+        (setq-default
+            whitespace-style '(face tabs tab-mark trailing lines-tail); Highlight these
+            whitespace-line-column fill-column; Use the fill-column to mark overflowed
+            whitespace-display-mappings '(; Customize the look of these character
+                (tab-mark ?\t [?› ?\t])
+                (newline-mark 10  [36 10])
+            )
+        )
+        (global-whitespace-mode 1)
+    )
+)
 
-;; Normally prettify-symbols makes a good work replacing symbols, sadly, this breaks
-;; the ligature functionallity of fonts that have it (like Fira Code). Personally
-;; I think Fira's ligature is superior, since it's the same actual font doing it.
-;; But I actually like the lambda replacement on Lisp, and that's not available with Fira
-;; I'm gonna use a plugin for this (a very old one, that is)
-(global-prettify-symbols-mode 0)
-;; Setup ligatures
-(let
-    ((alist '(
-        (33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
-        (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
-        (36 . ".\\(?:>\\)")
-        (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
-        (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-        (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
-        (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
-        (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
-        (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
-        (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
-        (48 . ".\\(?:x[a-zA-Z]\\)")
-        (58 . ".\\(?:::\\|[:=]\\)")
-        (59 . ".\\(?:;;\\|;\\)")
-        (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
-        (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
-        (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
-        (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
-        (91 . ".\\(?:]\\)")
-        (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
-        (94 . ".\\(?:=\\)")
-        (119 . ".\\(?:ww\\)")
-        (123 . ".\\(?:-\\)")
-        (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
-        (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
-    )))
-    (dolist
-        (char-regexp alist)
-        (set-char-table-range composition-function-table
-            (car char-regexp)
-            `([,(cdr char-regexp) 0 font-shape-gstring])
+;; Automate behaviour
+(use-package electric
+    ;; TODO: Find out more about this module so it actually does something.
+    :demand t
+    :config (progn
+        (electric-indent-mode -1); when pressing return auto-indent will be disabled
+    )
+)
+
+; Show matching parenthesis
+(use-package paren :demand t :config (show-paren-mode 1))
+
+;; Settings for programming modes
+(use-package prog-mode
+    :config (progn
+        ;; Normally prettify-symbols makes a good work replacing symbols, sadly,
+        ;; this breaks the ligature functionallity of fonts that have it (like Fira Code).
+        (global-prettify-symbols-mode 0)
+        ;; Setup ligatures
+        (let
+            ((alist '(
+                (33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+                (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+                (36 . ".\\(?:>\\)")
+                (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+                (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+                (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
+                (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+                (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+                (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+                (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
+                (48 . ".\\(?:x[a-zA-Z]\\)")
+                (58 . ".\\(?:::\\|[:=]\\)")
+                (59 . ".\\(?:;;\\|;\\)")
+                (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
+                (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+                (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+                (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+                (91 . ".\\(?:]\\)")
+                (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+                (94 . ".\\(?:=\\)")
+                (119 . ".\\(?:ww\\)")
+                (123 . ".\\(?:-\\)")
+                (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+                (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
+            )))
+            (dolist
+                (char-regexp alist)
+                (set-char-table-range composition-function-table
+                    (car char-regexp)
+                    `([,(cdr char-regexp) 0 font-shape-gstring])
+                )
+            )
         )
     )
 )
 
-;; ------------------------------------------------------------------------------ GUI only
-
-;; Save and restore the frame geometry.
-;; TODO: This should be on its own file.
-(if window-system (progn
-    ;; Allow the frame to become full-screen with the usual key-binding
-    (global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
-    ;; Frame appareance
-    (setq frame-title-format "emacs")
-    (tool-bar-mode -1); Don't show the toolbar
-    (scroll-bar-mode -1); Don't show the scrollbar
-
-    ;; Save the frame size and position when exiting, and load'em on boot.
-    ;; TODO: This should be a plugin.
-    (defun framegeometry-save () (let
-        (
-            (framegeometry-left (frame-parameter (selected-frame) 'left))
-            (framegeometry-top (frame-parameter (selected-frame) 'top))
-            (framegeometry-width (frame-parameter (selected-frame) 'width))
-            (framegeometry-height (frame-parameter (selected-frame) 'height))
-            (framegeometry-file (expand-file-name "_framegeometry" user-emacs-directory))
-        )
-        (when (not (number-or-marker-p framegeometry-left)) (setq framegeometry-left 0))
-        (when (not (number-or-marker-p framegeometry-top)) (setq framegeometry-top 0))
-        (when (not (number-or-marker-p framegeometry-width)) (setq framegeometry-width 0))
-        (when (not (number-or-marker-p framegeometry-height)) (setq framegeometry-height 0))
-        (with-temp-buffer
-            (insert
-                "(setq initial-frame-alist '(\n"
-                (format "    (top . %d)\n" (max framegeometry-top 0))
-                (format "    (left . %d)\n" (max framegeometry-left 0))
-                (format "    (width . %d)\n" (max framegeometry-width 0))
-                (format "    (height . %d)\n" (max framegeometry-height 0))
-                "))\n"
-            )
-            (when (file-writable-p framegeometry-file) (write-file framegeometry-file))
-        )
-    ))
-    (defun framegeometry-load () (let
-        (
-            (framegeometry-file (expand-file-name "_framegeometry" user-emacs-directory))
-        )
-        (when (file-readable-p framegeometry-file) (load-file framegeometry-file))
-    ))
-    (add-hook 'after-init-hook 'framegeometry-load)
-    (add-hook 'kill-emacs-hook 'framegeometry-save)
-    ;; Use common key-bindings for zooming the frame.
-    (use-package zoom-frm
-        :ensure t
-        :config (progn
-            (setq zoom-frame/buffer 'buffer)
-            ;; Disable default text-scaling (it messes up with FCI)
-            (global-set-key (kbd "C-x C-0") nil)
-            (global-set-key (kbd "C-x C-=") nil)
-            (global-set-key (kbd "C-x C-+") nil)
-            (global-set-key (kbd "C-x C--") nil)
-            ;; Now setup the bindings with the zoom plugin
-            (global-set-key (kbd "M-0") 'zoom-frm-unzoom)
-            (global-set-key (kbd "M-+") 'zoom-frm-in)
-            (global-set-key (kbd "M--") 'zoom-frm-out)
-        )
+;; Customize frame behaviour (only when in GUI mode)
+(use-package frame
+    ;; TODO: framegeometry load and save should be a plugin
+    :if window-system
+    :bind (
+        ("M-RET" . toggle-frame-fullscreen)
     )
-    ;; Show actual colors on color names
-    (use-package rainbow-mode :ensure t)
-))
-
-;; ---------------------------------------------------------------------------- MacOS only
-
-;; Make sure Mac's $PATH is available to emacs
-(use-package exec-path-from-shell
-    :if (memq window-system '(mac ns))
-    :ensure t
-    :init (setenv "SHELL" "/usr/local/bin/bash")
     :config (progn
-        (setq exec-path-from-shell-check-startup-files nil); remove warning
-        (setq exec-path-from-shell-variables '("PATH" "MANPATH"))
-        (exec-path-from-shell-initialize)
+        (setq frame-title-format "emacs")
+        (tool-bar-mode -1); Don't show the toolbar
+        (scroll-bar-mode -1); Don't show the scrollbar
+        ;; Save the frame size and position when exiting, and load'em on boot.
+        (add-hook 'after-init-hook '(lambda ()
+            "Load last frame geometry from a a file."
+            (let
+                (
+                    (framegeometry-file (expand-file-name "_framegeometry" user-emacs-directory))
+                )
+                (when (file-readable-p framegeometry-file) (load-file framegeometry-file))
+            )
+        ))
+        (add-hook 'kill-emacs-hook '(lambda ()
+            "Save current frame geometry to a file."
+            (let
+                (
+                    (framegeometry-left (frame-parameter (selected-frame) 'left))
+                    (framegeometry-top (frame-parameter (selected-frame) 'top))
+                    (framegeometry-width (frame-parameter (selected-frame) 'width))
+                    (framegeometry-height (frame-parameter (selected-frame) 'height))
+                    (framegeometry-file (expand-file-name "_framegeometry" user-emacs-directory))
+                )
+                (when (not (number-or-marker-p framegeometry-left)) (setq framegeometry-left 0))
+                (when (not (number-or-marker-p framegeometry-top)) (setq framegeometry-top 0))
+                (when (not (number-or-marker-p framegeometry-width)) (setq framegeometry-width 0))
+                (when (not (number-or-marker-p framegeometry-height)) (setq framegeometry-height 0))
+                (with-temp-buffer
+                    (insert
+                        "(setq initial-frame-alist '(\n"
+                        (format "    (top . %d)\n" (max framegeometry-top 0))
+                        (format "    (left . %d)\n" (max framegeometry-left 0))
+                        (format "    (width . %d)\n" (max framegeometry-width 0))
+                        (format "    (height . %d)\n" (max framegeometry-height 0))
+                        "))\n"
+                    )
+                    (when (file-writable-p framegeometry-file) (write-file framegeometry-file))
+                )
+            )
+        ))
     )
 )
 
 ;; ------------------------------------------------------------------------------ Packages
 
-;; Some packages use this, just in case, make it available
-(use-package s :ensure t)
+;; Make sure Mac's $PATH is available to emacs
+(use-package exec-path-from-shell
+    :ensure t
+    :if (file-exists-p "/usr/local/bin/bash")
+    :init (setenv "SHELL" "/usr/local/bin/bash")
+    :config (progn
+        (setq
+            exec-path-from-shell-check-startup-files nil; remove warning
+            exec-path-from-shell-variables '("PATH" "MANPATH")
+        )
+        (exec-path-from-shell-initialize)
+    )
+)
 
 ;; Try packages before installing.
 (use-package try :ensure t)
@@ -256,7 +315,29 @@
 (use-package help+ :ensure t)
 (use-package help-fns+ :ensure t)
 (use-package help-mode+ :ensure t)
-(use-package help-macro+ :ensure t)
+
+;; Use common key-bindings for zooming the frame.
+(use-package zoom-frm
+    :ensure t
+    :if window-system
+    :config (progn
+        (setq zoom-frame/buffer 'buffer)
+        ;; Disable default text-scaling (it messes up with FCI)
+        (global-set-key (kbd "C-x C-0") nil)
+        (global-set-key (kbd "C-x C-=") nil)
+        (global-set-key (kbd "C-x C-+") nil)
+        (global-set-key (kbd "C-x C--") nil)
+        ;; Now setup the bindings with the zoom plugin
+        (global-set-key (kbd "M-0") 'zoom-frm-unzoom)
+        (global-set-key (kbd "M-+") 'zoom-frm-in)
+        (global-set-key (kbd "M--") 'zoom-frm-out)
+    )
+)
+;; Show actual colors on color names
+(use-package rainbow-mode
+    :ensure t
+    :if window-system
+)
 
 ;; Improve default functionality for dired
 (use-package dired+
@@ -286,33 +367,24 @@
     )
 )
 
-;; Hide minor modes from line-mode (used by 'use-package')
-(use-package diminish
-    :ensure t
-    :config (progn
-        (diminish 'global-whitespace-mode)
-        (diminish 'auto-revert-mode)
-    )
-)
-
 ;; Show all available mas when key is pressed. (after a timeout)
 (use-package which-key
     :ensure t
-    :diminish which-key-mode
+    :delight which-key-mode
     :config (which-key-mode)
 )
 
 ;; Wait what? numbers don't get a highlight on emacs? fix it.
 (use-package highlight-numbers
     :ensure t
-    :diminish highlight-numbers-mode
+    :delight highlight-numbers-mode
     :config (add-hook 'prog-mode-hook 'highlight-numbers-mode)
 )
 
 ;; What? no highlighted quotes for lisp either? c'mon man!
 (use-package highlight-quoted
     :ensure t
-    :diminish highlight-quoted-mode
+    :delight highlight-quoted-mode
     :config (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode)
 )
 
@@ -323,86 +395,81 @@
         ;; Enable tpope's vim-commentary port
         (use-package evil-commentary
             :ensure t
-            :diminish evil-commentary-mode
-            :config (add-hook 'prog-mode-hook 'evil-commentary-mode)
+            :delight evil-commentary-mode
         )
-
         ;; Enable tpope's vim-surround port (globally)
         (use-package evil-surround
             :ensure t
-            :diminish evil-surround-mode
+            :delight evil-surround-mode
             :config (global-evil-surround-mode 1)
         )
-
         ;; Enable the <leader> key like in Vim
         (use-package evil-leader
             :ensure t
-            :config (progn
-                (global-evil-leader-mode 1)
-                (evil-leader/set-leader "SPC")
-            )
+            :config (global-evil-leader-mode 1)
         )
-
         ;; Enable multiple-cursors
         (use-package evil-mc
             :ensure t
-            :diminish evil-mc-mode
-            :config (progn
-                (let
-                    ((keys '(
-                        ("grm" . nil)
-                        ("gru" . nil)
-                        ("grs" . nil)
-                        ("grr" . nil)
-                        ("grf" . nil)
-                        ("grl" . nil)
-                        ("grh" . nil)
-                        ("grj" . nil)
-                        ("grk" . nil)
-                        ("grN" . nil)
-                        ("grn" . nil)
-                        ("grp" . nil)
-                        ("grP" . nil)
-                        ("M-j" . evil-mc-make-cursor-move-next-line)
-                        ("M-k" . evil-mc-make-cursor-move-prev-line)
-                        ("M-P" . evil-mc-make-and-goto-prev-cursor)
-                        ("M-N" . evil-mc-make-and-goto-next-cursor)
-                        ("M-n" . evil-mc-make-and-goto-next-match)
-                        ("M-p" . evil-mc-make-and-goto-prev-match)
-                        ("M-x" . evil-mc-skip-and-goto-next-match)
-                        ("M-X" . evil-mc-undo-all-cursors)
-                        ("C-n" . nil)
-                        ("C-p" . nil)
-                        ("C-t" . nil)
-                    )))
-                    (dolist (key-data keys)
-                        (evil-define-key 'normal evil-mc-key-map (kbd (car key-data)) (cdr key-data))
-                        (evil-define-key 'visual evil-mc-key-map (kbd (car key-data)) (cdr key-data))
-                    )
-                )
-                (global-evil-mc-mode 1)
-            )
-            ;; Enable evil-mode baby!
-            (evil-mode 1)
-            ;; To avoid issues load these after emacs has initialized
-            (add-hook 'evil-local-mode-hook '(lambda ()
-                ;; Auto indent after paste
-                (fset 'indent-pasted-text "`[v`]=")
-                (evil-leader/set-key "p" 'indent-pasted-text)
-                ;; TODO: What does this do?
-                (evil-leader/set-key "?" 'which-key-show-top-level)
-                ;; Have <tab> to work as it does on Vim
-                (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
-                (define-key evil-motion-state-map (kbd "C-b") nil); scroll down
-            ))
+            :delight evil-mc-mode
+            :config (global-evil-mc-mode 1)
+
         )
+        ;; Enable comentary mode only on programming mode
+        (add-hook 'prog-mode-hook 'evil-commentary-mode)
+        ;; To avoid issues load these after emacs has initialized
+        (add-hook 'evil-local-mode-hook '(lambda ()
+            (evil-leader/set-leader "SPC")
+            ;; Auto indent after paste
+            (fset 'indent-pasted-text "`[v`]=")
+            (evil-leader/set-key "p" 'indent-pasted-text)
+            (evil-leader/set-key "?" 'which-key-show-top-level)
+            ;; Have <tab> to work as it does on Vim
+            (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+            (define-key evil-motion-state-map (kbd "C-b") nil); scroll down
+            ;; Override evil-mc key bindings
+            (let
+                ((keys '(
+                    ("grm" . nil)
+                    ("gru" . nil)
+                    ("grs" . nil)
+                    ("grr" . nil)
+                    ("grf" . nil)
+                    ("grl" . nil)
+                    ("grh" . nil)
+                    ("grj" . nil)
+                    ("grk" . nil)
+                    ("grN" . nil)
+                    ("grn" . nil)
+                    ("grp" . nil)
+                    ("grP" . nil)
+                    ("M-j" . evil-mc-make-cursor-move-next-line)
+                    ("M-k" . evil-mc-make-cursor-move-prev-line)
+                    ("M-P" . evil-mc-make-and-goto-prev-cursor)
+                    ("M-N" . evil-mc-make-and-goto-next-cursor)
+                    ("M-n" . evil-mc-make-and-goto-next-match)
+                    ("M-p" . evil-mc-make-and-goto-prev-match)
+                    ("M-x" . evil-mc-skip-and-goto-next-match)
+                    ("M-X" . evil-mc-undo-all-cursors)
+                    ("C-n" . nil)
+                    ("C-p" . nil)
+                    ("C-t" . nil)
+                )))
+                (dolist (key-data keys)
+                    (evil-define-key 'normal evil-mc-key-map (kbd (car key-data)) (cdr key-data))
+                    (evil-define-key 'visual evil-mc-key-map (kbd (car key-data)) (cdr key-data))
+                )
+            )
+        ))
+        ;; Enable evil-mode baby!
+        (evil-mode 1)
     )
 )
 
 ;; The CtrlP of Emacs, just better.
 (use-package helm
     :ensure t
-    :diminish helm-mode
+    :delight helm-mode
     :config (progn
         (require 'helm-config)
         ;; Make sure helm-silver-searcher is installed
@@ -467,7 +534,6 @@
                 )
             ))
         )
-
         (add-hook 'evil-local-mode-hook '(lambda ()
             (evil-leader/set-key "TAB" 'persp-switch);; quick perspective switch
             (global-set-key (kbd "C-b") nil); backward_char
@@ -476,22 +542,18 @@
             (global-set-key (kbd "M-w") nil); kill-ring-save
             (global-set-key (kbd "M-w") 'kill-this-buffer)
         ))
-
-        (add-hook 'after-init-hook '(lambda ()
-            (persp-mode-projectile-bridge-mode 1)
-            (persp-mode 1)
-        ))
-
-        ;; always kill buffer using persp-mode
         (with-eval-after-load "persp-mode"
-            (substitute-key-definition #'kill-buffer #'persp-kill-buffer global-map)
+            ;; always kill buffer using persp-mode
+            (substitute-key-definition 'kill-buffer 'persp-kill-buffer global-map)
         )
+        (persp-mode 1)
     )
 )
 
 ;; Quick switching files
 (use-package projectile
     :ensure t
+    :delight '(:eval (concat " " (projectile-project-name))); only show project name
     :config (progn
         ;; Enable helm-projectile-integration
         (use-package helm-projectile :ensure t)
@@ -505,7 +567,6 @@
             ;; Enable finding directories
             (define-key evil-motion-state-map (kbd "C-d") nil); scroll down
             (global-set-key (kbd "C-d") 'helm-projectile-find-dir)
-
         ))
         (projectile-mode 1)
     )
@@ -529,7 +590,7 @@
 ;; Autocompletion
 (use-package company
     :ensure t
-    :diminish company-mode
+    :delight company-mode
     :config (progn
         ;; Enable company in any programming mode
         (add-hook 'prog-mode-hook 'company-mode)
@@ -539,7 +600,7 @@
 ;; Generate a traversable undo history for files
 (use-package undo-tree
     :ensure t
-    :diminish undo-tree-mode
+    :delight undo-tree-mode
     :config (progn
         (setq undo-tree-auto-save-history t)
         (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/_undotree")))
@@ -552,7 +613,7 @@
 ;; Relative line-numbers
 (use-package linum-relative
     :ensure t
-    :diminish linum-relative-mode
+    :delight linum-relative-mode
     :config (progn
         (setq linum-relative-current-symbol ""); Show the current line-number
         (setq linum-relative-format " %3s"); Add some spaces to numbers
@@ -564,7 +625,7 @@
 ;; Indentation lines!
 (use-package highlight-indent-guides
     :ensure t
-    :diminish highlight-indent-guides-mode
+    :delight highlight-indent-guides-mode
     :config (progn
         (setq highlight-indent-guides-method 'character)
         (setq highlight-indent-guides-auto-enabled nil); don't calculate color
@@ -575,13 +636,14 @@
 ;; Try to guess the current file indentation and set emacs to follow it
 (use-package dtrt-indent
     :ensure t
+    :delight dtrt-indent-mode " [dtrt] "
     :config (add-hook 'prog-mode-hook 'dtrt-indent-mode)
 )
 
 ;; Add an indicator at the fill-column position.
 (use-package fill-column-indicator
     :ensure t
-    :diminish fci-mode
+    :delight fci-mode
     :config (progn
         (setq fci-rule-width 1)
         (add-hook 'prog-mode-hook 'fci-mode)
@@ -591,7 +653,7 @@
 ;; Smart pairs
 (use-package smartparens
     :ensure t
-    :diminish smartparens-mode
+    :delight smartparens-mode
     :config (progn
         (require 'smartparens-config)
         (add-hook 'prog-mode-hook 'smartparens-mode)
@@ -609,7 +671,7 @@
 ;; Adds a gutter with the git status of each file (duh)
 (use-package git-gutter
     :ensure t
-    :diminish git-gutter-mode
+    :delight git-gutter-mode
     :config (progn
         (git-gutter:linum-setup); play along with linum-mode
         (setq git-gutter:update-interval 2); Update git gutter after n secs idle
@@ -624,7 +686,7 @@
 ;; Keeps current line always vertically centered to the screen
 ;; (use-package centered-cursor-mode
 ;;     :ensure t
-;;     :diminish centered-cursor-mode
+;;     :delight centered-cursor-mode
 ;;     :config (progn
 ;;         (define-key ccm-map [(meta v)] nil); disable keymap so it can be used elsewhere
 ;;         (add-hook 'prog-mode-hook 'centered-cursor-mode)
@@ -701,7 +763,7 @@
 ;; Allows easier movement from window to window
 (use-package ace-window
     :ensure t
-    :diminish ace-window-mode
+    :delight ace-window-mode
     :config (progn
         ;; Set the font-face for the ace-window indicator
         (custom-set-faces
@@ -773,7 +835,7 @@
 ;; Log working time on wakatime.com
 (if (file-exists-p "/usr/local/bin/wakatime") (use-package wakatime-mode
     :ensure t
-    :diminish wakatime-mode "w"
+    :delight wakatime-mode " Wk"
     :config (progn
         (setq
             wakatime-cli-path "/usr/local/bin/wakatime"
@@ -842,7 +904,7 @@
         (use-package simple-httpd :ensure t)
         (use-package skewer-mode
             :ensure t
-            :diminish skewer-mode
+            :delight skewer-mode
             :config (progn
                 (add-hook 'js2-mode-hook 'skewer-mode)
                 (add-hook 'css-mode-hook 'skewer-css-mode)
@@ -954,4 +1016,5 @@
 )
 
 (provide 'emacs)
+
 ;;; emacs ends here
