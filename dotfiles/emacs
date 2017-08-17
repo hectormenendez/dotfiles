@@ -513,6 +513,7 @@
 ;; Workspace management via perspectives
 (use-package persp-mode
     :ensure t
+    :delight persp-mode
     :config (progn
         (setq
             persp-autokill-buffer-on-remove 'kill ; kill the buffer when closed
@@ -553,7 +554,7 @@
 ;; Quick switching files
 (use-package projectile
     :ensure t
-    :delight '(:eval (concat " " (projectile-project-name))); only show project name
+    :delight projectile-mode
     :config (progn
         ;; Enable helm-projectile-integration
         (use-package helm-projectile :ensure t)
@@ -811,23 +812,37 @@
 (use-package telephone-line
     :ensure t
     :config (progn
-        ;; The left segments
-        (setq telephone-line-lhs '(
-            (evil . (telephone-line-evil-tag-segment)); Evil-mode status
-            (accent . (telephone-line-vc-segment)); Version control status
-            (nil . (telephone-line-buffer-segment)); Buffer info
+        (require 'telephone-line-utils)
+
+        (telephone-line-defsegment* telephone-line-project-segment () (telephone-line-raw
+            (concat persp-last-persp-name ":" (projectile-project-name))
         ))
-        ;; The right segments
-        (setq telephone-line-rhs '(
-            (nil . (
-                telephone-line-misc-info-segment
-                telephone-line-airline-position-segment
-            ))
-            (accent . (
-                telephone-line-minor-mode-segment
-                telephone-line-major-mode-segment
-            ))
-        ))
+
+        (setq
+            telephone-line-height 20
+            telephone-line-evil-use-short-tag t
+            ;; Left separators
+            telephone-line-primary-left-separator 'telephone-line-identity-left
+            telephone-line-secondary-left-separator 'telephone-line-identity-hollow-left
+            ;; Right separators
+            telephone-line-primary-right-separator 'telephone-line-identity-left
+            telephone-line-secondary-right-separator 'telephone-line-identity-hollow-left
+            ;; The left segments
+            telephone-line-lhs '(
+                (evil . (telephone-line-evil-tag-segment)); Evil-mode status
+                (accent . (telephone-line-vc-segment)); Version control status
+                (nil . (telephone-line-buffer-segment)); Buffer info
+            )
+            ;; The right segments
+            telephone-line-rhs '(
+                (nil . (
+                    telephone-line-airline-position-segment
+                    telephone-line-major-mode-segment
+                ))
+                (accent . (telephone-line-minor-mode-segment))
+                (evil . (telephone-line-project-segment))
+            )
+        )
         (telephone-line-mode 1)
     )
 )
@@ -835,7 +850,7 @@
 ;; Log working time on wakatime.com
 (if (file-exists-p "/usr/local/bin/wakatime") (use-package wakatime-mode
     :ensure t
-    :delight wakatime-mode " Wk"
+    :delight wakatime-mode " Ϣ "
     :config (progn
         (setq
             wakatime-cli-path "/usr/local/bin/wakatime"
@@ -966,7 +981,10 @@
         javascript-standard
     )))
     :config (progn
-        (setq flycheck-temp-prefix ".flycheck")
+        (setq
+            flycheck-temp-prefix ".flycheck"
+            flycheck-mode-line-prefix "✖︎"
+        )
         (flycheck-add-mode 'javascript-eslint 'rjsx-mode)
         (flycheck-add-mode 'javascript-eslint 'js2-mode)
         (add-hook 'prog-mode-hook 'global-flycheck-mode)
