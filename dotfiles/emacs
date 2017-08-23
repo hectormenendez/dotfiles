@@ -995,13 +995,9 @@
 (use-package markdown-mode
     :ensure t
     :mode (
-        ("README\\.md\\'" . gfm-mode)
+        ("README\\.md\\'" . gfm-mode); Use github flavored markdown
         ("\\.md\\'" . markdown-mode)
         ("\\.markdown\\'" . markdown-mode)
-    )
-    :config (progn
-        (add-hook 'prog-mode-hook 'markdown-mode)
-        (add-hook 'prog-mode-hook 'gfm-mode)
     )
 )
 
