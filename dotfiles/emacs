@@ -816,7 +816,7 @@
         (require 'telephone-line-utils)
 
         (telephone-line-defsegment* telephone-line-project-segment () (telephone-line-raw
-            (concat persp-last-persp-name ":" (projectile-project-name))
+            (concat persp-last-persp-name ":" (projectile-project-name) "  ")
         ))
 
         (setq
@@ -851,7 +851,7 @@
 ;; Log working time on wakatime.com
 (if (file-exists-p "/usr/local/bin/wakatime") (use-package wakatime-mode
     :ensure t
-    :delight wakatime-mode " Ϣ "
+    :delight wakatime-mode " Ϣ"
     :config (progn
         (setq
             wakatime-cli-path "/usr/local/bin/wakatime"
@@ -984,7 +984,7 @@
     :config (progn
         (setq
             flycheck-temp-prefix ".flycheck"
-            flycheck-mode-line-prefix "✖︎"
+            flycheck-mode-line-prefix " ✖︎"
         )
         (flycheck-add-mode 'javascript-eslint 'rjsx-mode)
         (flycheck-add-mode 'javascript-eslint 'js2-mode)
