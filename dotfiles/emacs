@@ -12,6 +12,7 @@
     message-log-max 10000
     load-prefer-newer t; Don't load outdated byte code
     gc-cons-threshold 2000000; no need of garbage collect that often
+    max-mini-window-height 0.5; Use up to 50% of frame height for mini-buffer window.
     ;; Startup
     inhibit-startup-screen 1; Don't show the welcome screen
     initial-scratch-message nil; Don't show a message on *scratch* mode
