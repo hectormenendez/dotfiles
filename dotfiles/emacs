@@ -958,6 +958,14 @@
             js2-include-browser-externs t
             js2-include-node-externs t
             js2-warn-about-unused-function-arguments t
+            ;; let flycheck handle parse errors
+            js2-mode-show-parse-errors nil
+            js2-strict-missing-semi-warning nil
+            js2-strict-trailing-comma-warning nil
+            js2-strict-cond-assign-warning nil
+            js2-strict-inconsistent-return-warning nil
+            js2-strict-var-hides-function-arg-warning nil
+            js2-strict-var-redeclaration-warning nil
         )
         (add-to-list 'interpreter-mode-alist (cons "node" 'js2-mode))
     )
