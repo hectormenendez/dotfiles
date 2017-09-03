@@ -363,7 +363,7 @@
                 )
             ))
         ))
-        ;; reuse the dired buffer when moving betweenn directories
+        ;; reuse the dired buffer when moving between directories
         (diredp-toggle-find-file-reuse-dir 1)
     )
 )
@@ -409,17 +409,10 @@
             :ensure t
             :config (global-evil-leader-mode 1)
         )
-        ;; Enable multiple-cursors
-        (use-package evil-mc
-            :ensure t
-            :delight evil-mc-mode
-            :config (global-evil-mc-mode 1)
-
-        )
         ;; Enable comentary mode only on programming mode
         (add-hook 'prog-mode-hook 'evil-commentary-mode)
         ;; To avoid issues load these after emacs has initialized
-        (add-hook 'evil-local-mode-hook '(lambda ()
+        (add-hook 'evil-mode-hook '(lambda ()
             (evil-leader/set-leader "SPC")
             ;; Auto indent after paste
             (fset 'indent-pasted-text "`[v`]=")
@@ -428,43 +421,68 @@
             ;; Have <tab> to work as it does on Vim
             (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
             (define-key evil-motion-state-map (kbd "C-b") nil); scroll down
-            ;; Override evil-mc key bindings
-            (let
-                ((keys '(
-                    ("grm" . nil)
-                    ("gru" . nil)
-                    ("grs" . nil)
-                    ("grr" . nil)
-                    ("grf" . nil)
-                    ("grl" . nil)
-                    ("grh" . nil)
-                    ("grj" . nil)
-                    ("grk" . nil)
-                    ("grN" . nil)
-                    ("grn" . nil)
-                    ("grp" . nil)
-                    ("grP" . nil)
-                    ("M-j" . evil-mc-make-cursor-move-next-line)
-                    ("M-k" . evil-mc-make-cursor-move-prev-line)
-                    ("M-P" . evil-mc-make-and-goto-prev-cursor)
-                    ("M-N" . evil-mc-make-and-goto-next-cursor)
-                    ("M-n" . evil-mc-make-and-goto-next-match)
-                    ("M-p" . evil-mc-make-and-goto-prev-match)
-                    ("M-x" . evil-mc-skip-and-goto-next-match)
-                    ("M-X" . evil-mc-undo-all-cursors)
-                    ("C-n" . nil)
-                    ("C-p" . nil)
-                    ("C-t" . nil)
-                )))
-                (dolist (key-data keys)
-                    (evil-define-key 'normal evil-mc-key-map (kbd (car key-data)) (cdr key-data))
-                    (evil-define-key 'visual evil-mc-key-map (kbd (car key-data)) (cdr key-data))
-                )
-            )
         ))
         ;; Enable evil-mode baby!
         (evil-mode 1)
     )
+)
+
+;; Smart region seletion
+(use-package expand-region
+    :ensure t
+    :config (add-hook 'evil-mode-hook (lambda ()
+        (evil-leader/set-key "v" 'er/expand-region)
+    ))
+)
+
+;; Enable multiple cursosr handling
+(use-package multiple-cursors
+   :ensure t
+   :config (add-hook 'evil-mode-hook '(lambda ()
+        ;; Don't exit multiple cursors with return, use C-g instead
+        (define-key mc/keymap (kbd "<return>") nil)
+        ;; Replace these evil-map
+        (define-key evil-normal-state-map (kbd "C-n") 'mc/mark-next-like-this-symbol)
+        (define-key evil-visual-state-map (kbd "C-n") 'mc/mark-next-like-this-symbol)
+        (define-key evil-normal-state-map (kbd "C-p") 'mc/mark-previous-like-this-symbol)
+        (define-key evil-visual-state-map (kbd "C-p") 'mc/mark-previous-like-this-symbol)
+        (define-key global-map (kbd "<C-down>") 'mc/mark-next-like-this)
+        (define-key global-map (kbd "<C-up>") 'mc/mark-previous-like-this)
+        ;; evil-leader keys
+        (evil-leader/set-key "c*" 'mc/mark-all-like-this)
+        (evil-leader/set-key "cc" 'mc/edit-lines)
+        (evil-leader/set-key "cn" 'mc/mark-next-like-this-symbol)
+        (evil-leader/set-key "cp" 'mc/mark-previous-like-this-word)
+        (evil-leader/set-key "c{" 'mc/cycle-backward)
+        (evil-leader/set-key "c}" 'mc/cycle-forward)
+        (evil-leader/set-key "cx" 'mc/skip-to-next-like-this)
+        (evil-leader/set-key "cX" 'mc/skip-to-previous-like-this)
+        ;; Don't ask for confirmation on evil commands
+        (setq mc/cmds-to-run-for-all '(
+            evil-insert
+            evil-change
+            evil-normal-state
+            evil-append-line
+            evil-delete-line
+            evil-forward-WORD-begin
+            evil-forward-WORD-end
+            evil-forward-word-begin
+            evil-forward-word-end
+            evil-backward-WORD-begin
+            evil-backward-WORD-end
+            evil-backward-word-begin
+            evil-backward-word-end
+            evil-end-of-line
+            evil-first-non-blank
+            evil-find-char
+            evil-find-char-backward
+            evil-find-char-to
+            evil-find-char-to-backward
+            evil-next-line
+            evil-previous-line
+            evil-delete-char
+        ))
+    ))
 )
 
 ;; The CtrlP of Emacs, just better.
