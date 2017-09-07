@@ -438,20 +438,21 @@
 
 ;; Enable multiple cursosr handling
 (use-package multiple-cursors
-   :ensure t
-   :config (add-hook 'evil-mode-hook '(lambda ()
+    :ensure t
+    :config (with-eval-after-load 'evil (progn
         ;; Don't exit multiple cursors with return, use C-g instead
         (define-key mc/keymap (kbd "<return>") nil)
         ;; Replace these evil-map
         (define-key evil-normal-state-map (kbd "C-n") 'mc/mark-next-like-this-symbol)
-        (define-key evil-visual-state-map (kbd "C-n") 'mc/mark-next-like-this-symbol)
         (define-key evil-normal-state-map (kbd "C-p") 'mc/mark-previous-like-this-symbol)
-        (define-key evil-visual-state-map (kbd "C-p") 'mc/mark-previous-like-this-symbol)
         (define-key global-map (kbd "<C-down>") 'mc/mark-next-like-this)
         (define-key global-map (kbd "<C-up>") 'mc/mark-previous-like-this)
+        (define-key global-map (kbd "<C-right>") 'mc/edit-ends-of-lines)
+        (define-key global-map (kbd "<C-left>") 'mc/edit-beginnings-of-lines)
         ;; evil-leader keys
         (evil-leader/set-key "c*" 'mc/mark-all-like-this)
         (evil-leader/set-key "cc" 'mc/edit-lines)
+        (evil-leader/set-key "c$" 'mc/edit-ends-of-lines)
         (evil-leader/set-key "cn" 'mc/mark-next-like-this-symbol)
         (evil-leader/set-key "cp" 'mc/mark-previous-like-this-word)
         (evil-leader/set-key "c{" 'mc/cycle-backward)
@@ -482,6 +483,8 @@
             evil-next-line
             evil-previous-line
             evil-delete-char
+            yank-rectagle
+            copy-region-as-kill; used for multiple selection copy
         ))
     ))
 )
