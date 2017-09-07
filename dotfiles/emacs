@@ -414,13 +414,14 @@
         ;; To avoid issues load these after emacs has initialized
         (add-hook 'evil-mode-hook '(lambda ()
             (evil-leader/set-leader "SPC")
-            ;; Auto indent after paste
-            (fset 'indent-pasted-text "`[v`]=")
-            (evil-leader/set-key "p" 'indent-pasted-text)
             (evil-leader/set-key "?" 'which-key-show-top-level)
+            (evil-leader/set-key "y" 'copy-region-as-kill); copy selection
+            (evil-leader/set-key "p" 'yank-rectangle); paste selection
             ;; Have <tab> to work as it does on Vim
             (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
             (define-key evil-motion-state-map (kbd "C-b") nil); scroll down
+            ;; Auto indent after paste
+            (fset 'indent-pasted-text "`[v`]=")
         ))
         ;; Enable evil-mode baby!
         (evil-mode 1)
