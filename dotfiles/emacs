@@ -1037,14 +1037,6 @@
     )
 )
 
-;; Enable typescript syntax-support
-(use-package typescript-mode
-    :ensure t
-    :config (progn
-        (setq typescript-indent-level 2)
-    )
-)
-
 ;; Enable better handling of xml files (not need of ensuring, it's already included)
 (use-package nxml-mode
     :defer t
