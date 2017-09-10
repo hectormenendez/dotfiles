@@ -638,12 +638,16 @@
 (use-package linum-relative
     :ensure t
     :delight linum-relative-mode
-    :config (progn
-        (setq linum-relative-current-symbol ""); Show the current line-number
-        (setq linum-relative-format " %3s"); Add some spaces to numbers
-        (linum-relative-on)
-        (add-hook 'prog-mode-hook 'linum-mode)
-    )
+    :config (add-hook 'prog-mode-hook (lambda ()
+        (add-hook 'linum-mode-hook (lambda ()
+            (setq
+                linum-relative-current-symbol ""; Show the current line-number
+                linum-relative-format " %3s"; Add some spaces to numbers
+            )
+            (linum-relative-mode 1)
+        ))
+        (linum-mode 1)
+    ))
 )
 
 ;; Indentation lines!
