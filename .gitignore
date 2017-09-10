@@ -7,25 +7,24 @@ dotfiles/config/*
 dotfiles/tmux/*
 !dotfiles/tmux/plugins/.gitignore
 
-dotfiles/vim/.init.vim-rplugin~
-dotfiles/vim/.netrwhist
-
-dotfiles/vim/autoload/*
-!dotfiles/tmux/plugins/.gitignore
-
-dotfiles/vim/bundle/*
-!dotfiles/tmux/plugins/.gitignore
-
-dotfiles/vim/cache/back/*
-!dotfiles/vim/cache/back/.gitignore
-
-dotfiles/vim/cache/swap/*
-!dotfiles/vim/cache/swap/.gitignore
-
-dotfiles/vim/cache/undo/*
-!dotfiles/vim/cache/undo/.gitignore
-
 private/*
 !private/env
 !private/tmux-powerline
+
+# VIM
+dotfiles/vim/.init.vim-rplugin~
+dotfiles/vim/.netrwhist
+dotfiles/vim/autoload/*
+dotfiles/vim/bundle/*
 dotfiles/vim/session
+dotfiles/vim/cache/back/*
+dotfiles/vim/cache/swap/*
+dotfiles/vim/cache/undo/*
+!dotfiles/tmux/plugins/.gitignore
+!dotfiles/tmux/plugins/.gitignore
+!dotfiles/vim/cache/back/.gitignore
+!dotfiles/vim/cache/swap/.gitignore
+!dotfiles/vim/cache/undo/.gitignore
+
+# EMACS
+dotfiles/emacs.d/_*
