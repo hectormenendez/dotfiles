@@ -594,6 +594,12 @@
             (define-key evil-motion-state-map (kbd "C-d") nil); scroll down
             (global-set-key (kbd "C-d") 'helm-projectile-find-dir)
         ))
+        (setq projectile-cache-file
+            (expand-file-name "_projectile/cache" user-emacs-directory)
+        )
+        (setq projectile-known-projects-file
+            (expand-file-name "_projectile/known_projects" user-emacs-directory)
+        )
         (projectile-mode 1)
     )
 )
