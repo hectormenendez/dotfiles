@@ -27,7 +27,7 @@
 
 (setq
     package-enable-at-startup nil; Disable the default packaage-manager at startup
-    package-user-dir (expand-file-name "_packages" user-emacs-directory); packages dir
+    package-user-dir (expand-file-name "_elpa" user-emacs-directory); packages dir
 )
 
 ;; The repositories to fetch packages-from.
