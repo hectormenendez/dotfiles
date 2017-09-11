@@ -27,4 +27,10 @@ dotfiles/vim/cache/undo/*
 !dotfiles/vim/cache/undo/.gitignore
 
 # EMACS
+# Ignores every file starting with an underscore
+# Also ignores every file inside the directories starting with an underscore
+# but allows adding the directories themselves and a gitignore file inside'em
 dotfiles/emacs.d/_*
+!dotfiles/emacs.d/_*/
+dotfiles/emacs.d/_*/*
+!dotfiles/emacs.d/_*/.gitignore
