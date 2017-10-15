@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+
+_args=$#
+
+for i in "$@"; do
+    case $i in
+        --src=*) _src="${i#*=}" && shift ;;
+        --dst=*) _dst="${i#*=}" && shift ;;
+        --grep=*) _grep="${i#*=}" && shift ;;
+        --sed=*) _sed="${i#*=}" && shift ;;
+        --filter=*) _filter="${i#*=}" && shift ;;
+        --dry-run) _test=true && shift ;;
+        --help) _help=true && shift ;;
+    esac
+done
+
+if [[ $_args -eq 0 ]] || [[ ! -z $_help ]]; then
+    echo "Migrates parts of a repository to another repository, preserving the history."
+    echo
+    echo "Usage:"
+    echo 'git-migrate --src=/path/repo --dst=/new/repo --grep="term" --sed="s/foo/bar/g"'
+    echo
+    echo "Flags:"
+    echo "--src:     The source repository you want to process."
+    echo "           WARNING: a 'git reset --hard HEAD && git clean -dfx' will be applied."
+    echo
+    echo "--dst:     The destination folder where matched commits will be placed."
+    echo "           WARNING: if existent, the folder will be deleted."
+    echo
+    echo "--grep:    Apply the 'grep' flag to 'git-log' so only matching commits will be "
+    echo "           taken into consideration."
+    echo
+    echo "--sed:     Apply a 'sed' command to each commit message."
+    echo
+    echo "--filter:  Only consider those files/folder that matches given expression."
+    echo "           see 'find -name' for reference."
+    echo
+    echo "Author: Héctor Menéndez <hector@gik.mx>"
+    echo "License: MIT"
+    echo
+    exit 1
+fi
+
+# If the user send a "home" reference, expand it.
+_src=$(realpath "${_src/#\~/$HOME}")
+_dst=$(realpath "${_dst/#\~/$HOME}")
+
+( [[ -z "$_src" ]] || [[ -z "$_dst" ]] ) &&\
+    echo "Error: Missing --src and --dst flags" && exit 1
+
+[[ ! -d "$_src/.git" ]] &&\
+    echo "Error: Expecting --src to be a git repository." && exit 1
+
+[[ -z "$_dst" ]] &&\
+    echo "Error: Expecting --dst." && exit 1
+
+if [[ -z $_test ]]; then
+    echo
+    echo "WARNING: This operation will reset your --src repository and wipeout --dst."
+    read -p "         Are you sure you want to continue? [y/n] " -n 1 -r
+    echo
+    [[ ! $REPLY =~ ^[Yy]$ ]] && exit 1
+fi
+
+function _git {
+    _dir=$1 && shift
+    git --git-dir="$_dir/.git" --work-tree=$_dir $@
+}
+
+function _find {
+    ([[ -z $_filter ]]\
+        && find $_src -mindepth 1 -maxdepth 1 -not -name ".git" -exec $@ \;\
+        || find $_src -mindepth 1 -name "$_filter" -not -name ".git" -exec $@ \;\
+    )
+}
+
+# determine the current commit on given repository
+_ref=$(\
+    _git $_src symbolic-ref --short -q HEAD ||\
+    _git $_src log -n1 --format="%h'
+)
+
+# Prepare directories
+if [[ -z $_test ]]; then
+    rm -Rf $_dst
+    mkdir -p $_dst
+    _git $_dst init &> /dev/null
+    # make sure there is nothing interfering with git on the stage.
+    _git $_src clean -dfx &> /dev/null
+    _git $_src reset --hard $_ref &> /dev/null
+else
+    echo "["
+fi
+
+# get the list of commits to be migrated and iterate them
+_format='%h_»_%at_»_%an_»_%ae_»_%s'
+IFS=$'\n' _commits=$(_git $_src log --format=$_format --grep=$_grep | tac)
+for _commit in ${_commits[@]}; do
+
+    # split each line into using custom separator and store as an array named the same
+    IFS='_»_' read -r -a _commit <<< "$_commit"
+    _hash=${_commit[0]}
+    _date=$(date -d @${_commit[3]})
+    _name=${_commit[6]}
+    _mail=${_commit[9]}
+    _body=${_commit[12]//\"/\\\"}
+    [[ ! -z "$_sed" ]] && _body=$(sed $_sed <<< "$_body")
+
+    # checkout to corresponding commit
+    _git $_src checkout $_hash &> /dev/null || continue
+
+    # if running in dry-mode just output the matched commits as JSON
+    if [[ ! -z $_test ]]; then
+        echo ' {'\
+            '"hash": "'$_hash'",'\
+            '"date": "'$_date'",'\
+            '"name": "'$_name'",'\
+            '"mail": "'$_mail'",'\
+            '"body": "'$_body'",'\
+            '"cont": ['\
+                $(_find echo "\""{}"\",") \
+            '""]'\
+        '},'
+        continue
+    fi
+
+    # remove all files from destination
+    find $_dst -mindepth 1 -maxdepth 1 -not -name ".git" -exec rm -Rf {} \; || continue
+
+    # copy the corresponding files to destination
+    _find cp -Rf {} $_dst/
+
+    # Add everything on destination and create a clone of the commit
+    _git $_dst add -A || continue
+
+    echo
+    GIT_AUTHOR_NAME=$_name\
+    GIT_AUTHOR_EMAIL=$_mail\
+    GIT_AUTHOR_DATE=$_date\
+    GIT_COMMITTER_NAME=$_name\
+    GIT_COMMITTER_EMAIL=$_mail\
+    GIT_COMMITTER_DATE=$_date\
+        _git $_dst commit -m "$_body" || continue
+
+done
+
+# Instead of determining the lengh of the array and not adding a comma at the end
+# just add a last empty member.
+[[ ! -z $_test ]] && echo -e " {}\n]" && exit 0
+
+_git $_src checkout $_ref
+
