@@ -77,7 +77,7 @@ function _find {
 # determine the current commit on given repository
 _ref=$(\
     _git $_src symbolic-ref --short -q HEAD ||\
-    _git $_src log -n1 --format="%h'
+    _git $_src log -n1 --format="%h" \
 )
 
 # Prepare directories
