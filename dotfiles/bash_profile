@@ -1,10 +1,11 @@
+#!/usr/bin/env bash
+
 # If running non-interactively, don't do anything.
 [[ $- != *i* ]] && return
 
 # Determine the location of this file regardless its type.
-_path=`readlink -n ${BASH_SOURCE[0]}`
-[ -z $_path ] && _path=${BASH_SOURCE[0]}
-_path=`dirname $_path`
+_path=$(readlink -n ${BASH_SOURCE[0]} 2> /dev/null) || ${BASH_SOURCE[0]}
+_path=$(cd `dirname $_path` && pwd)
 
 # Include utilities
 source $_path/../lib/utils.sh
@@ -17,85 +18,75 @@ export PS1='\[\033[01;30m\]\u@\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
 export PATH=$DOTFILES_BIN:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 export NVM_DIR=$HOME/.nvm
 
-export FZF_TMUX=0                                # don't use a split in tmyx for FZF
-export FZF_DEFAULT_COMMAND='ag -g ""'            # make FZF parse .gitignore .hgignore and svn:ignore
+export FZF_DEFAULT_COMMAND='ag -g ""' # make FZF parse .gitignore .hgignore and svn:ignore
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND" # Same as above but for CtrlT
+export FZF_CTRL_T_OPTS=\
+    "--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_CTRL_R_OPTS=\
+    "--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 
 # remove history duplicates (ignoring spacing)
 export HISTCONTROL=erasedups:ignorespace
 export PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 
-# Setup private environment variables
-_keys=(GIT_AUTHOR_NAME GIT_AUTHOR_EMAIL HOMEBREW_GITHUB_API_TOKEN)
-for _key in ${_keys[@]}; do
-    if [[ ! -f $DOTFILES_ENV/$_key ]]; then
-        echo "$_key :"
-        read _val
-        echo $_val > $DOTFILES_ENV/$_key
-    fi
-    setEnv "$_key"
-done
-export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"    # Alias for git
-export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"  # Alias for git
-
+# show current branch on prompt
 [ -r "$DOTFILES_LIB/gitprompt.sh" ] && source "$DOTFILES_LIB/gitprompt.sh"
+
+# All files found on the env folder will be read and set as envars
+# This is done to avoid writing confidential data here. (ie. HOMBREBREW_GITHUB_API)
+for _f in $(find $DOTFILES_ENV -type f -not -name ".*" -print); do
+    export $(basename $_f)=$(cat $_f)
+done
 
 # Mac OS dependencies·
 if isDarwin; then
-    [[ -z `which brew` ]] && echo "Brew missing." && return
-    [[ -z `brew ls --versions coreutils` ]] && "CoreUtils missing." && return
+    _path_brew=$(brew --prefix)
+    _path_coreutils=$_path_brew/opt/coreutils
+    _path_nvm=$_path_brew/opt/nvm
+    _path_fzf=$_path_brew/opt/fzf
 
-    export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
-    export MANPATH=$(brew --prefix coreutils)/libexec/gnuman:$MANPATH
+    export PATH=$_path_coreutils/libexec/gnubin:$PATH
+    export MANPATH=$_path_coreutils/libexec/gnuman:$MANPATH
 
-    [[ -z `brew ls --versions binutils` ]] && echo "BinUtils missing." && return
-    [[ -z `brew ls --versions findutils` ]] && echo "FindUtils missing." && return
+    [ -f $_path_brew/etc/bash_completion ] && source $_path_brew/etc/bash_completion
+    [ -s "$_path_nvim/nvm.sh" ] && source "$_path_nvm/nvm.sh"
 
-    [ -f $(brew --prefix)/etc/bash_completion ] && source $(brew --prefix)/etc/bash_completion
-    [ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
-
-    if [ ! -z "$(brew --prefix fzf)" ]; then
+    if [ -d "$_path_fzf" ]; then
         # Enable Fuzzy Search
-        source "$(brew --prefix fzf)/shell/completion.bash" 2> /dev/null
-        source "$(brew --prefix fzf)/shell/key-bindings.bash"
+        source "$_path_fzf/shell/completion.bash" || echo "ErrorFZF: completion."
+        source "$_path_fzf/shell/key-bindings.bash" || echo "ErrorFZF: bindings."
     fi
 
     # Enable iterm2's shell integration
-    test -e "$HOME/.iterm2_shell_integration.bash" && . "$HOME/.iterm2_shell_integration.bash"
+    test -e "$HOME/.iterm2_shell_integration.bash" && \
+        source "$HOME/.iterm2_shell_integration.bash"
 
     # Enables gruvbox's color palette to exactly match theme colors
-    source ~/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
+    # source ~/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
 fi
 
 # ------------------------------------------------------------------------------ BEHAVIOUR
 
-shopt -s checkwinsize                                        # check winsize after each command and adjust screen automatically,
-shopt -s nocaseglob                                          # case insensitive globbing
-shopt -s cdspell                                             # Autocorrect typos in path names when using cd
-shopt -s histappend                                          # don't overwrite history on login, append to it.
-set -o vi                                                    # Enable vi mode
-umask 022                                                    # Set the creation mask, so files created with 660 and dirs as 770
+shopt -s checkwinsize # check winsize after each command and adjust screen automatically,
+shopt -s nocaseglob # case insensitive globbing
+shopt -s cdspell # Autocorrect typos in path names when using cd
+shopt -s histappend # don't overwrite history on login, append to it.
+set -o vi # Enable vi mode
+umask 027 # Set the creation mask, so files created with 640 and dirs as 750
 
-eval `dircolors $HOME/.dir_colors`                           # colorize files by type
-[ -f $HOME/.alias ] && source $HOME/.alias                   # if an alias file exist, load it.
+eval `dircolors $HOME/.dir_colors` # colorize files by type
+[ -f $HOME/.alias ] && source $HOME/.alias # if an alias file exist, load it.
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)" # enable lesspipe
 
 # ---------------------------------------------------------------------------------- TASKS
-
 
 # cleanup the history file, by manually removing dups
 tac $HISTFILE | awk '!x[$0]++' | tac | sponge $HISTFILE
 
 # Add tab completions for SSH hostnames based on $HOME/.ssh/config
-[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" $HOME/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" scp sftp ssh;
-
-
-# -------------------------------------------------------------------------------- CLEANUP
-
-
-# forces internal script to resource utils
-unset DOTFILES_UTILS
-
-# remove internals
-unset _self
-unset _path
+[ -e "$HOME/.ssh/config" ] && \
+    complete \
+        -o "default" \
+        -o "nospace" \
+        -W "$(grep "^Host" $HOME/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" \
+        scp sftp ssh;
