@@ -3,34 +3,51 @@
 # If running non-interactively, don't do anything.
 [[ $- != *i* ]] && return
 
-# Determine the location of this file regardless its type.
+# Load utils
 _path=$(readlink -n ${BASH_SOURCE[0]} 2> /dev/null) || ${BASH_SOURCE[0]}
 _path=$(cd `dirname $_path` && pwd)
-
-# Include utilities
 source $_path/../lib/utils.sh
 
-# ---------------------------------------------------------------------------- ENVIRONMENT
+umask 027 # Set the creation mask, so files created with 640 and dirs as 750
+
+shopt -s checkwinsize # check winsize after each command and adjust screen automatically,
+shopt -s nocaseglob # case insensitive globbing
+shopt -s cdspell # Autocorrect typos in path names when using cd
+shopt -s histappend # Never overwrite the history file, append to it.
+shopt -s cmdhist # always store commands in one line in history
+
+set -o vi # Enable vi mode
+set -o noclobber # prevents overwriting files, use >| to override.
+
+bind Space:magic-space # if you type !!<space> the last command will appear.
+bind "set completion-ignore-case on" # case-insensitive completion
+bind "set show-all-if-ambiguous on" # show all possible matches for weird inputs
+bind "set mark-symlinked-directories on" # add a slash to symlinked dirs when completed
+bind '"\e[A": history-search-backward' # look commands similar to input on history
+bind '"\e[B": history-search-forward'
+bind '"\e[C": forward-char'
+bind '"\e[D": backward-char'
 
 export LC_ALL=en_US.UTF-8
 export LANG=$LC_ALL
 export PS1='\[\033[01;30m\]\u@\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
 export PATH=$DOTFILES_BIN:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
-export NVM_DIR=$HOME/.nvm
 
-export FZF_DEFAULT_COMMAND='ag -g ""' # make FZF parse .gitignore .hgignore and svn:ignore
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND" # Same as above but for CtrlT
-export FZF_CTRL_T_OPTS=\
-    "--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
-export FZF_CTRL_R_OPTS=\
-    "--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
+export HISTCONTROL="erasedups:ignoreboth" # remove dupes, ignores spaces and dupes
+export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear" # ignore these commands
+export HISTTIMEFORMAT='%F %T ' # YYYY-MM-DD HH:MM:SS {COMAND}
+export HISTFILESIZE=1000000
+export HISTSIZE=$HISTFILESIZE
 
-# remove history duplicates (ignoring spacing)
-export HISTCONTROL=erasedups:ignorespace
-export PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
-
-# show current branch on prompt
-[ -r "$DOTFILES_LIB/gitprompt.sh" ] && source "$DOTFILES_LIB/gitprompt.sh"
+[ -r "$DOTFILES_LIB/gitprompt.sh" ] && source "$DOTFILES_LIB/gitprompt.sh" # git-branch
+export PROMPT_DIRTRIM=2 # trim long paths in the prompt
+export PROMPT_COMMAND="history -a; history -w; command -v node &> /dev/null && history-dedupe; $PROMPT_COMMAND"
+# For reference these are the commands. The following happends for history:
+# history-dedupe: node binary I made.
+# -n: appends to history-list commmands added since the beggining of the session.
+# -c: clears history-list
+# -w: write history-list to history-file. (this applies the deduping and ignoring)
+# -r: reads history-file and appends it to history list.
 
 # All files found on the env folder will be read and set as envars
 # This is done to avoid writing confidential data here. (ie. HOMBREBREW_GITHUB_API)
@@ -38,7 +55,13 @@ for _f in $(find $DOTFILES_ENV -type f -not -name ".*" -print); do
     export $(basename $_f)=$(cat $_f)
 done
 
-# Mac OS dependencies·
+# environment for tools
+export FZF_DEFAULT_COMMAND='ag -g ""' # make FZF parse .gitignore .hgignore and svn:ignore
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND" # Same as above but for CtrlT
+export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
+export NVM_DIR=$HOME/.nvm
+
 if isDarwin; then
     _path_brew=$(brew --prefix)
     _path_coreutils=$_path_brew/opt/coreutils
@@ -47,41 +70,11 @@ if isDarwin; then
 
     export PATH=$_path_coreutils/libexec/gnubin:$PATH
     export MANPATH=$_path_coreutils/libexec/gnuman:$MANPATH
-
-    [ -f $_path_brew/etc/bash_completion ] && source $_path_brew/etc/bash_completion
-    [ -s "$_path_nvim/nvm.sh" ] && source "$_path_nvm/nvm.sh"
-
-    if [ -d "$_path_fzf" ]; then
-        # Enable Fuzzy Search
-        source "$_path_fzf/shell/completion.bash" || echo "ErrorFZF: completion."
-        source "$_path_fzf/shell/key-bindings.bash" || echo "ErrorFZF: bindings."
-    fi
-
-    # Enable iterm2's shell integration
-    test -e "$HOME/.iterm2_shell_integration.bash" && \
-        source "$HOME/.iterm2_shell_integration.bash"
-
-    # Enables gruvbox's color palette to exactly match theme colors
-    # source ~/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
 fi
-
-# ------------------------------------------------------------------------------ BEHAVIOUR
-
-shopt -s checkwinsize # check winsize after each command and adjust screen automatically,
-shopt -s nocaseglob # case insensitive globbing
-shopt -s cdspell # Autocorrect typos in path names when using cd
-shopt -s histappend # don't overwrite history on login, append to it.
-set -o vi # Enable vi mode
-umask 027 # Set the creation mask, so files created with 640 and dirs as 750
 
 eval `dircolors $HOME/.dir_colors` # colorize files by type
 [ -f $HOME/.alias ] && source $HOME/.alias # if an alias file exist, load it.
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)" # enable lesspipe
-
-# ---------------------------------------------------------------------------------- TASKS
-
-# cleanup the history file, by manually removing dups
-tac $HISTFILE | awk '!x[$0]++' | tac | sponge $HISTFILE
 
 # Add tab completions for SSH hostnames based on $HOME/.ssh/config
 [ -e "$HOME/.ssh/config" ] && \
@@ -90,3 +83,18 @@ tac $HISTFILE | awk '!x[$0]++' | tac | sponge $HISTFILE
         -o "nospace" \
         -W "$(grep "^Host" $HOME/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" \
         scp sftp ssh;
+
+if isDarwin; then
+    [ -f $_path_brew/etc/bash_completion ] && source $_path_brew/etc/bash_completion
+    [ -s "$_path_nvim/nvm.sh" ] && source "$_path_nvm/nvm.sh"
+
+    if [ -d "$_path_fzf" ]; then
+        # Enable Fuzzy Search
+        source "$_path_fzf/shell/completion.bash"
+        source "$_path_fzf/shell/key-bindings.bash"
+    fi
+
+    # Enable iterm2's shell integration
+    [ -f "$HOME/.iterm2_shell_integration.bash" ] && \
+        source "$HOME/.iterm2_shell_integration.bash"
+fi
