@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -e
+
+_path=$(readlink -n ${BASH_SOURCE[0]} 2> /dev/null) || ${BASH_SOURCE[0]}
+_path=$(cd `dirname $_path` && pwd)
+source $_path/../lib/utils.sh
+
+for i in "$@"; do
+    case $i in
+        --force=*) _force="${i#*=}" && shift ;;
+        --skip=*) _skip="${i#*=}" && shift ;;
+    esac
+done
+
+# Install symlinks
+inCSV $_skip 'links' || source $DOTFILES_LIB/install-links.sh
+
+# # Install packages
+isDarwin && source $_path/../lib/install-darwin.sh
+isArch && source $_path/../lib/install-arch.sh

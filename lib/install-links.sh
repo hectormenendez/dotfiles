@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-# Sources utils only if they are not already available
-_path="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
-[[ ! $DOTFILES_UTILS ]] && source $_path/../lib/utils.sh
+_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $_path/utils.sh
 
 for dotfile in $(dotfiles $DOTFILES_SRC); do
     BACKUP=false
@@ -15,7 +14,7 @@ for dotfile in $(dotfiles $DOTFILES_SRC); do
 
         # is it a symlink pointing to this dotfiles? skip it
         if [ -L $dotfile_path -a $(getLinkPath $dotfile_path) = "$DOTFILES_SRC" ]; then
-            echo "Skipping: $dotfile"
+            echo "Skipping, already linked: $dotfile"
             continue
         fi
 
@@ -29,9 +28,9 @@ for dotfile in $(dotfiles $DOTFILES_SRC); do
     ln -s ${DOTFILES_SRC/$HOME\//}/$dotfile ./.$dotfile
 
     # OCT is my burden
-    isDarwin  && /bin/chmod -h 700 ./.$dotfile
+    isDarwin  && /bin/chmod -h 750 ./.$dotfile
 
     printf "Symlinked $dotfile. "
-    $BACKUP &&  printf "[backed up]"
+    $BACKUP &&  printf "[foreign dotfile detected, backed it up]"
     echo
 done
