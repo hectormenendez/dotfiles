@@ -41,6 +41,16 @@ function isListed {
   return 1
 }
 
+# Determines if a string is in a CSV string
+# @param {csv string} $1 - A string with CSV (no spaces)
+# @param {string} $2 - A string to find in CSV
+function inCSV {
+    for i in $(echo $1 | sed "s/,/ /g"); do
+        [[ $2 = $i ]] && return 0
+    done
+    return 1
+}
+
 function has {
     if `command -v $1 > /dev/null 2>&1`; then return 0; else return 1; fi
 }
