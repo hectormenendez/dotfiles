@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-_path=$(readlink -n ${BASH_SOURCE[0]} 2> /dev/null) || ${BASH_SOURCE[0]}
-_path=$(cd `dirname $_path` && pwd)
+_path=$(cd `dirname ${BASH_SOURCE[0]}` && pwd)
 source $_path/../lib/utils.sh
 
 for i in "$@"; do
