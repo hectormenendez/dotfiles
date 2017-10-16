@@ -1,0 +1,8 @@
+[submodule "emacs.d"]
+	path = dotfiles/emacs.d
+	url = ../emacs.d
+	branch = master
+[submodule "vim"]
+	path = dotfiles/vim
+	url = ../vimrc
+	branch = master
