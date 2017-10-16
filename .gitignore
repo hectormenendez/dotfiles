@@ -1,6 +1,8 @@
 *.DS_*
 .tern-port
 
+dotfiles/config/configstore
+
 # These rules aren't really for git, but for FZF/projectile
 .git
 dotfiles/emacs.d/*
