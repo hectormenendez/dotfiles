@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+const FS = require('fs');
+const PATH = require('path');
+
+(function HistoryDedupe() {
+    const path = process.env.HISTFILE || PATH.join(process.env.HOME, '.bash_history');
+
+    if (!FS.existsSync(path)) return;
+    const file = FS.readFileSync(path, 'utf8');
+
+    const lines = file
+        .match(/#[^#]+/gm)
+        .map(line => line.split('\n').slice(0,2))
+        .map(parts => ({ date: parts[0], command: parts[1] }));
+
+    const normalize = value => value.toLowerCase().replace(/\s\s+/g, ' ');
+
+
+    const result = lines
+        .reduce((acc, cur) => {
+            if (!acc.length) return [cur];
+            const values = acc
+                .filter(Boolean)
+                .map(({ command }) => normalize(command))
+            return acc
+                .concat(values.indexOf(normalize(cur.command)) === -1 ? cur : null)
+        }, [])
+        .filter(Boolean)
+        .reduce((acc, cur) => acc.concat(`${cur.date}\n${cur.command}`), [])
+        .join('\n');
+
+    FS.writeFileSync(path, result, { encoding: 'utf8' });
+    process.exit(0);
+
+
+}).call(null);
