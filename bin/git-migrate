@@ -15,6 +15,7 @@ for i in "$@"; do
         --grep=*) _grep="${i#*=}" && shift ;;
         --sed=*) _sed="${i#*=}" && shift ;;
         --filter=*) _filter="${i#*=}" && shift ;;
+        --invert*) _invert=true && shift ;;
         --dry-run) _test=true && shift ;;
         --help) _help=true && shift ;;
     esac
@@ -74,10 +75,14 @@ function _git {
 }
 
 function _find {
-    ([[ -z $_filter ]]\
-        && find $_src -type f -mindepth 1 -maxdepth 1 -not -name ".git" $@ \
-        || find $_src -type f -mindepth 1 -name "$_filter" -not -name ".git" $@ \
-    )
+    if [[ -z $_filter ]]; then
+        find $_src -type f -mindepth 1 -maxdepth 1 -not -name ".git" $@
+    elif [[ ! -z $_filter ]] && [[ ! -z $_invert ]]; then
+        find $_src -type f -mindepth 1 \( -not -name "$_filter" -and -not -path "*.git*" \) $@
+    else
+        find $_src -type f -mindepth 1 -name "$_filter" -not -name ".git" $@
+    fi
+    exit
 }
 
 function _list {
@@ -138,7 +143,7 @@ for _commit in ${_commits[@]}; do
             '"mail": "'$_mail'",'\
             '"body": "'$_body'",'\
             '"cont": ['\
-                $(_find --exec echo "\""{}"\"," \;) \
+                $(_find -exec echo "\""{}"\"," \;) \
             '""]'\
         '},'
         continue
