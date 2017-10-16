@@ -86,7 +86,7 @@ eval `dircolors $HOME/.dir_colors` # colorize files by type
 
 if isDarwin; then
     [ -f $_path_brew/etc/bash_completion ] && source $_path_brew/etc/bash_completion
-    [ -s "$_path_nvim/nvm.sh" ] && source "$_path_nvm/nvm.sh"
+    [ -s "$_path_nvm/nvm.sh" ] && source "$_path_nvm/nvm.sh"
 
     if [ -d "$_path_fzf" ]; then
         # Enable Fuzzy Search
