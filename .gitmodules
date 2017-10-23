@@ -3,6 +3,6 @@
 	url = ../emacs.d
 	branch = master
 [submodule "vim"]
-	path = dotfiles/vim
+	path = dotfiles/config/nvim
 	url = ../vimrc
 	branch = master
