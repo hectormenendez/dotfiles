@@ -9,9 +9,9 @@ const PATH = require('path');
     const file = FS.readFileSync(path, 'utf8');
 
     const lines = file
-        .match(/#[^#]+/gm)
+        .match(/#[^\n]+\n[^\n]+/gm)
         .map(line => line.split('\n').slice(0,2))
-        .map(parts => ({ date: parts[0], command: parts[1] }));
+        .map(parts => ({ date: parts[0].trim(), command: parts[1].trim() }));
 
     const normalize = value => value.toLowerCase().replace(/\s\s+/g, ' ');
 
