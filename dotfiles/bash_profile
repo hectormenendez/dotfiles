@@ -4,8 +4,12 @@
 [[ $- != *i* ]] && return
 
 # Load utils
-_path=$(readlink -n ${BASH_SOURCE[0]} 2> /dev/null) || ${BASH_SOURCE[0]}
-_path=$(cd `dirname $_path` && pwd)
+_path=$(readlink -n ${BASH_SOURCE[0]} 2> /dev/null)
+[[ -z "$_path" ]] && \
+    echo "bash_profile must be a link, did you install the dotfiles correctly?" && \
+    return
+_path=$(dirname $HOME/$_path)
+[[ ! -d $_path ]] && echo "$_path should be a directory." && return
 source $_path/../lib/utils.sh
 
 umask 027 # Set the creation mask, so files created with 640 and dirs as 750
