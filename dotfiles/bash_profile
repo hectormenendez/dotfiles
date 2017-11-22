@@ -35,7 +35,7 @@ bind '"\e[D": backward-char'
 export LC_ALL=en_US.UTF-8
 export LANG=$LC_ALL
 export PS1='\[\033[01;30m\]\u@\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
-export PATH=$DOTFILES_BIN:$HOME/.cargo/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=$DOTFILES_BIN:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 
 export HISTCONTROL="erasedups:ignoreboth" # remove dupes, ignores spaces and dupes
 export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear" # ignore these commands
@@ -74,6 +74,11 @@ if isDarwin; then
 
     export PATH=$_path_coreutils/libexec/gnubin:$PATH
     export MANPATH=$_path_coreutils/libexec/gnuman:$MANPATH
+else
+    _path_brew="/home/linuxbrew/.linuxbrew"
+    _path_fzf=$_path_brew/opt/fzf
+    export PATH=$_path_brew/bin:$PATH
+    export MANPATH=$_path_brew/share/man:$MANPATH
 fi
 
 eval `dircolors $HOME/.dir_colors` # colorize files by type
@@ -88,15 +93,16 @@ eval `dircolors $HOME/.dir_colors` # colorize files by type
         -W "$(grep "^Host" $HOME/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" \
         scp sftp ssh;
 
+if [ -d "$_path_fzf" ]; then
+# Enable Fuzzy Search
+source "$_path_fzf/shell/completion.bash"
+source "$_path_fzf/shell/key-bindings.bash"
+fi
+
 if isDarwin; then
     [ -f $_path_brew/etc/bash_completion ] && source $_path_brew/etc/bash_completion
     [ -s "$_path_nvm/nvm.sh" ] && source "$_path_nvm/nvm.sh"
 
-    if [ -d "$_path_fzf" ]; then
-        # Enable Fuzzy Search
-        source "$_path_fzf/shell/completion.bash"
-        source "$_path_fzf/shell/key-bindings.bash"
-    fi
 
     # Enable iterm2's shell integration
     [ -f "$HOME/.iterm2_shell_integration.bash" ] && \
