@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 set -e
 
-_path=$(cd `dirname ${BASH_SOURCE[0]}` && pwd)
-source $_path/../lib/utils.sh
+# Load utils
+_path=$(readlink -n ${BASH_SOURCE[0]} 2> /dev/null)
+[[ -z "$_path" ]] && \
+    echo "bash_profile must be a link, did you install the dotfiles correctly?" && \
+    exit 1
+_path=$(cd $(dirname $0)/$(dirname $_path)/../lib && pwd)
+[[ ! -d $_path ]] && echo "$_path should be a directory." && exit 1
+source $_path/utils.sh
 
 for i in "$@"; do
     case $i in
