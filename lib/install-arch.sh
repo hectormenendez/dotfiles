@@ -6,15 +6,12 @@
 
 echo "Updating system and installing dependencies…"
 deps=(
-	'moreutils'
-	'dnsutils'
-	'python'
-	'ruby'
-	'git'
+    'moreutils'
+    'dnsutils'
+    'python'
+    'ruby'
+    'git'
     'neovim'
-	'tmux'
-    'fzf'
-    'the_silver_searcher'
 )
 sudo pacman -Syu --noconfirm ${deps[@]}
 
@@ -24,7 +21,7 @@ if [ ! -d  ~/.nvm ]; then
 fi
 
 echo "Renaming .profile"
-mv ~/.profile ~/.bash_profile
+mv ~/.profile ~/.bashrc
 
 export NVM_DIR=$HOME/.nvm
 source "$NVM_DIR/nvm.sh"
