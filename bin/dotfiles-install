@@ -14,6 +14,31 @@ done
 # Install symlinks
 inCSV $_skip 'links' || source $DOTFILES_LIB/install-links.sh
 
-# # Install packages
+# Install packages
 isDarwin && source $_path/../lib/install-darwin.sh
 isArch && source $_path/../lib/install-arch.sh
+
+# Install the default version of Node
+if hash nvm 2> /dev/null && [ -z $(nvm ls default) ]; then
+	echo "Enabling latest version of node"
+	target=$(nvm ls-remote | tail -1 | xargs)
+	nvm install $target
+	nvm alias default $target
+fi
+
+# Nvim's addons
+if hash nvim 2> /dev/null; then
+	echo "Installing/upgrading pyton-base and neovim"
+	pip3 install --upgrade setuptools pip neovim
+
+	# Nvim's plugin manager
+	[ ! -f ~/.vim/autoload/plug.vim ] && \
+		echo "Installing vim's plugin manager" && \
+		curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
+			https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+	echo "Installing vim plugins"
+	nvim +PlugInstall +UpdateRemotePlugins  +qall
+
+fi
+
