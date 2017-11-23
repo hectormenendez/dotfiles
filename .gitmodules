@@ -1,7 +1,7 @@
 [submodule "emacs.d"]
 	path = dotfiles/emacs.d
 	url = ../emacs.d
-	branch = master
+	branch = linux
 [submodule "vim"]
 	path = dotfiles/config/nvim
 	url = ../vimrc
