@@ -1,4 +1,4 @@
-# Hector Menendez's DotFiles
+# DotFiles
 > The utilities I'm currently using for my terminal needs.
 
 ## Installer
