@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
+# Include the utlities
 _path=$(cd `dirname ${BASH_SOURCE[0]}` && pwd)
 source $_path/../lib/utils.sh
 
+# Parse arguments
 for i in "$@"; do
     case $i in
         --force=*) _force="${i#*=}" && shift ;;
