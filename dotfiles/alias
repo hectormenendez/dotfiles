@@ -14,7 +14,7 @@ alias grep='grep --color=auto'
 
 # LS specific
 alias ls="ls --classify --tabsize=0 --literal --color=auto --show-control-chars --human-readable --group-directories-first"
-alias la="exa -la@ --git -t created -s created --group-directories-first"
+alias la="exa -la --git -t created -s created --group-directories-first"
 alias tree="exa -T"
 
 # Erase the screen and show the file listing.
