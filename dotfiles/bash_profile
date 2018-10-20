@@ -123,11 +123,19 @@ else
     echo "WARNING: rvm is not installed."
 fi
 
+# Enable Java Version Manager
+if command -v jenv > /dev/null; then
+    eval "$(jenv init -)"
+    # set current java version as default
+    export JAVA_HOME=`realpath $(jenv prefix)`
+fi
 
-export PATH="$HOME/.cargo/bin:$PATH" # Rust
+# Enable Rust environment manager
+export PATH="$HOME/.cargo/bin:$PATH"
 
 if isDarwin; then
 
+    # Enable Node Version Manager
     [ -s "$_path_nvm/nvm.sh" ] && source "$_path_nvm/nvm.sh"
 
     # Enable Android tools
