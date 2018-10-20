@@ -148,5 +148,10 @@ if isDarwin; then
         echo "Warning: Android SDK not installed."
     fi
 
+    # Make visual-code the default editor for react
     command -v code-insiders > /dev/null && export REACT_EDITOR=code-insiders
 fi
+
+# Python Anaconda
+# This has coused me some issues with the compiler, disable it to avoid them.
+# [ -d /anaconda3/bin ] && export PATH="$PATH:/anaconda3/bin"
