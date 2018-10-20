@@ -114,6 +114,7 @@ fi
 
 # Enable python environment (pyenv should be installed via homebrew)
 eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 
 # Ruby environment manager
 if [[ -f "$HOME/.rvm/scripts/rvm" ]]; then
