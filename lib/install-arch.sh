@@ -84,3 +84,7 @@ if [ -f ~/.profile ]; then
     mv ~/.profile ~/.bash_profile
 fi
 
+if [ ! -d ~/.rvm ]; then
+    echo "Installing rvm" &&\
+    curl -sSL https://get.rvm.io | bash -s stable
+fi

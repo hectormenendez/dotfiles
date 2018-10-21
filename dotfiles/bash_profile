@@ -120,8 +120,6 @@ eval "$(pyenv virtualenv-init -)"
 if [[ -f "$HOME/.rvm/scripts/rvm" ]]; then
     export PATH=$PATH:$HOME/.rvm/bin
     source "$HOME/.rvm/scripts/rvm"
-else
-    echo "WARNING: rvm is not installed."
 fi
 
 # Enable Java Version Manager
