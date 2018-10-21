@@ -2,8 +2,8 @@
 set -e
 
 # Include the utlities
-_path=$(cd `dirname ${BASH_SOURCE[0]}` && pwd)
-source $_path/../lib/utils.sh
+_path="${BASH_SOURCE%/*}"
+source $_path/lib/utils.sh
 
 # Parse arguments
 for i in "$@"; do
@@ -16,6 +16,6 @@ done
 # Install symlinks
 inCSV $_skip 'links' || source $DOTFILES_LIB/install-links.sh
 
-# # Install packages
-isDarwin && source $_path/../lib/install-darwin.sh
-isArch && source $_path/../lib/install-arch.sh
+# Install packages
+isDarwin && source $DOTFILES_LIB/install-darwin.sh
+isArch && source $DOTFILES_LIB/install-arch.sh
