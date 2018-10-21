@@ -71,11 +71,11 @@ for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
     fi
 
     if [ $_pkg = 'emacs' ]; then
-        _pathemacs=~/.config/emacs
+        _pathemacs=~/.config/emacs.d
         rm -Rf $_pathemacs
         git clone https://github.com/hectormenendez/emacs.d $_pathemacs
         git clone https://github.com/hectormenendez/emacs.theme $_pathemacs/_themes
-        ln -s ~/.config/emacs ~/.emacs.d
+        ln -s $_pathemacs ~/.emacs.d
     fi
 done
 

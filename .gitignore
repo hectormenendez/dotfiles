@@ -1,11 +1,8 @@
 *.DS_*
 .tern-port
 
-dotfiles/config/configstore
+/dotfiles/config/*
+!/dotfiles/config/.gitignore
 
 # These rules aren't really for git, but for FZF/projectile
 .git
-dotfiles/emacs.d/*
-!dotfiles/emacs.d
-dotfiles/vim/*
-!dotfiles/vim
