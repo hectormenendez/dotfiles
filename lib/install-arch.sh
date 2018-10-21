@@ -85,6 +85,15 @@ if [ -f ~/.profile ]; then
 fi
 
 if [ ! -d ~/.rvm ]; then
-    echo "Installing rvm" &&\
+    echo "Installing rvm"
     curl -sSL https://get.rvm.io | bash -s stable
+fi
+
+if [ ! -d  ~/.nvm ]; then
+    echo "Installing NVM"
+    git clone https://github.com/creationix/nvm.git ~/.nvm &&\
+    cd ~/.nvm &&\
+    git checkout `git describe --abbrev=0 --tags` &&\
+    source ~/.nvm/nvm.sh &&\
+    nvm install --lts --latest-npm
 fi
