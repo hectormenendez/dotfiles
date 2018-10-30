@@ -70,7 +70,6 @@ export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap 
 if isDarwin; then
     _path_brew=$(brew --prefix)
     _path_coreutils=$_path_brew/opt/coreutils
-    _path_nvm=$_path_brew/opt/nvm
     _path_fzf=$_path_brew/opt/fzf
 
     export PATH=$_path_coreutils/libexec/gnubin:$PATH
@@ -131,10 +130,10 @@ fi
 # Enable Rust environment manager
 export PATH="$HOME/.cargo/bin:$PATH"
 
-if isDarwin; then
+# Enable Node Version Manager
+[ -s ~/.nvm/nvm.sh ] && source ~/.nvm/nvm.sh
 
-    # Enable Node Version Manager
-    [ -s "$_path_nvm/nvm.sh" ] && source "$_path_nvm/nvm.sh"
+if isDarwin; then
 
     # Enable Android tools
     if [ -d $_path_brew/share/android-sdk ]; then
@@ -147,11 +146,6 @@ if isDarwin; then
 
     # Make visual-code the default editor for react
     command -v code-insiders > /dev/null && export REACT_EDITOR=code-insiders
-fi
-
-if isArch; then
-    # Enable Node Version Manager
-    [ -s ~/.nvm/nvm.sh ] && source ~/.nvm/nvm.sh
 fi
 
 # Python Anaconda
