@@ -59,6 +59,7 @@ _packages=(
     'the_silver_searcher'
     'ccat'
     'neovim --HEAD'
+    'exa'
 )
 
 for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
