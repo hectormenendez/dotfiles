@@ -90,7 +90,6 @@ for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
     [ $_pkg = 'bash' ] && brew link --overwrite bash
 
     if [ $_pkg = 'neovim' ]; then
-        git submodule update --init
         _path_vim=$DOTFILES_SRC/config/nvim
         pip3 install --upgrade neovim
         rm -Rf $_path_vim/autoload/plug.vim
@@ -102,6 +101,17 @@ for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
 
     [ $_pkg = 'python3' ] && \
         pip3 install --upgrade pip setuptools wheel
+
+    # install the latest nvm LTS version
+    if [ $_pkg = 'nvm'  ]; then
+        _path_nvm_home="$HOME/.nvm"
+        _path_nvm_opt="$(brew --prefix nvm)"
+        [ ! -d $_path_nvm_home ] && mkdir $_path_nvm_home
+        source "$_path_nvm_opt/nvm.sh"
+        _nvm_ver=$(nvm ls-remote | grep "Latest LTS" | tail -n 1 | xargs | cut -d " " -f1)
+        nvm install $_nvm_ver
+        nvm use default node
+    fi
 done
 
 # Enabling truecolor and italics on both tmux and iterm

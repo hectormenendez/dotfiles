@@ -148,7 +148,6 @@ fi
 
 # Enable Node Version Manager
 export NVM_DIR="$HOME/.nvm"
-[ ! -d "$NVM_DIR" ] && mkdir "$NVM_DIR" && echo "Warning: Created NVM_DIR"
 if isDarwin; then
     _path_nvm=$(brew --prefix nvm)
     if [ ! -d "$_path_nvm" ]; then
