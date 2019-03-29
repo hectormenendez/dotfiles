@@ -69,11 +69,19 @@ export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap 
 
 if isDarwin; then
     _path_brew=$(brew --prefix)
-    _path_coreutils=$_path_brew/opt/coreutils
-    _path_fzf=$_path_brew/opt/fzf
+    _path_opt=$_path_brew/opt
+    _path_coreutils=$_path_opt/coreutils
+    _path_fzf=$_path_opt/fzf
 
     export PATH=$_path_coreutils/libexec/gnubin:$PATH
     export MANPATH=$_path_coreutils/libexec/gnuman:$MANPATH
+
+    # enable gnu-utils on path
+    for _p in $(find -L $_path_opt -name "gnu*" -path "*libexec*" -type d); do
+        _sufix=${_p:(-3)}
+        [ "$_sufix" == "bin" ] && export PATH=$_p:$PATH
+        [ "$_sufix" == "man" ] && export MANPATH=$_p:$MANPATH
+    done
 fi
 
 # ---------------------------------------------------------------------- Completion & Info
