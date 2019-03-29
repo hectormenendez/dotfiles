@@ -60,6 +60,8 @@ _packages=(
     'ccat'
     'neovim --HEAD'
     'exa'
+    'pyenv'
+    'pyenv-virtualenv'
 )
 
 for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
