@@ -126,6 +126,8 @@ eval "$(pyenv virtualenv-init -)"
 if [[ -f "$HOME/.rvm/scripts/rvm" ]]; then
     export PATH=$PATH:$HOME/.rvm/bin
     source "$HOME/.rvm/scripts/rvm"
+else
+    echo "Warning: RVM is not installed"
 fi
 
 # Enable Java Version Manager
@@ -133,16 +135,33 @@ if command -v jenv > /dev/null; then
     eval "$(jenv init -)"
     # set current java version as default
     export JAVA_HOME=`realpath $(jenv prefix)`
+else
+    echo "Warning: JENV is not installed"
 fi
 
 # Enable Rust environment manager
-export PATH="$HOME/.cargo/bin:$PATH"
+if [ -d "$HOME/.cargo/bin" ]; then
+    export PATH="$HOME/.cargo/bin:$PATH"
+else
+    echo "Warning: Cargo is not installed"
+fi
 
 # Enable Node Version Manager
-[ -s ~/.nvm/nvm.sh ] && source ~/.nvm/nvm.sh
+export NVM_DIR="$HOME/.nvm"
+[ ! -d "$NVM_DIR" ] && mkdir "$NVM_DIR" && echo "Warning: Created NVM_DIR"
+if isDarwin; then
+    _path_nvm=$(brew --prefix nvm)
+    if [ ! -d "$_path_nvm" ]; then
+        echo "Warning: NVM is not installed"
+    else
+        source "$_path_nvm/nvm.sh"
+        source "$_path_nvm/etc/bash_completion.d/nvm"
+    fi
+else
+    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+fi
 
 if isDarwin; then
-
     # Enable Android tools
     if [ -d $_path_brew/share/android-sdk ]; then
         export ANDROID_HOME="/usr/local/share/android-sdk"
