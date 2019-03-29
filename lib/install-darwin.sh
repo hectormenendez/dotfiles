@@ -87,13 +87,16 @@ for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
 
     [ $_pkg = 'bash' ] && brew link --overwrite bash
 
-    [ $_pkg = 'neovim' ] && \
-        pip3 install --upgrade neovim && \
-        rm -Rf ~/.vim/autoload/plug.vim && \
-        curl -fLo ~/.vim/autoload/plug.vim \
+    if [ $_pkg = 'neovim' ]; then
+        git submodule update --init
+        _path_vim=$DOTFILES_SRC/config/nvim
+        pip3 install --upgrade neovim
+        rm -Rf $_path_vim/autoload/plug.vim
+        curl -fLo $_path_vim/autoload/plug.vim \
             --create-dirs \
-            https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim && \
+            https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
         nvim +PlugInstall +UpdateRemotePlugins +qall
+    fi
 
     [ $_pkg = 'python3' ] && \
         pip3 install --upgrade pip setuptools wheel
