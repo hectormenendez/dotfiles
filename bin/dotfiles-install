@@ -3,6 +3,10 @@ set -e
 
 # Include the utlities
 _path="${BASH_SOURCE%/*}"
+if [ ! -f $_path/lib/utils.sh ]; then
+    echo "Could not find utils."
+    exit 1
+fi
 source $_path/lib/utils.sh
 
 # Parse arguments

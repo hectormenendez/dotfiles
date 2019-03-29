@@ -1,20 +1,14 @@
 #!/bin/bash
-
-# Used to let know script that this file has already been loaded
+# Used for letting know the script that this file has already been loaded
 DOTFILES_UTILS=true
 
-if [[ -z $DOTFILES_ROOT ]]; then
-    # obtain the absolute route to the folder containing this file
-    pushd ${BASH_SOURCE%/*} > /dev/null
-    export DOTFILES_LIB=`pwd -P`
-    popd > /dev/null
-
-    export DOTFILES_ROOT=${DOTFILES_LIB%/*}
-    export DOTFILES_BIN="$DOTFILES_ROOT/bin"
-    export DOTFILES_SRC="$DOTFILES_ROOT/dotfiles"
-    export DOTFILES_LNK="$DOTFILES_ROOT/private"
-    export DOTFILES_ENV="$DOTFILES_ROOT/private/env"
-fi
+# obtain the absolute route to the folder containing this file
+export DOTFILES_LIB="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"
+export DOTFILES_ROOT=${DOTFILES_LIB%/*}
+export DOTFILES_BIN="$DOTFILES_ROOT/bin"
+export DOTFILES_SRC="$DOTFILES_ROOT/dotfiles"
+export DOTFILES_LNK="$DOTFILES_ROOT/private"
+export DOTFILES_ENV="$DOTFILES_ROOT/private/env"
 
 # Make sure the root directory was obtained correctly
 [ ! -d $DOTFILES_ROOT ] &&  echo "Invalid root directory." && exit 1;
