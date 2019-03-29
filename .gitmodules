@@ -1,0 +1,4 @@
+[submodule "nvim"]
+	path = dotfiles/config/nvim
+	url = https://github.com/hectormenendez/vimrc.git
+	branch = master
