@@ -1,4 +1,6 @@
-[submodule "nvim"]
+[submodule "dotfiles/config/nvim"]
 	path = dotfiles/config/nvim
-	url = https://github.com/hectormenendez/vimrc.git
-	branch = master
+	url = ../vimrc
+[submodule "dotfiles/config/emacs.d"]
+	path = dotfiles/config/emacs.d
+	url = ../emacs.d
