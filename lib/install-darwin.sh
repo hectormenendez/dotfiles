@@ -80,6 +80,7 @@ _casks=(
     'whatsapp'
     'slack-beta'
     # devtools
+    'emacs'
     'visual-studio-code-insiders'
     'chromedriver'
     # entertainment
