@@ -75,7 +75,7 @@ _casks=(
     # utils
     'spectacle'
     'appcleaner'
-    'sinergy'
+    'synergy'
     # communication
     'whatsapp'
     'slack-beta'
