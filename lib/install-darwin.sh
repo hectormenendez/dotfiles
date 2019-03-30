@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+# TODO: make package and cask installation a single function
+# TODO: Instead of running commands after package installation, check for script with name
+
 # Run this only on mac
 [ ! isDarwin ] && echo "This script is only compatible with Darwin." && exit 1
 
@@ -64,6 +67,13 @@ _packages=(
     'pyenv-virtualenv'
 )
 
+_casks=(
+    'iterm2'
+    'spectacle'
+    'spotify'
+    'visual-studio-code-insiders'
+)
+
 for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
     read -r -a _arg <<< "${_packages[$_i]}"
     _pkg=${_arg[0]}
@@ -76,7 +86,7 @@ for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
 
     if inCSV $_force $_pkg; then
         # force was passed for this package, uninstall it so it can be reinstalled
-        brew ls --version $_pkg &> /dev/null && brew uninstall $_pkg
+        brew ls --versions $_pkg &> /dev/null && brew uninstall $_pkg
     else
         # if package exist go to the next one
         brew ls --versions $_pkg &> /dev/null && \
@@ -112,6 +122,32 @@ for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
         nvm install $_nvm_ver
         nvm use default node
     fi
+done
+
+# trigger cask install
+# TODO: check for cask instead
+brew cask > /dev/null
+for (( _i=0; _i < ${#_casks[@]}; _i++ )); do
+    read -r -a _arg <<< "${_casks[$_i]}"
+    _csk=${_arg[0]}
+    _arg=("${_arg[@]:1}") # Shift array
+
+    inCSV $_force "casks" && _force="$_force,$_csk"
+    inCSV $_skip "casks" && _skip="$_skip,$_csk"
+
+    inCSV $_skip $_csk && continue
+
+    if inCSV $_force $_csk; then
+        # force was passed for this package, uninstall it so it can be reinstalled
+        brew cask ls --versions $_csk &> /dev/null && brew cask uninstall $_csk
+    else
+        # if package exist go to the next one
+        brew cask ls --versions $_csk &> /dev/null && \
+            echo "Skipping, Cask already installed: $_csk" && \
+            continue
+    fi
+    # install
+    brew cask install $_csk ${_arg[@]}
 done
 
 # Enabling truecolor and italics on both tmux and iterm
