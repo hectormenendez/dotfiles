@@ -2,7 +2,6 @@
 set -e
 
 # TODO: make package and cask installation a single function
-# TODO: Instead of running commands after package installation, check for script with name
 
 # Run this only on mac
 [ ! isDarwin ] && echo "This script is only compatible with Darwin." && exit 1
@@ -110,31 +109,9 @@ for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
     # install
     brew install $_pkg ${_arg[@]}
 
-    [ $_pkg = 'bash' ] && brew link --overwrite bash
-
-    if [ $_pkg = 'neovim' ]; then
-        _path_vim=$DOTFILES_SRC/config/nvim
-        pip3 install --upgrade neovim
-        rm -Rf $_path_vim/autoload/plug.vim
-        curl -fLo $_path_vim/autoload/plug.vim \
-            --create-dirs \
-            https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        nvim +PlugInstall +UpdateRemotePlugins +qall
-    fi
-
-    [ $_pkg = 'python3' ] && \
-        pip3 install --upgrade pip setuptools wheel
-
-    # install the latest nvm LTS version
-    if [ $_pkg = 'nvm'  ]; then
-        _path_nvm_home="$HOME/.nvm"
-        _path_nvm_opt="$(brew --prefix nvm)"
-        [ ! -d $_path_nvm_home ] && mkdir $_path_nvm_home
-        source "$_path_nvm_opt/nvm.sh"
-        _nvm_ver=$(nvm ls-remote | grep "Latest LTS" | tail -n 1 | xargs | cut -d " " -f1)
-        nvm install $_nvm_ver
-        nvm use default node
-    fi
+    # if available run post-install script.
+    [ -f "$DOTFILES_LIB/postinstall-package-$_pkg.sh" ] && \
+        source "$DOTFILES_LIB/postinstall-package-$_pkg.sh"
 done
 
 for (( _i=0; _i < ${#_casks[@]}; _i++ )); do
