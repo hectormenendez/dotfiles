@@ -22,6 +22,8 @@ if [[ $(inCSV $_skip 'brew') ]]; then
     brew tap railwaycat/emacsmacport # OS.X Emacs
     brew tap neovim/neovim # better neovim
     brew tap caskroom/cask
+    # trigger cask install
+    brew cask > /dev/null
 fi
 
 _packages=(
@@ -74,6 +76,7 @@ _casks=(
     # utils
     'spectacle'
     'appcleaner'
+    'sinergy'
     # communication
     'whatsapp'
     'slack-beta'
@@ -134,9 +137,6 @@ for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
     fi
 done
 
-# trigger cask install
-# TODO: check for cask instead
-brew cask > /dev/null
 for (( _i=0; _i < ${#_casks[@]}; _i++ )); do
     read -r -a _arg <<< "${_casks[$_i]}"
     _csk=${_arg[0]}
