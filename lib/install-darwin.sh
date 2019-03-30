@@ -69,9 +69,19 @@ _packages=(
 
 _casks=(
     'iterm2'
+    'google-chrome'
+    'google-chrome-canary'
+    # utils
     'spectacle'
-    'spotify'
+    'appcleaner'
+    # communication
+    'whatsapp'
+    'slack-beta'
+    # devtools
     'visual-studio-code-insiders'
+    'chromedriver'
+    # entertainment
+    'spotify'
 )
 
 for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
