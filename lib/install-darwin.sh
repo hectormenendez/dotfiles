@@ -49,6 +49,7 @@ _packages=(
     'bash'
     'bash-completion'
     'nano'
+    'emacs'
     # Non GNU utils
     'nvm'
     'file-formula'
