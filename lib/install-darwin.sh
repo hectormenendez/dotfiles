@@ -22,8 +22,9 @@ if [[ $(inCSV $_skip 'brew') ]]; then
     # Enable Yamamoto's Emacs fork
     brew tap railwaycat/emacsmacport
 
-    # trigger cask install
-    brew cask > /dev/null
+    # trigger installation of cask and services
+    brew cask &> /dev/null
+    brew services &> /dev/null
 fi
 
 _packages=(
