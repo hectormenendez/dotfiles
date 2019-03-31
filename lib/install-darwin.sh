@@ -82,6 +82,7 @@ _casks=(
     'appcleaner'
     'synergy'
     'launchcontrol'
+    'disablemonitor'
     # communication
     'whatsapp'
     'slack-beta'
