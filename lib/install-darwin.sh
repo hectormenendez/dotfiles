@@ -80,6 +80,7 @@ _casks=(
     'spectacle'
     'appcleaner'
     'synergy'
+    'launchcontrol'
     # communication
     'whatsapp'
     'slack-beta'
