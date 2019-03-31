@@ -54,6 +54,7 @@ _packages=(
     'emacs' # terminal version
     'emacs-mac' # Yamamoto's GUI version
     # Non GNU utils
+    'mosh' # enable sshing to terminal with persistent connection
     'nvm'
     'file-formula'
     'git'
