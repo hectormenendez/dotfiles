@@ -18,9 +18,10 @@ if [[ $(inCSV $_skip 'brew') ]]; then
         brew prune
         brew upgrade
     fi
-    brew tap railwaycat/emacsmacport # OS.X Emacs
-    brew tap neovim/neovim # better neovim
-    brew tap caskroom/cask
+
+    # Enable Yamamoto's Emacs fork
+    brew tap railwaycat/emacsmacport
+
     # trigger cask install
     brew cask > /dev/null
 fi
@@ -49,7 +50,8 @@ _packages=(
     'bash'
     'bash-completion'
     'nano'
-    'emacs'
+    'emacs' # terminal version
+    'emacs-mac' # Yamamoto's GUI version
     # Non GNU utils
     'nvm'
     'file-formula'
