@@ -91,6 +91,7 @@ _casks=(
     'visual-studio-code-insiders'
     'sourcetree-beta'
     'chromedriver'
+    'rescuetime'
     # entertainment
     'spotify'
 )
