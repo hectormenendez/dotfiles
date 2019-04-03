@@ -89,6 +89,7 @@ _casks=(
     # devtools
     'emacs'
     'visual-studio-code-insiders'
+    'sourcetree-beta'
     'chromedriver'
     # entertainment
     'spotify'
