@@ -4,6 +4,14 @@
     excludesfile = ~/.gitconfig
     autocrlf = input
 
+[merge]
+    renamelimit = 9000
+    tool = vscode
+
+[diff]
+    renameLimit = 6000
+    tool = vscode
+
 [push]
     # 'git push' should only do the current branch, not all
     default = current
@@ -17,6 +25,7 @@
     whitespace = strip
 
 [alias]
+    cp = cherry-pick
     sm = submodule
     smf = submodule foreach
     br = branch -vv
@@ -83,3 +92,9 @@
     clean = git-lfs clean %f
     smudge = git-lfs smudge %f
     required = true
+
+[difftool "vscode"]
+    cmd = code-insiders --wait --diff $LOCAL $REMOTE
+
+[mergetool "vscode"]
+    cmd = code-insiders --wait $MERGED
