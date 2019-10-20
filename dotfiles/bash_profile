@@ -14,7 +14,7 @@ source $_path/../lib/utils.sh
 
 # ----------------------------------------------------------------------------- Bash Setup
 
-umask 027 # Set the creation mask, so files created with 640 and dirs as 750
+umask 022 # Set the creation mask, so files created with 644 and dirs as 755
 
 shopt -s checkwinsize # check winsize after each command and adjust screen automatically,
 shopt -s nocaseglob # case insensitive globbing
@@ -161,11 +161,27 @@ else
 fi
 
 if isDarwin; then
+
+    # Enable ruby overide
+    export PATH=/usr/local/opt/ruby/bin::/usr/local/lib/ruby/gems/2.6.0/bin:$PATH
+
     # Enable Android tools
     if [ -d $_path_brew/share/android-sdk ]; then
+        _tools=(ant maven gradle)
+        for _tool in ${_tools[@]}; do
+            _TOOL=${_tool^^}
+            if [ $(brew --prefix $_tool 2> /dev/null) ]; then
+                declare -g ${_TOOL}_HOME=$(brew --prefix $_tool)
+                _tmp=${_TOOL}_HOME
+                export PATH=$PATH:${!_tmp}/bin
+            else
+                echo "Warning: $_TOOL is not installed";
+            fi
+        done
         export ANDROID_HOME="/usr/local/share/android-sdk"
-        export ANDROID_SDK_ROOT="$ANDROID_HOME/platform-tools"
-        export PATH=$PATH:$ANDROID_HOME:$ANDROID_SDK_ROOT
+        export ANDROID_NDK_HOME="/usr/local/share/android-ndk"
+        export ANDROID_SDK_ROOT=$ANDROID_HOME
+        export PATH=$PATH:$ANDROID_HOME/tools
     else
         echo "Warning: Android SDK not installed."
     fi
