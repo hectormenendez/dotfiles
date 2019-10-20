@@ -11,17 +11,17 @@ if [[ $(inCSV $_skip 'brew') ]]; then
         hadBrew=false
         echo "Installing brew…"
         ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    else
-        brew tap | grep -v "homebrew/core" | xargs -I {} brew untap {}
-        brew tap --list-official | xargs -I {} brew tap {}
-        brew cleanup
-        brew prune
-        brew upgrade
     fi
-
+    # Remove all taps, to start from scratch.
+    brew tap | grep -v "homebrew/core" | xargs -I {} brew untap {} || echo "Nothing to untap"
+    brew cleanup
+    brew update
+    brew upgrade
+    
     # Enable Yamamoto's Emacs fork
     brew tap railwaycat/emacsmacport
-
+    brew tap homebrew/cask-versions
+    
     # trigger installation of cask and services
     brew cask &> /dev/null
     brew services &> /dev/null
@@ -54,7 +54,9 @@ _packages=(
     'emacs' # terminal version
     'emacs-mac' # Yamamoto's GUI version
     # Non GNU utils
+    'mas' # allows installing apps from the terminal
     'mosh' # enable sshing to terminal with persistent connection
+    'jenv'
     'nvm'
     'file-formula'
     'git'
@@ -67,7 +69,7 @@ _packages=(
     'fzf'
     'the_silver_searcher'
     'ccat'
-    'neovim --HEAD'
+    'neovim'
     'exa'
     'pyenv'
     'pyenv-virtualenv'
@@ -83,6 +85,8 @@ _casks=(
     'synergy'
     'launchcontrol'
     'disablemonitor'
+    '1password-beta'
+    'nordvpn'
     # communication
     'whatsapp'
     'slack-beta'
