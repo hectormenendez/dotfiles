@@ -100,6 +100,11 @@ _casks=(
     'spotify'
 )
 
+_apps=(
+    '585829637' # Todoist
+    '411643860' # Daisy Disk
+)
+
 for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
     read -r -a _arg <<< "${_packages[$_i]}"
     _pkg=${_arg[0]}
@@ -128,27 +133,19 @@ for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
         source "$DOTFILES_LIB/postinstall-package-$_pkg.sh"
 done
 
-for (( _i=0; _i < ${#_casks[@]}; _i++ )); do
-    read -r -a _arg <<< "${_casks[$_i]}"
-    _csk=${_arg[0]}
+for (( _i=0; _i < ${#_apps[@]}; _i++ )); do
+    read -r -a _arg <<< "${_apps[$_i]}"
+    _app=${_arg[0]}
     _arg=("${_arg[@]:1}") # Shift array
 
-    inCSV $_force "casks" && _force="$_force,$_csk"
-    inCSV $_skip "casks" && _skip="$_skip,$_csk"
+    inCSV $_force "apps" && _force="$_force,$_app"
+    inCSV $_skip "apps" && _skip="$_skip,$_app"
 
-    inCSV $_skip $_csk && continue
+    inCSV $_skip $_app && continue
 
-    if inCSV $_force $_csk; then
-        # force was passed for this package, uninstall it so it can be reinstalled
-        brew cask ls --versions $_csk &> /dev/null && brew cask uninstall $_csk
-    else
-        # if package exist go to the next one
-        brew cask ls --versions $_csk &> /dev/null && \
-            echo "Skipping, Cask already installed: $_csk" && \
-            continue
-    fi
+    # TODO: make validation to uninstall first and then reinstall apps like in casks
     # install
-    brew cask install $_csk ${_arg[@]}
+    mas install $_app ${_arg[@]}
 done
 
 # Enabling truecolor and italics on both tmux and iterm
