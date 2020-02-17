@@ -17,11 +17,11 @@ if [[ $(inCSV $_skip 'brew') ]]; then
     brew cleanup
     brew update
     brew upgrade
-    
+
     # Enable Yamamoto's Emacs fork
     brew tap railwaycat/emacsmacport
     brew tap homebrew/cask-versions
-    
+
     # trigger installation of cask and services
     brew cask &> /dev/null
     brew services &> /dev/null
@@ -76,10 +76,15 @@ _packages=(
 )
 
 _casks=(
+    # utils
     'iterm2'
+    'vlc'
     'google-chrome'
     'google-chrome-canary'
-    # utils
+    'fantastical'
+    'adobe-creative-cloud'
+    'adobe-creative-cloud-cleaner-tool'
+    'keepingyouawake'
     'spectacle'
     'appcleaner'
     'synergy'
@@ -87,15 +92,23 @@ _casks=(
     'disablemonitor'
     '1password-beta'
     'nordvpn'
+    'boostnote'
+    'insync'
+    'karabiner-elements'
+    # streaming
+    'audio-hijack'
+    'obs'
+    'loopback'
     # communication
     'whatsapp'
     'slack-beta'
     # devtools
     'emacs'
     'visual-studio-code-insiders'
-    'sourcetree-beta'
+    'gitkraken'
     'chromedriver'
     'rescuetime'
+    'docker'
     # entertainment
     'spotify'
 )
