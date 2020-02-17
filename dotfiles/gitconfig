@@ -16,6 +16,9 @@
     # 'git push' should only do the current branch, not all
     default = current
 
+[pull]
+    rebase = true
+
 [advice]
     # No need for hints on status
     statushints = false
