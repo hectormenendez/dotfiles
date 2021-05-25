@@ -30,5 +30,5 @@ main = xmonad $ defaultConfig
     }
     `additionalKeysP` [
     	-- use the custom-built dmenu_run on ~/Source/AUR/dmenu
-        ( "M-p", spawn "dmenu_run -h 48 -F" )
+        ( "M-p", spawn "rofi -show combi" )
     ]

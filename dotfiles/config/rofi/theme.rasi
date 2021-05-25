@@ -1,0 +1,131 @@
+* {
+    selected-normal-foreground:  rgba(248, 248, 242, 1);
+    foreground:                  rgba(248, 248, 242, 1);
+    alternate-normal-background: rgba(39, 40, 34, 0);
+    selected-urgent-foreground:  rgba(248, 248, 242, 1);
+    urgent-foreground:           rgba(249, 38, 114, 1);
+    alternate-urgent-background: rgba(39, 40, 34, 0);
+    active-foreground:           rgba(166, 226, 42, 1);
+    lightbg:                     rgba(238, 232, 213, 1);
+    selected-active-foreground:  rgba(166, 226, 42, 1);
+    alternate-active-background: rgba(39, 40, 34, 0);
+    background:                  rgba(39, 40, 34, 0.93);
+    bordercolor:                 rgba(0, 43, 54, 1);
+    normal-background:           rgba(39, 40, 34, 0);
+    selected-normal-background:  rgba(20, 20, 17, 1);
+    separatorcolor:              rgba(230, 219, 116, 1);
+    urgent-background:           rgba(39, 40, 34, 0);
+    selected-urgent-background:  rgba(249, 38, 114, 1);
+    active-background:           rgba(39, 40, 34, 0);
+    selected-active-background:  rgba(20, 20, 17, 1);
+    background-color:            transparent;
+    normal-foreground:           @foreground;
+    alternate-normal-foreground: @foreground;
+    alternate-urgent-foreground: @urgent-foreground;
+    alternate-active-foreground: @active-foreground;
+}
+
+window {
+    border-color: #ccc;
+    background-color: #eee;
+    border: 0;
+    border-radius: 0.25em;
+    padding: 0.5em;
+    spacing: 0px;
+    location: center;
+    children: [ inputbar, message, listview ];
+}
+
+inputbar {
+    padding: 0px 0px 0.5em;
+    children:   [ wrapper ];
+}
+
+wrapper {
+    orientation: horizontal;
+    border: 0;
+    children:   [ entry ];
+    spacing: 1em;
+}
+
+entry {
+    line-height: 1.5em;
+    color: #444;
+}
+
+
+message {
+    text-color:       black;
+    background-color: lightgrey / 50%;
+    border-color:     grey;
+    border:           2px;
+    border-radius:    5px;
+    padding:          4px;
+    margin:           0px 0px 0.5em;
+    expand:           false;
+}
+
+listview {
+    spacing:      2px ;
+    background-color: black / 10%;
+    border-radius: 0.25em;
+    expand: true;
+    scrollbar: false;
+    border: 0;
+    lines: 10;
+}
+
+scrollbar {
+    width:        4px ;
+    border:       0;
+    handle-width: 8px ;
+    padding:      0;
+}
+
+sidebar {
+    border:       2px 0px 0px ;
+    border-color: @separatorcolor;
+    expand: false;
+}
+
+button {
+    padding:      2px;
+    border:       0px 0px 2px ;
+    border-color: @separatorcolor;
+}
+
+button selected.normal {
+    text-color: white;
+    background-color: black/50%;
+
+    border:       2px 2px 0px ;
+    border-color: @separatorcolor;
+    border-radius:    10px 10px 0 0;
+}
+
+element {
+    border: 0;
+}
+
+element-text {
+    color: #666;
+    padding:0.5em 0em 0.5em 0em;
+}
+
+element-icon {
+    size: 1.5em;
+    padding: 0.25em 0  0.25em 0.5em;
+}
+
+element.selected.normal {
+    background-color: rgba(0,0,0, 0.1);
+    text-color:#333;
+}
+
+error-message {
+    background-color: darkred/10%;
+    border-color: darkred;
+    border-radius: 10px;
+    border: 2px;
+    padding: 0.5em;
+}

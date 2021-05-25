@@ -1,0 +1,9 @@
+configuration {
+    width: 25;
+    font: "Iosevka 22";
+    show-icons: true;
+    icon-theme: "Papirus";
+    combi-modi: "drun,run";
+    max-history-size: 50;
+    display-drun: "";
+}@import "./theme.rasi"
