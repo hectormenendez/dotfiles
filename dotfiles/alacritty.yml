@@ -1,0 +1,21 @@
+background_opacity: 0.95
+
+dpi:
+    x: 157.0
+    y: 157.0
+
+font:
+    size: 14
+    offset:
+        x: 0
+        y: -3
+    normal:
+        family: Iosevka
+        style: Regular
+    bold:
+        family: Iosevka Heavy
+        style: Heavy
+    italic:
+        style: Italic
+
+

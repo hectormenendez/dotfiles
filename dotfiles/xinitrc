@@ -1,0 +1,23 @@
+res_usr="$HOME/.Xresources"
+mod_usr="$HOME/.Xmodmap"
+res_sys="/etc/X11/xinit/.Xresources"
+mod_sys="/etc/X11/xinit/.Xmodmap"
+
+[ -f "$res_sys" ] && xrdb -merge "$res_sys"
+[ -f "$res_usr" ] && xrdb -merge "$res_usr"
+[ -f "$mod_sys" ] && xmodmap "$mod_sys"
+[ -f "$mod_usr" ] && xmodmap "$mod_usr"
+
+# persist nvidia settings
+nvidia-settings --load-config-only
+
+# force screen to use native resolution
+# dpi is set to 157 in .Xresources
+xrandr --output DP-5 --scale 2x2
+
+# Synergy (Barriers) to share kb & mouse with other PCs
+ps aux | grep barriers | tr -s " " | cut -d" " -f2 | xargs kill -s 9 2> /dev/null
+/usr/bin/barriers --no-daemon --config /home/etor/.barrierrc &
+
+exec xmonad
+
