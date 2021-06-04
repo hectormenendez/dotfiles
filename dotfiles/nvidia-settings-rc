@@ -2,7 +2,7 @@
 # /home/etor/.nvidia-settings-rc
 #
 # Configuration file for nvidia-settings - the NVIDIA X Server Settings utility
-# Generated on Tue May 25 02:24:04 2021
+# Generated on Tue Jun  1 10:28:16 2021
 #
 
 # ConfigProperties:
@@ -13,9 +13,9 @@ SliderTextEntries = No
 IncludeDisplayNameInConfigFile = No
 ShowQuitDialog = No
 UpdateRulesOnProfileNameChange = No
-Timer = PowerMizer_Monitor_(GPU_0),Yes,1000
-Timer = Thermal_Monitor_(GPU_0),Yes,1000
 Timer = Memory_Used_(GPU_0),Yes,3000
+Timer = Thermal_Monitor_(GPU_0),Yes,1000
+Timer = PowerMizer_Monitor_(GPU_0),Yes,1000
 
 # Attributes:
 

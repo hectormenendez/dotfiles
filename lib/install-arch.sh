@@ -25,7 +25,6 @@ _packages=(
     'python-pip'
     'python-setuptools'
     'pyenv'
-    'pyenv-virtualenv'
     'git'
     'fzf'
     'the_silver_searcher'
@@ -74,7 +73,6 @@ for (( _i=0; _i < ${#_packages[@]}; _i++ )); do
         _pathemacs=~/.config/emacs.d
         rm -Rf $_pathemacs
         git clone https://github.com/hectormenendez/emacs.d $_pathemacs
-        git clone https://github.com/hectormenendez/emacs.theme $_pathemacs/_themes
         ln -s $_pathemacs ~/.emacs.d
     fi
 done

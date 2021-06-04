@@ -9,15 +9,20 @@ mod_sys="/etc/X11/xinit/.Xmodmap"
 [ -f "$mod_usr" ] && xmodmap "$mod_usr"
 
 # persist nvidia settings
-nvidia-settings --load-config-only
+nvidia-settings --load-config-only &
 
 # force screen to use native resolution
-# dpi is set to 157 in .Xresources
-xrandr --output DP-5 --scale 2x2
+xrandr --output DP-5 --scale 2x2 &
+xrandr --output DP-5 --auto --dpi 144 &
+
+# disable screen going blank after a while
+xset s off -dpms &
 
 # Synergy (Barriers) to share kb & mouse with other PCs
 ps aux | grep barriers | tr -s " " | cut -d" " -f2 | xargs kill -s 9 2> /dev/null
 /usr/bin/barriers --no-daemon --config /home/etor/.barrierrc &
 
-exec xmonad
+# enable the bluetooth system tray
+blueman-applet &
 
+exec xmonad

@@ -16,7 +16,7 @@ source $_path/../lib/utils.sh
 
 umask 022 # Set the creation mask, so files created with 644 and dirs as 755
 
-shopt -s checkwinsize # check winsize after each command and adjust screen automatically,
+shopt -s checkwinsize # check winsiz after each command and adjust screen automatically,
 shopt -s nocaseglob # case insensitive globbing
 shopt -s cdspell # Autocorrect typos in path names when using cd
 shopt -s histappend # Never overwrite the history file, append to it.
@@ -39,7 +39,7 @@ bind '"\e[D": backward-char'
 export PATH=$DOTFILES_BIN:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 export LC_ALL=en_US.UTF-8
 export LANG=$LC_ALL
-export PS1='\[\033[01;30m\]\u@\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
+export PS1='\[\033[49;90m\]\u@\h \[\033[01;34m\]\w\[\033[00m\]\n\$ '
 export HISTCONTROL="erasedups:ignoreboth" # remove dupes, ignores spaces and dupes
 export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear" # ignore these commands
 export HISTTIMEFORMAT='%F %T ' # YYYY-MM-DD HH:MM:SS {COMMAND}
@@ -49,7 +49,7 @@ export PROMPT_DIRTRIM=2 # trim long paths in the prompt
 
 # For reference these are the commands. The following happends for history:
 # history-dedupe: node binary I made.
-# -n: appends to history-list commmands added since the beggining of the session.
+# -a: appends to history-list commmands added since the beggining of the session.
 # -c: clears history-list
 # -w: write history-list to history-file. (this applies the deduping and ignoring)
 # -r: reads history-file and appends it to history list.
@@ -58,7 +58,7 @@ export PROMPT_COMMAND="history -a; history -w; $PROMPT_COMMAND"
 # All files found on the env folder will be read and set as envars
 # This is done to avoid writing confidential data here. (ie. HOMBREBREW_GITHUB_API)
 for _f in $(find $DOTFILES_ENV -type f -not -name ".*" -print); do
-    export $(basename $_f)=$(cat $_f)
+    export $(basename $_f)="$(cat $_f)"
 done
 
 # environment for tools
@@ -114,50 +114,64 @@ if isDarwin; then
     # Enable iterm2's shell integration
     [ -f "$HOME/.iterm2_shell_integration.bash" ] && \
         source "$HOME/.iterm2_shell_integration.bash"
+else
+    source "/usr/share/fzf/completion.bash"
+    source "/usr/share/fzf/key-bindings.bash"
 fi
 
 # --------------------------------------------------------- Extra Environment and Managers
 
-# Enable python environment (pyenv should be installed via homebrew)
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
-# Ruby environment manager
-if [[ -f "$HOME/.rvm/scripts/rvm" ]]; then
-    export PATH=$PATH:$HOME/.rvm/bin
-    source "$HOME/.rvm/scripts/rvm"
-else
-    echo "Warning: RVM is not installed"
+if has python; then
+    if has pyenv; then
+        eval "$(pyenv init -)"
+        eval "$(pyenv virtualenv-init -)"
+    else
+        echo "Warning: Pyenv is not installed"
+    fi
 fi
 
-# Enable Java Version Manager
-if command -v jenv > /dev/null; then
-    eval "$(jenv init -)"
-    # set current java version as default
-    export JAVA_HOME=`realpath $(jenv prefix)`
-else
-    echo "Warning: JENV is not installed"
+if has ruby; then
+    if [[ -f "$HOME/.rvm/scripts/rvm" ]]; then
+        export PATH=$PATH:$HOME/.rvm/bin
+        source "$HOME/.rvm/scripts/rvm"
+    else
+        echo "Warning: RVM is not installed"
+    fi
 fi
 
-# Enable Rust environment manager
-if [ -d "$HOME/.cargo/bin" ]; then
-    export PATH="$HOME/.cargo/bin:$PATH"
-else
-    echo "Warning: Cargo is not installed"
+if has java; then
+    if command -v jenv > /dev/null; then
+        eval "$(jenv init -)"
+        # set current java version as default
+        export JAVA_HOME=`realpath $(jenv prefix)`
+    else
+        echo "Warning: JENV is not installed"
+    fi
 fi
 
-# Enable Node Version Manager
+if has rust; then
+    if [ -d "$HOME/.cargo/bin" ]; then
+        export PATH="$HOME/.cargo/bin:$PATH"
+    else
+        echo "Warning: Cargo is not installed"
+    fi
+fi
+
+
+# Node version manager should be always available.
 export NVM_DIR="$HOME/.nvm"
 if isDarwin; then
-    _path_nvm=$(brew --prefix nvm)
-    if [ ! -d "$_path_nvm" ]; then
-        echo "Warning: NVM is not installed"
-    else
-        source "$_path_nvm/nvm.sh"
-        source "$_path_nvm/etc/bash_completion.d/nvm"
-    fi
+    _path_nvm="$(brew --prefix nvm)"
+    _path_nvc="$_path_nvm/etc/bash_completion.d/nvm"
 else
-    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+    _path_nvm=$(dirname $(readlink -n "$NVM_DIR/nvm.sh"))
+    _path_nvc="$_path_nvm/bash_completion"
+fi
+if [ -d "$_path_nvm" ]; then
+    source "$_path_nvm/nvm.sh"
+    source "$_path_nvc"
+else
+    echo "Warning: NVM is not installed"
 fi
 
 if isDarwin; then
@@ -187,7 +201,7 @@ if isDarwin; then
     fi
 
     # Make visual-code the default editor for react
-    command -v code-insiders > /dev/null && export REACT_EDITOR=code-insiders
+    has code-insiders && export REACT_EDITOR=code-insiders
 fi
 
 # Python Anaconda

@@ -36,3 +36,8 @@ if isDarwin; then
     alias os-flush-dstore="sudo find . -type f -name '*.DS_Store' -ls -delete"
     alias os-flush-trash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
 fi
+
+if isArch; then
+    alias paclog="expac --timefmt=%Y-%m_%d-%T '%l %n' | sort -n"
+    alias pacman="paru --skipreview --removemake --cleanafter"
+fi
