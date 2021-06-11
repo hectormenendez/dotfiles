@@ -27,46 +27,9 @@
     # Remove unnecesary whitespace before commit
     whitespace = strip
 
-[alias]
-    cp = cherry-pick
-    sm = submodule
-    smf = submodule foreach
-    br = branch -vv
-    su = branch --set-upstream-to
-    ci = commit -m
-    ca = commit -a --amend -C HEAD
-    cin = commit --no-verify -m
-    co = checkout
-    st = status
-    sku = stash -k -u
-    add = add -v
-    rmu = !sh -c 'git ls-files -o --exclude-standard  | xargs -I{} rm {} 2> /dev/null'
-    tagshow = !sh -c 'git rev-list $0 | head -n 1'
-
-    # list-files
-    # i: ignored, but added to stage/index
-    # s: staged only
-    # m: modified only (not staged)
-    # u: untracked only
-    ls = ls-files
-    lss = diff --cached --name-only
-    lsi = ls-files --exclude-standard -i
-    lsm = ls-files --exclude-standard -m
-    lsu = ls-files --exclude-standard --other
-    lg = !git log\
-        --graph\
-        --date=relative\
-        --pretty=tformat:'%C(bold blue)%h%C(reset) %C(bold green)%>(8,trunc)%ar%C(reset) %C(bold dim white)%<(8,trunc)%an %<(14,trunc)%ae%C(reset) %C(white)%s%C(reset)%C(auto)%d%C(reset)'
-    lga = !git lg --all
-    tree = !git log\
-        --graph\
-        --date=relative\
-        --pretty=tformat:'%>|(18)%C(auto)%h%C(reset)   %C(white)%an <%ae> %C(reset) %C(bold dim white)%ar%C(reset) %C(auto)%d%C(reset)%n %>|(19)%C(dim black)%m%C(reset) %<(60,trunc)%C(dim white)%s%C(reset)%n'
-
-    # Allows to selectively change variables on all commits.
-    # Usage example:
-    #    git change-commits GIT_COMMITTER_NAME "old name" "new name"
-    change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch -f --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f "
+[diff]
+    prompt = false
+    tool = vimdiff
 
 [color]
     ui = true
@@ -88,18 +51,56 @@
     changed = yellow
     untracked = red
 
-[diff]
-    prompt = false
-    tool = vimdiff
-
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
     required = true
-	process = git-lfs filter-process
+    process = git-lfs filter-process
+
+[alias]
+    cp = cherry-pick
+    sm = submodule
+    smf = submodule foreach
+    br = branch -vv
+    su = branch --set-upstream-to
+    ca = commit -a --amend -C HEAD --no-edit
+    ci = commit -m
+    cin = commit --no-verify -m
+    co = checkout
+    st = status
+    sku = stash -k -u; stashes unstaged files (even untracked)
+    add = add -v
+    ls = ls-files; list tracked files
+    lsi = "! git status --ignored --porcelain | cut -d' ' -f2"; list ignored paths
+    lss = diff --cached --name-only; list staged files
+    lsm = ls-files --exclude-standard -m; list modified and unstaged files
+    lsu = ls-files --exclude-standard --other; list untracked files
+    # remove untracked files
+    cdfx = clean -dfx
+    # Removes local branches no longer present in the remote
+    rmb = "! git remote update -p && git branch -vv | grep ': gone ] | xargs | cut -d\" \" -f1 | xargs git branch -D'"
+    # prints current's commit sha
+    sha = !sh -c 'git rev-list HEAD | head -n 1'
+    # pretty log
+    lg = !git log\
+        --graph\
+        --date=relative\
+        --pretty=tformat:'%C(bold blue)%h%C(reset) %C(bold green)%>(8,trunc)%ar%C(reset) %C(bold dim white)%<(8,trunc)%an %<(14,trunc)%ae%C(reset) %C(white)%s%C(reset)%C(auto)%d%C(reset)'
+    # log all branches
+    lga = !git lg --all
+    # alternative pretty-log.
+    tree = !git log\
+        --graph\
+        --date=relative\
+        --pretty=tformat:'%>|(18)%C(auto)%h%C(reset)   %C(white)%an <%ae> %C(reset) %C(bold dim white)%ar%C(reset) %C(auto)%d%C(reset)%n %>|(19)%C(dim black)%m%C(reset) %<(60,trunc)%C(dim white)%s%C(reset)%n'
+    # Allows to selectively change variables on all commits.
+    # Usage example:
+    #    git vars GIT_COMMITTER_NAME "old name" "new name"
+    vars = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch -f --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f "
 
 [difftool "vscode"]
     cmd = code-insiders --wait --diff $LOCAL $REMOTE
 
 [mergetool "vscode"]
     cmd = code-insiders --wait $MERGED
+
