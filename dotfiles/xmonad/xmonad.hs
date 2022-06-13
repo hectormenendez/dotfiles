@@ -11,6 +11,7 @@ import XMonad.Util.SpawnOnce(spawnOnce)
 import XMonad.Hooks.EwmhDesktops(fullscreenEventHook)
 import XMonad.Hooks.ManageDocks(avoidStruts,manageDocks)
 import XMonad.Hooks.ManageHelpers(doRectFloat)
+import XMonad.Hooks.SetWMName
 
 import XMonad.Actions.GridSelect as GridSelect
 import XMonad.Actions.Minimize as Minimize
@@ -20,6 +21,8 @@ main = xmonad $ defaultConfig
     {
         -- Run these on startup
         X.startupHook = do
+            -- Compatibility with JAVA applications (GUI)
+            setWMName "LG3D"
             -- Composition manager (animation)
             spawnOnce "picom --config ~/.picom --experimental-backends &"
             -- Background manager
@@ -33,7 +36,7 @@ main = xmonad $ defaultConfig
             X.manageHook defaultConfig <+> manageDocks
         ],
         -- How many workspaces?
-        X.workspaces = ["1", "2", "3"],
+        X.workspaces = ["1", "2", "3", "4", "5"],
         -- The default terminal emulator
         X.terminal = "alacritty",
         -- Configure border surrounding the window
@@ -76,7 +79,8 @@ main = xmonad $ defaultConfig
         ( "M-<Backspace>", withFocused _toggleFloat),
         ( "M-m", withFocused minimizeWindow ),
         ( "M-<Shift>-m", Minimize.withLastMinimized Minimize.maximizeWindowAndFocus ),
-        ( "M-<Alt>-<Ctrl>-p", spawn "1password")
+        ( "M-<Alt>-<Ctrl>-p", spawn "1password"),
+        ( "<Print>", spawn "scrot --select '%Y-%m-%d_$wx$h.png' -e 'mv $f ~/Downloads/'")
     ]
     where
         _toggleFloat w = windows (\s ->
