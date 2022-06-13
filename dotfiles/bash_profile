@@ -139,14 +139,11 @@ if has ruby; then
     fi
 fi
 
-if has java; then
-    if command -v jenv > /dev/null; then
-        eval "$(jenv init -)"
-        # set current java version as default
-        export JAVA_HOME=`realpath $(jenv prefix)`
-    else
-        echo "Warning: JENV is not installed"
-    fi
+if command -v jenv > /dev/null; then
+    eval "$(jenv init -)"
+    # set current java version as default
+    export JAVA_HOME=$(jenv prefix)
+    echo "JAVA: $(jenv version)"
 fi
 
 if has rust; then
@@ -207,3 +204,11 @@ fi
 # Python Anaconda
 # This has coused me some issues with the compiler, disable it to avoid them.
 # [ -d /anaconda3/bin ] && export PATH="$PATH:/anaconda3/bin"
+
+if [[ -d ~/Android/Sdk ]]; then
+    export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
+    export PATH=$ANDROID_SDK_ROOT/platform-tools:$PATH
+fi
+
+# Added by Amplify CLI binary installer
+export PATH="$HOME/.amplify/bin:$PATH"
