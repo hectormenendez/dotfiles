@@ -1,8 +1,11 @@
 [core]
+    editor = nvim ;code-insiders --wait
     whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
-    editor = nvim
     excludesfile = ~/.gitconfig
     autocrlf = input
+
+[init]
+    defaultBranch = main
 
 [merge]
     renamelimit = 9000
@@ -22,6 +25,7 @@
 [advice]
     # No need for hints on status
     statushints = false
+    skippedCherryPicks = false
 
 [apply]
     # Remove unnecesary whitespace before commit
@@ -58,45 +62,44 @@
     process = git-lfs filter-process
 
 [alias]
+    add = add -v
     cp = cherry-pick
     sm = submodule
     smf = submodule foreach
-    br = branch -vv
     su = branch --set-upstream-to
     ca = commit -a --amend -C HEAD --no-edit
     ci = commit -m
     cin = commit --no-verify -m
     co = checkout
     st = status
-    sku = stash -k -u; stashes unstaged files (even untracked)
-    add = add -v
-    ls = ls-files; list tracked files
-    lsi = "! git status --ignored --porcelain | cut -d' ' -f2"; list ignored paths
-    lss = diff --cached --name-only; list staged files
-    lsm = ls-files --exclude-standard -m; list modified and unstaged files
-    lsu = ls-files --exclude-standard --other; list untracked files
+    stb = branch -vv
+    sku = stash -k -u ; stashes unstaged files (even untracked)
+    # rebases current branche's remote
+    rb = "! f() {\tgit remote update -p;\tgit rebase -r $(git remote)/$(git rev-parse --abbrev-ref HEAD);\tgit st;\t}; f"
+    rmb = "! f() { git stb | grep ': gone]' | xargs | cut -d' ' -f1 | xargs git branch -D; }; f"
+    ru = remote update -p
+    ls = ls-files ; list tracked files
+    lsi = ! git status --ignored --porcelain | cut -d' ' -f2 ; list ignored paths
+    lss = diff --cached --name-only ; list staged files
+    lsm = ls-files --exclude-standard -m ; list modified and unstaged files
+    lsu = ls-files --exclude-standard --other ; list untracked files
     # remove untracked files
     cdfx = clean -dfx
     # Removes local branches no longer present in the remote
-    rmb = "! git remote update -p && git branch -vv | grep ': gone ] | xargs | cut -d\" \" -f1 | xargs git branch -D'"
     # prints current's commit sha
     sha = !sh -c 'git rev-list HEAD | head -n 1'
     # pretty log
-    lg = !git log\
-        --graph\
-        --date=relative\
-        --pretty=tformat:'%C(bold blue)%h%C(reset) %C(bold green)%>(8,trunc)%ar%C(reset) %C(bold dim white)%<(8,trunc)%an %<(14,trunc)%ae%C(reset) %C(white)%s%C(reset)%C(auto)%d%C(reset)'
+    lg = !git log --graph --date=relative --pretty=tformat:'%C(bold blue)%h%C(reset) %C(bold green)%>(8,trunc)%ar%C(reset) %C(bold dim white)%<(8,trunc)%an %<(14,trunc)%ae%C(reset) %C(white)%s%C(reset)%C(auto)%d%C(reset)'
     # log all branches
     lga = !git lg --all
     # alternative pretty-log.
-    tree = !git log\
-        --graph\
-        --date=relative\
-        --pretty=tformat:'%>|(18)%C(auto)%h%C(reset)   %C(white)%an <%ae> %C(reset) %C(bold dim white)%ar%C(reset) %C(auto)%d%C(reset)%n %>|(19)%C(dim black)%m%C(reset) %<(60,trunc)%C(dim white)%s%C(reset)%n'
+    tree = !git log --graph --date=relative --pretty=tformat:'%>|(18)%C(auto)%h%C(reset)   %C(white)%an <%ae> %C(reset) %C(bold dim white)%ar%C(reset) %C(auto)%d%C(reset)%n %>|(19)%C(dim black)%m%C(reset) %<(60,trunc)%C(dim white)%s%C(reset)%n'
     # Allows to selectively change variables on all commits.
     # Usage example:
     #    git vars GIT_COMMITTER_NAME "old name" "new name"
     vars = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch -f --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f "
+    # easy tag renaming
+    rtag = "!f() { git tag $2 $1 && echo Tagged $2 at $1 && git tag -d $1; }; f"
 
 [difftool "vscode"]
     cmd = code-insiders --wait --diff $LOCAL $REMOTE
@@ -104,3 +107,5 @@
 [mergetool "vscode"]
     cmd = code-insiders --wait $MERGED
 
+[credential]
+    helper = /usr/lib/git-core/git-credential-libsecret
