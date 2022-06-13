@@ -20,9 +20,17 @@ xset s off -dpms &
 
 # Synergy (Barriers) to share kb & mouse with other PCs
 ps aux | grep barriers | tr -s " " | cut -d" " -f2 | xargs kill -s 9 2> /dev/null
-/usr/bin/barriers --no-daemon --config /home/etor/.barrierrc &
+/usr/bin/barriers --no-daemon --disable-crypto --config /home/etor/.barrierrc &
 
 # enable the bluetooth system tray
 blueman-applet &
+
+# enable activity logging
+/usr/bin/rescuetime &
+
+# Enable gnome keyring (needed for vscode's github extensions)
+eval $(gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
+export SSH_AUTH_SOCK
+source /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
 
 exec xmonad
