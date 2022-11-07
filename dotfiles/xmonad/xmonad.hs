@@ -8,16 +8,16 @@ import XMonad.Util.EZConfig as EZConfig
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.SpawnOnce(spawnOnce)
 
-import XMonad.Hooks.EwmhDesktops(fullscreenEventHook)
 import XMonad.Hooks.ManageDocks(avoidStruts,manageDocks)
 import XMonad.Hooks.ManageHelpers(doRectFloat)
 import XMonad.Hooks.SetWMName
+import XMonad.Hooks.EwmhDesktops
 
 import XMonad.Actions.GridSelect as GridSelect
 import XMonad.Actions.Minimize as Minimize
 
--- xmproc <- spawnPipe "xmobar"
-main = xmonad $ defaultConfig
+-- NOTE: ewmhFullscreen: Fixes an issue with videos in Google Chrome
+main = xmonad $ ewmhFullscreen . ewmh $ def
     {
         -- Run these on startup
         X.startupHook = do
@@ -30,13 +30,13 @@ main = xmonad $ defaultConfig
             -- Widgets and niceties
             spawnOnce "conky -c $HOME/.config/conky/default.conkyrc",
         -- Wrap layouts so there's automatic spacing for docks,panels, trays
-        X.layoutHook = avoidStruts $ X.layoutHook defaultConfig,
+        X.layoutHook = avoidStruts $ X.layoutHook def,
         X.manageHook = composeAll [
             className =? "1Password" --> doRectFloat (StackSet.RationalRect 0.25 0.25 0.5 0.5),
-            X.manageHook defaultConfig <+> manageDocks
+            X.manageHook def <+> manageDocks
         ],
         -- How many workspaces?
-        X.workspaces = ["1", "2", "3", "4", "5"],
+        X.workspaces = ["1", "2", "3", "4", "5", "6"],
         -- The default terminal emulator
         X.terminal = "alacritty",
         -- Configure border surrounding the window
@@ -46,9 +46,7 @@ main = xmonad $ defaultConfig
         -- Use super as Modifier key
         X.modMask = mod4Mask,
         -- Automatically focus window by passing the mouse over
-        X.focusFollowsMouse = True,
-        -- Fixes an issue with videos in Google Chrome
-        X.handleEventHook = fullscreenEventHook
+        X.focusFollowsMouse = True
     }
     `EZConfig.removeKeysP` [
         -- start additionalKeys
@@ -75,7 +73,8 @@ main = xmonad $ defaultConfig
         ( "M-<Shift>-q", spawn "killall xmonad" ),
         ( "M-`", spawn "xset dpms force off"), -- turn off screen
         ( "M-<Shift>-r", spawn "xmonad --recompile; xmonad --restart" ),
-        ( "M-g", GridSelect.goToSelected GridSelect.defaultGSConfig ),
+        -- TODO: fix this
+        -- ( "M-g", GridSelect.goToSelected GridSelect.defaultGSConfig ),
         ( "M-<Backspace>", withFocused _toggleFloat),
         ( "M-m", withFocused minimizeWindow ),
         ( "M-<Shift>-m", Minimize.withLastMinimized Minimize.maximizeWindowAndFocus ),
