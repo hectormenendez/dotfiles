@@ -1,5 +1,5 @@
 window:
-    opacity: 0.90
+    opacity: 0.9
 
 dpi:
     x: 157.0
@@ -9,14 +9,15 @@ font:
     size: 14
     offset:
         x: 0
-        y: -3
+        y: 0
     normal:
-        family: Iosevka
+        family: IosevkaEtor
         style: Regular
     bold:
-        family: Iosevka Heavy
-        style: Heavy
+        family: IosevkaEtor
+        style: Medium
     italic:
+        family: IosevkaEtor
         style: Italic
 
 
