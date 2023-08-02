@@ -16,6 +16,25 @@ import XMonad.Hooks.ManageDocks(avoidStruts,manageDocks)
 import XMonad.Hooks.ManageHelpers(doRectFloat)
 import XMonad.Hooks.SetWMName(setWMName)
 
+-- How many workspaces?
+myWorkspaces = ["1", "2", "3", "4", "5", "6", "7"]
+
+-- The default terminal emulator
+myTerminal = "alacritty"
+
+-- What modifier keys are we going to use
+myMaskMod = X.mod4Mask
+
+-- Automatically focus window by passing the mouse over
+myFocusFollowsMouse :: Bool
+myFocusFollowsMouse = False
+
+-- Configure border surrounding the window
+myBorderWidth = 1
+myBorderColorNormal = "#000000"
+myBorderColorFocused = "#666666"
+
+-- Wrap layouts so there's automatic spacing for docks,panels, trays
 myLayout =
     avoidStruts $
     ToggleLayouts.toggleLayouts layoutFull -- sets the default layout to full
@@ -40,49 +59,51 @@ main = X.xmonad $ Desktops.ewmhFullscreen . Desktops.ewmh $ X.def
         X.startupHook = do
             -- Compatibility with JAVA applications (GUI)
             setWMName "LG3D"
-            -- Composition manager (animation)
-            spawnOnce "picom --config ~/.picom --experimental-backends &"
             -- Background manager
             spawnOnce "nitrogen --restore &"
-            -- Widgets and niceties
+            -- Widgets (used for performance widget on bottom)
             spawnOnce "conky -c $HOME/.config/conky/default.conkyrc",
         X.manageHook = X.composeAll [
             X.className X.=? "1Password" X.--> doRectFloat (StackSet.RationalRect 0.25 0.25 0.5 0.5),
             X.manageHook X.def X.<+> manageDocks
         ],
-        -- How many workspaces?
-        X.workspaces = ["1", "2", "3", "4", "5", "6"],
-        -- The default terminal emulator
-        X.terminal = "alacritty",
-        -- Configure border surrounding the window
-        X.borderWidth = 1,
-        X.normalBorderColor = "#000000",
-        X.focusedBorderColor = "#666666",
-        -- Use super as Modifier key
-        X.modMask = X.mod4Mask,
-        -- Automatically focus window by passing the mouse over
-        X.focusFollowsMouse = True,
-        -- Wrap layouts so there's automatic spacing for docks,panels, trays
+        X.modMask = myMaskMod,
+        X.workspaces = myWorkspaces,
+        X.terminal = myTerminal,
+        X.borderWidth = myBorderWidth,
+        X.normalBorderColor = myBorderColorNormal,
+        X.focusedBorderColor = myBorderColorFocused,
+        X.focusFollowsMouse = myFocusFollowsMouse,
         X.layoutHook = myLayout
     }
 
     `removeKeysP` [
-        "M-q",
-        "M-<Shift>-q",
-        "M-<Space>",
-        "M-<Backspace>",
+        -- Used by vscode
+        "M-p",
+        "M-S-p",
+        "M-,",
+        "M-j",
+        "M-S-e",
+        -- additionalKeys
         "<Print>",
+        "M-S-q",
         "M-q",
-        "M-`"
+        "M-<Backspace>",
+        "M-<Space>",
+        "M-<Tab>",
+        "M-S-<Space>",
+        "M-S-`"
     ]
 
     `additionalKeysP` [
-        ( "M-q", X.kill ),
-        ( "M-<Shift>-q", X.spawn "killall xmonad" ),
-        ( "M-<Space>", X.spawn "rofi -show combi" ),
-        ( "M-<Backspace>", X.withFocused toggleFloat),
         ( "<Print>", X.spawn "scrot --select '%Y-%m-%d_$wx$h.png' -e 'mv $f ~/Downloads/'"),
-        ( "M-`", X.sendMessage ToggleLayouts.ToggleLayout)
+        ( "M-S-q", X.spawn "killall xmonad-x86_64-linux" ),
+        ( "M-q", X.kill ),
+        ( "M-<Backspace>", X.withFocused toggleFloat),
+        ( "M-<Space>", X.spawn "rofi -show combi -show calc -show emoji -show filebrowser" ),
+        ( "M-<Tab>", X.spawn "rofi -show window" ),
+        ( "M-S-<Space>", X.spawn "rofimoji" ),
+        ( "M-S-`", X.sendMessage ToggleLayouts.ToggleLayout)
     ]
 
     where
