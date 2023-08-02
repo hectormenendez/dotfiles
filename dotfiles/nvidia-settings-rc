@@ -1,21 +1,20 @@
 #
 # /home/etor/.nvidia-settings-rc
 #
-# Configuration file for nvidia-settings - the NVIDIA X Server Settings utility
-# Generated on Tue Jun  1 10:28:16 2021
+# Configuration file for nvidia-settings - the NVIDIA Settings utility
+# Generated on Sun Mar 12 10:49:33 2023
 #
 
 # ConfigProperties:
 
 RcFileLocale = C
-DisplayStatusBar = No
+DisplayStatusBar = Yes
 SliderTextEntries = No
 IncludeDisplayNameInConfigFile = No
-ShowQuitDialog = No
 UpdateRulesOnProfileNameChange = No
-Timer = Memory_Used_(GPU_0),Yes,3000
-Timer = Thermal_Monitor_(GPU_0),Yes,1000
 Timer = PowerMizer_Monitor_(GPU_0),Yes,1000
+Timer = Thermal_Monitor_(GPU_0),Yes,1000
+Timer = Memory_Used_(GPU_0),Yes,3000
 
 # Attributes:
 
@@ -66,12 +65,12 @@ Timer = PowerMizer_Monitor_(GPU_0),Yes,1000
 [DPY:DP-5]/RedBrightness=0.000000
 [DPY:DP-5]/GreenBrightness=0.000000
 [DPY:DP-5]/BlueBrightness=0.000000
-[DPY:DP-5]/RedContrast=0.005000
-[DPY:DP-5]/GreenContrast=0.005000
-[DPY:DP-5]/BlueContrast=0.005000
-[DPY:DP-5]/RedGamma=1.200000
-[DPY:DP-5]/GreenGamma=1.200000
-[DPY:DP-5]/BlueGamma=1.200000
+[DPY:DP-5]/RedContrast=0.000000
+[DPY:DP-5]/GreenContrast=0.000000
+[DPY:DP-5]/BlueContrast=0.000000
+[DPY:DP-5]/RedGamma=1.000000
+[DPY:DP-5]/GreenGamma=1.000000
+[DPY:DP-5]/BlueGamma=1.000000
 [DPY:DP-5]/Dithering=0
 [DPY:DP-5]/DitheringMode=0
 [DPY:DP-5]/DitheringDepth=0
@@ -80,3 +79,4 @@ Timer = PowerMizer_Monitor_(GPU_0),Yes,1000
 [DPY:DP-5]/ColorSpace=0
 [DPY:DP-5]/ColorRange=0
 [DPY:DP-5]/SynchronousPaletteUpdates=0
+[GPU:0]/GPUPowerMizerMode=2
