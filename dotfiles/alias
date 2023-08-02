@@ -41,3 +41,5 @@ if isArch; then
     alias paclog="expac --timefmt=%Y-%m_%d-%T '%l %n' | sort -n"
     alias pacman="paru --skipreview --removemake --cleanafter"
 fi
+
+alias code=code-insiders --password-store="gnome"
