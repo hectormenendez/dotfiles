@@ -1,3 +1,6 @@
+# enable transparency and dropshadows (has to load first)
+xcompmgr -C -F -n -s &
+
 res_usr="$HOME/.Xresources"
 mod_usr="$HOME/.Xmodmap"
 res_sys="/etc/X11/xinit/.Xresources"
@@ -8,6 +11,7 @@ mod_sys="/etc/X11/xinit/.Xmodmap"
 [ -f "$mod_sys" ] && xmodmap "$mod_sys"
 [ -f "$mod_usr" ] && xmodmap "$mod_usr"
 
+
 # persist nvidia settings
 nvidia-settings --load-config-only &
 
@@ -17,6 +21,7 @@ xrandr --output DP-5 --auto --dpi 144 &
 
 # disable screen going blank after a while
 xset s off -dpms &
+
 
 # Synergy (Barriers) to share kb & mouse with other PCs
 ps aux | grep barriers | tr -s " " | cut -d" " -f2 | xargs kill -s 9 2> /dev/null
