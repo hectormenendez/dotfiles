@@ -1,9 +1,194 @@
 configuration {
-    width: 25;
-    font: "Iosevka 22";
+    modi: "combi,calc,emoji:/usr/bin/rofimoji,filebrowser";
+    show: [combi, calc, emoji, filebrowser];
+    combi-modi: "drun,run";
+
     show-icons: true;
     icon-theme: "Papirus";
-    combi-modi: "drun,run";
-    max-history-size: 50;
-    display-drun: "";
-}@import "./theme.rasi"
+
+    width: 25;
+    font: "IosevkaEtor 22";
+    max-history-size: 10;
+
+    display-drun: " ⚙ ";
+    display-filebrowser: " 📂 ";
+    display-window: " 🖼 ";
+    display-run: "  ";
+
+}
+
+/* ------------------------------------------------------------------------------ THEME */
+
+* {
+    color-c: rgb(0, 255, 255); // cyan
+    color-m: rgb(255, 0, 255); // magenta
+    color-y: rgb(255, 255, 0); // yellow
+
+    color-base-1: rgba(0, 0, 0, 0.7);
+    color-base-2: rgba(0, 0, 0, 0.5);
+
+    space-xs: 0.25em;
+    space-sm: 0.50em;
+    space-md: 1.00em;
+    space-lg: 2em;
+    space-xl: 4em;
+
+    border-none: 0px solid;
+}
+
+window {
+    enabled: true;
+    fullscreen: false;
+    children: [mainbox];
+
+    anchor: center;
+    location: center;
+
+
+    x-offset: 0px;
+    y-offset: 0px;
+
+    margin: 0;
+    padding: 0;
+
+    show-icons: true;
+    cursor: default;
+
+    transparency: "real";
+    border: 0;
+    width: 25em;
+    border: @border-none;
+    border-radius: @space-sm;
+    background-color: @color-base-1;
+}
+
+mainbox {
+    enabled: true;
+    children: [inputbar, mode-switcher, message, listview];
+
+    background-color: @color-base-1;
+    padding: @space-sm;
+}
+
+
+    inputbar {
+        enabled: true;
+        children: [textbox-prompt-colon, entry, prompt];
+
+        margin: 0px 0px 0.5em 0px;
+        border: 0px solid;
+        border-color: @color-m;
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: @space-xs;
+        border-radius: @space-xs;
+    }
+
+        // loupe
+        textbox-prompt-colon {
+            enabled: true;
+            str: "";
+            text-color: rgba(255, 255, 255, 0.2);
+        }
+
+        entry {
+            text-color: rgba(255, 255, 255, 0.5);
+            placeholder: "";
+        }
+
+        prompt {
+            enabled: false;
+            text-color: rgba(255, 255, 255, 0.2);
+        }
+
+    mode-switcher {
+        enabled: true;
+        expand: false;
+        children: [button];
+    }
+
+        button {
+            padding: @space-xs;
+            text-color: rgba(255, 255, 255, 0.3);
+        }
+
+        button selected {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 0px solid;
+            border-radius: @space-xs;
+        }
+
+    listview {
+        enabled: true;
+        dynamic: true;
+        scrollbar: false;
+        spacing: 0;
+        lines: 5;
+        background-color: none;
+
+        margin: 0.5em 0px 0 0px;
+    }
+
+        element {
+            enabled: true;
+            padding: 0.5em 0 0.4em 0;
+            background-color: transparent;
+        }
+
+        element normal.normal {
+            background-color: transparent;
+        }
+
+        element normal.urgent {
+            background-color: transparent;
+        }
+
+        element normal.active {
+            background-color: transparent;
+        }
+
+        element alternate.normal {
+            background-color: transparent;
+        }
+
+        element alternate.urgent {
+            background-color: transparent;
+        }
+
+        element alternate.active {
+            background-color: transparent;
+        }
+
+        element selected.normal {
+            background-color: rgba(128, 196, 255, 0.5);
+        }
+
+        element selected.urgent {
+            background-color: rgba(128, 196, 255, 0.5);
+        }
+
+        element selected.active {
+            background-color: rgba(128, 196, 255, 0.5);
+        }
+
+        element-icon {
+            size: 48px;
+            padding: 0 0 0 0.5em;
+        }
+
+        element-text {
+            text-color: rgba(255, 255, 255, 0.6);
+        }
+
+    message {
+        enabled: true;
+        margin: 0.5em 0 0 0;
+        background-color: rgba(255, 255, 255, 0.025);
+        padding: @space-sm;
+        border: 0px solid;
+        border-radius: @space-xs;
+    }
+
+        textbox {
+            text-color: rgba(255, 255, 255, 0.5);
+        }
+
