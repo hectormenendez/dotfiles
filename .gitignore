@@ -1,14 +1,6 @@
 *.DS_*
 .tern-port
 
-/dotfiles/config/*
-!/dotfiles/config/nvim
-!/dotfiles/config/emacs.d
-!/dotfiles/config/rofi
-
-/dotfiles/xmonad/*
-!/dotfiles/xmonad/*.hs
-
 # These rules aren't really for git, but for FZF/projectile
 .git
 

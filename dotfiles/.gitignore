@@ -1,0 +1,10 @@
+/config/*
+!/config/nvim
+!/config/emacs.d
+!/config/rofi
+!/config/kitty
+!/config/lazygit
+
+/xmonad/*
+!/xmonad/*.hs
+
