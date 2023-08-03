@@ -20,7 +20,7 @@ import XMonad.Hooks.SetWMName(setWMName)
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7"]
 
 -- The default terminal emulator
-myTerminal = "alacritty"
+myTerminal = "kitty"
 
 -- What modifier keys are we going to use
 myMaskMod = X.mod4Mask
