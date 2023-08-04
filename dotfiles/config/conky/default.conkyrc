@@ -1,0 +1,110 @@
+conky.config = {
+
+    -- Miscelaneous
+
+	background = true, -- forked to background
+    cpu_avg_samples = 2, -- average this many samples before rendering
+    disk_io_samples = 10, -- the same but for disk
+    net_avg_samples = 2, -- the same but for network
+    double_buffer = true, -- eliminates flickering.
+    no_buffers = true, -- TODO: huh?; substract (FS) buffers from used memory.
+    temperature_unit = 'celsius', -- can be fahrenheit, but only crazy people uses that.
+    text_buffer_size = 256, -- the number of character text variables can have
+	update_interval = 1, -- how many seconds between updates?
+	total_run_times = 0,
+
+    -- Sizing
+	alignment = 'bottom_left', -- top_left, top_middle, top_right, bottom_left, bottom_middle, bottom_right
+	gap_x = 10, -- pixels between screen and border
+	gap_y = 10,
+	minimum_width = 10,
+	maximum_width = 300,
+    minimum_height = 10,
+
+    -- Look & Feel
+    border_inner_margin = 5, -- margin between border and inner elements
+    border_outer_margin = 5, -- margin between border and the edge of another window
+    border_width = 0, -- border of the window
+    default_bar_width = 0, -- default: 0; meaning full width
+	default_bar_height = 10, -- default: 6;
+	default_gauge_height = 25, -- default: 25
+	default_gauge_width =40, -- default: 40
+	default_graph_height = 40, -- default: 25
+	default_graph_width = 0, -- default: 0; meaning full width
+	default_color = '#00ffff',
+    draw_borders = false, -- draw borders around text (haven't seen an effect with this on true)
+    draw_graph_borders = true,
+    draw_shades = false, -- draws a drop-shadow on elements for better readability
+    default_shade_color = '#ff00ff',
+    draw_outline = false, -- draws a border around elements
+    default_outline_color = '#00ff00',
+    stippled_borders = 0, -- dashed border (set this to 1 and didn't notice a difference)
+
+    -- Text
+    format_human_readable = true, -- KiB, MiB, instead of bytes
+    short_units = true, -- KiB to k
+	font = 'IosevkaEtor:size=11',
+    max_text_width = 0, -- 0 will enforce to show the lines even if width doesn't allow it
+    max_user_text = 16384, -- default: 16384. The amount of characters that are allowed to render.
+    top_name_width = 32, -- default: 15; the max size for $top names
+    top_name_verbose = false, -- if true, top will show full paths of the processes.
+    uppercase = false,
+	use_spacer = 'none', -- default: none, add spaces to elements to help aligning them
+	use_xft = true, -- enable antialiasing
+	xftalpha = 1, -- should the font be transparent by default? float betwen 0-1
+    override_utf8_locale = true, -- force utf8, requires xft enabled.
+
+    -- Window
+	own_window = true, -- should a window be created to draw on it?
+	own_window_argb_value = 0, -- real  transparency of the window, composite manager required.
+    own_window_argb_visual = true, -- use real transparency?
+	own_window_class = 'Conky', -- set a className to use with xprop
+    -- own_window_colour = '#ffff00', -- set a background color for windows.
+	own_window_tranparent = false, -- TODO: find out difference between argb and this.
+    own_window_title = 'ConkyXmonad',
+    own_window_type = 'override', -- can be: normal,override,dock,desktop,panel
+	own_window_hints = 'undecorated,below,above,sticky,skip_taskbar,skip_pager',
+
+    --Vars
+    color0 = "DimGray",
+    color1 = "white"
+};
+
+conky.text = [[
+$font${color white}${time %a %m/%d} ${time %H:%M} $alignr${color DimGray}$sysname $kernel ${color white}$uptime_short 
+
+${font IosevkaEtor:size=13}${color DimGray}NET $font${color white}$alignr D ${totaldown enp9s0} / U ${totalup enp9s0}
+
+${color DimGray}${downspeedgraph enp9s0 15, 250 -t} $alignr D ${downspeed enp9s0}
+${color DimGray}${upspeedgraph enp9s0 15, 250} $alignr U ${upspeed enp9s0}
+
+${font IosevkaEtor:size=13}${color DimGray}SDD $alignr $font${color white} ${fs_used /} / ${fs_size /}
+${color DimGray}${fs_used_perc /}% ${fs_bar /}
+
+${color DimGray}${diskiograph_read 15,250} $alignr R ${diskio_read /dev/nvme0n1p3}
+${color DimGray}${diskiograph_write 15,250} $alignr W ${diskio_write /dev/nvme0n1p3}
+
+${font IosevkaEtor:size=13}${color DimGray}MEMORY $alignr $font${color white}$mem / $memmax${color DimGray}
+RAM  $memmax $memperc% $membar
+SWAP $swapmax $swapperc% $swapbar
+
+${font IosevkaEtor:size=13}${color DimGray}CPU $alignr $font${color white}${running_processes} / ${processes}
+${color DimGray}${cpugraph cpu0}
+01 ${freq 1}Mhz ${cpu cpu1}% ${cpubar cpu1}
+02 ${freq 2}Mhz ${cpu cpu2}% ${cpubar cpu2}
+03 ${freq 3}Mhz ${cpu cpu3}% ${cpubar cpu3}
+04 ${freq 4}Mhz ${cpu cpu4}% ${cpubar cpu4}
+05 ${freq 5}Mhz ${cpu cpu5}% ${cpubar cpu5}
+06 ${freq 6}Mhz ${cpu cpu6}% ${cpubar cpu6}
+07 ${freq 7}Mhz ${cpu cpu3}% ${cpubar cpu7}
+08 ${freq 8}Mhz ${cpu cpu8}% ${cpubar cpu8}
+09 ${freq 9}Mhz ${cpu cpu9}% ${cpubar cpu9}
+10 ${freq 10}Mhz ${cpu cpu10}% ${cpubar cpu10}
+11 ${freq 11}Mhz ${cpu cpu11}% ${cpubar cpu11}
+12 ${freq 12}Mhz ${cpu cpu12}% ${cpubar cpu12}
+
+${color #3b71a1}Entropy: ${color}${entropy_avail}${color DimGray}/${color}${entropy_poolsize} ${color DimGray}${entropy_bar}
+
+${font IosevkaEtor:size=13}${color DimGray}TEMPERATURES
+$font${color DimGray} SSD: ${hwmon 0 temp 1}° $alignr CTL:${hwmon 1 temp 1} DIE:${hwmon 1 temp 2}° CCD1:${hwmon 1 temp 3}° CCS2:${hwmon 1 temp 4}°
+]];
