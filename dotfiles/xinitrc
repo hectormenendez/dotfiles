@@ -16,8 +16,7 @@ mod_sys="/etc/X11/xinit/.Xmodmap"
 nvidia-settings --load-config-only &
 
 # force screen to use native resolution
-xrandr --output DP-5 --scale 2x2 &
-xrandr --output DP-5 --auto --dpi 144 &
+xrandr --output $(xrandr | grep " connected" | head -n 1 | cut -d" " -f1) --scale 2x2 --dpi 144
 
 # disable screen going blank after a while
 xset s off -dpms &
