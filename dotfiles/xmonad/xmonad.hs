@@ -47,11 +47,6 @@ myLayout =
         layoutTiled = X.Tall 1 (3/100) (1/2)
         layout3Col = Layout3Col.ThreeCol 1 (3/100) (1/2)
 
--- myLayout = ThreeColMid 1 (3/100) (1/2) ||| master tall ||| Full
---     where
---         tall = Tall 1 (3/100) (1/2)
---         master = masterWindowGaps tall
-
 -- NOTE: ewmhFullscreen: Fixes an issue with videos in Google Chrome
 main = X.xmonad $ Desktops.ewmhFullscreen . Desktops.ewmh $ X.def
     {
@@ -115,32 +110,36 @@ main = X.xmonad $ Desktops.ewmhFullscreen . Desktops.ewmh $ X.def
     -- X.layoutHook X.def
 
 
--- myLayout =
--- 	avoidStruts $
--- 	smartBorders $
--- 	toggleLayouts Full
--- 	(tiled ||| ThreeColMid 1 (3/100) (1/3) ||| Mirror tiled ||| tabbedLayout ||| gimpLayout)
--- 	where
--- 		tiled = Tall nmaster delta ratio
--- 		nmaster = 1
--- 		delta = 3/100
--- 		ratio = toRational(2/(1+sqrt(5)::Double))
+-- The default keybindings
 
--- 		gimpLayout = named "Gimp" (
--- 			withIM (0.15) (Role "gimp-toolbox") $
--- 			reflectHoriz $
--- 			withIM (0.2) (Role "gimp-dock") Full
--- 			)
--- 		tabbedLayout = named "Tabbed" (tabbedBottom shrinkText myTabConfig)
--- 		myTabConfig = defaultTheme
--- 			{ activeColor = "#1a1a1a"
--- 			, inactiveColor = "#000000"
--- 			, urgentColor = "#1a1a1a"
--- 			, activeTextColor = "#00ffff"
--- 			, inactiveTextColor = "#ffbe33"
--- 			, urgentTextColor = "#ff00ff"
--- 			, activeBorderColor = "#000000"
--- 			, inactiveBorderColor = "#1a1a1a"
--- 			, urgentBorderColor = "#000000"
--- 			}
+--  `additionalKeysP` [
+--        ("M-<Return>", spawn myTerminal),
+--        ("M-p", spawn "dmenu_run"),
+--        ("M-S-p", spawn "gmrun"),
+--        ("M-S-c", kill),
+--        ("M-<Space>", sendMessage NextLayout),
+--        ("M-S-<Space>", setLayout $ X.layoutHook conf),
+--        ("M-n", refresh),
+--        ("M-<Tab>", windows W.focusDown),
+--        ("M-S-<Tab>", windows W.focusUp),
+--        ("M-j", windows W.focusDown),
+--        ("M-k", windows W.focusUp),
+--        ("M-m", windows W.focusMaster),
+--        ("M-<Return>", windows W.swapMaster),
+--        ("M-S-j", windows W.swapDown),
+--        ("M-S-k", windows W.swapUp),
+--        ("M-h", sendMessage Shrink),
+--        ("M-l", sendMessage Expand),
+--        ("M-t", withFocused $ windows . W.sink),
+--        ("M-,", sendMessage (IncMasterN 1)),
+--        ("M-.", sendMessage (IncMasterN (-1))),
+--        ("M-S-q", io (exitWith ExitSuccess)),
+--        ("M-q", spawn "xmonad --recompile; xmonad --restart"),
+--        ("M-S-/", spawn ("echo \"" ++ help ++ "\" | xmessage -file -")),
+--        ("M-?", spawn ("echo \"" ++ help ++ "\" | xmessage -file -")),
+--        ("M-[1..9]", windows . W.greedyView),
+--        ("M-S-[1..9]", windows . W.shift),
+--        ("M-{w,e,r}", screenWorkspace 0 >>= flip whenJust (windows . W.view)),
+--        ("M-S-{w,e,r}", screenWorkspace 0 >>= flip whenJust (windows . W.shift))
+--  ]
 
