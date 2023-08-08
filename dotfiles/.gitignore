@@ -1,9 +1,20 @@
 /config/*
+
 !/config/nvim
 !/config/emacs.d
 !/config/rofi
 !/config/kitty
 !/config/lazygit
+!/config/conky
+!/config/qtile
+
+!/config/aerc
+
+!/config/Vieb/*
+!/config/Vieb/viebrc
+
+
+/config/qtile/__pycache__
 
 /xmonad/*
 !/xmonad/*.hs
