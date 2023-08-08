@@ -46,3 +46,6 @@ alias code=code-insiders --password-store="gnome"
 
 # uses current screen for xephyr (if you don't remember, shame on you).
 alias xephyr="Xephyr -ac -br -noreset -screen $(xrandr --current | grep primary | grep -Eo '[0-9]{4}x[0-9]{4}') :1 &"
+
+alias unlock='eval $(op signin)'
+alias gmail="aerc"
