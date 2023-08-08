@@ -212,3 +212,7 @@ fi
 
 # Added by Amplify CLI binary installer
 export PATH="$HOME/.amplify/bin:$PATH"
+# 1password-cli required (check aliases)
+export OP_MC="op://Personal/3jyhsm2a4remtnuswge3rzpd3y/password"
+export OP_GK="op://Personal/dusn2bjoazbflim6gxffk5v5oe/password"
+export OP_HM="op://Personal/zcwdix6yzndzfp4mkpsyxshoea/o7ff5s7ad3hrkswlpsfoxh5ka4"
