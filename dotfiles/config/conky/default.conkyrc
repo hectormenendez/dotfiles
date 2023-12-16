@@ -2,15 +2,13 @@ conky.config = {
 
     -- Miscelaneous
 
-	background = true, -- forked to background
     cpu_avg_samples = 2, -- average this many samples before rendering
-    disk_io_samples = 10, -- the same but for disk
     net_avg_samples = 2, -- the same but for network
     double_buffer = true, -- eliminates flickering.
     no_buffers = true, -- TODO: huh?; substract (FS) buffers from used memory.
     temperature_unit = 'celsius', -- can be fahrenheit, but only crazy people uses that.
     text_buffer_size = 256, -- the number of character text variables can have
-	update_interval = 1, -- how many seconds between updates?
+	update_interval = 3, -- how many seconds between updates?
 	total_run_times = 0,
 
     -- Sizing
@@ -18,7 +16,7 @@ conky.config = {
 	gap_x = 10, -- pixels between screen and border
 	gap_y = 10,
 	minimum_width = 10,
-	maximum_width = 300,
+	maximum_width = 350,
     minimum_height = 10,
 
     -- Look & Feel
@@ -28,7 +26,7 @@ conky.config = {
     default_bar_width = 0, -- default: 0; meaning full width
 	default_bar_height = 10, -- default: 6;
 	default_gauge_height = 25, -- default: 25
-	default_gauge_width =40, -- default: 40
+	default_gauge_width = 40, -- default: 40
 	default_graph_height = 40, -- default: 25
 	default_graph_width = 0, -- default: 0; meaning full width
 	default_color = '#00ffff',
@@ -43,7 +41,7 @@ conky.config = {
     -- Text
     format_human_readable = true, -- KiB, MiB, instead of bytes
     short_units = true, -- KiB to k
-	font = 'IosevkaEtor:size=11',
+	font = 'IosevkaEtor',
     max_text_width = 0, -- 0 will enforce to show the lines even if width doesn't allow it
     max_user_text = 16384, -- default: 16384. The amount of characters that are allowed to render.
     top_name_width = 32, -- default: 15; the max size for $top names
@@ -60,7 +58,7 @@ conky.config = {
     own_window_argb_visual = true, -- use real transparency?
 	own_window_class = 'Conky', -- set a className to use with xprop
     -- own_window_colour = '#ffff00', -- set a background color for windows.
-	own_window_tranparent = false, -- TODO: find out difference between argb and this.
+	own_window_transparent = false, -- TODO: find out difference between argb and this.
     own_window_title = 'ConkyXmonad',
     own_window_type = 'override', -- can be: normal,override,dock,desktop,panel
 	own_window_hints = 'undecorated,below,above,sticky,skip_taskbar,skip_pager',
@@ -73,22 +71,22 @@ conky.config = {
 conky.text = [[
 $font${color white}${time %a %m/%d} ${time %H:%M} $alignr${color DimGray}$sysname $kernel ${color white}$uptime_short 
 
-${font IosevkaEtor:size=13}${color DimGray}NET $font${color white}$alignr D ${totaldown enp9s0} / U ${totalup enp9s0}
+${font IosevkaEtor}${color DimGray}NET $font${color white}$alignr D ${totaldown enp9s0} / U ${totalup enp9s0}
 
 ${color DimGray}${downspeedgraph enp9s0 15, 250 -t} $alignr D ${downspeed enp9s0}
 ${color DimGray}${upspeedgraph enp9s0 15, 250} $alignr U ${upspeed enp9s0}
 
-${font IosevkaEtor:size=13}${color DimGray}SDD $alignr $font${color white} ${fs_used /} / ${fs_size /}
+${font IosevkaEtor}${color DimGray}SDD $alignr $font${color white} ${fs_used /} / ${fs_size /}
 ${color DimGray}${fs_used_perc /}% ${fs_bar /}
 
 ${color DimGray}${diskiograph_read 15,250} $alignr R ${diskio_read /dev/nvme0n1p3}
 ${color DimGray}${diskiograph_write 15,250} $alignr W ${diskio_write /dev/nvme0n1p3}
 
-${font IosevkaEtor:size=13}${color DimGray}MEMORY $alignr $font${color white}$mem / $memmax${color DimGray}
+${font IosevkaEtor}${color DimGray}MEMORY $alignr $font${color white}$mem / $memmax${color DimGray}
 RAM  $memmax $memperc% $membar
 SWAP $swapmax $swapperc% $swapbar
 
-${font IosevkaEtor:size=13}${color DimGray}CPU $alignr $font${color white}${running_processes} / ${processes}
+${font IosevkaEtor}${color DimGray}CPU $alignr $font${color white}${running_processes} / ${processes}
 ${color DimGray}${cpugraph cpu0}
 01 ${freq 1}Mhz ${cpu cpu1}% ${cpubar cpu1}
 02 ${freq 2}Mhz ${cpu cpu2}% ${cpubar cpu2}
@@ -105,6 +103,6 @@ ${color DimGray}${cpugraph cpu0}
 
 ${color #3b71a1}Entropy: ${color}${entropy_avail}${color DimGray}/${color}${entropy_poolsize} ${color DimGray}${entropy_bar}
 
-${font IosevkaEtor:size=13}${color DimGray}TEMPERATURES
+${font IosevkaEtor}${color DimGray}TEMPERATURES
 $font${color DimGray} SSD: ${hwmon 0 temp 1}° $alignr CTL:${hwmon 1 temp 1} DIE:${hwmon 1 temp 2}° CCD1:${hwmon 1 temp 3}° CCS2:${hwmon 1 temp 4}°
 ]];
