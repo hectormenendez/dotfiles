@@ -64,8 +64,8 @@ main = X.xmonad $ Desktops.ewmhFullscreen . Desktops.ewmh $ X.def
             setWMName "LG3D"
             -- Background manager
             spawnOnce "nitrogen --restore &"
-            -- Widgets (used for performance widget on bottom)
-            spawnOnce "conky -c $HOME/.config/conky/default.conkyrc",
+            -- Desktop Widgets 
+            spawnOnce "conky -d -c $HOME/.config/conky/default.conkyrc",
         X.manageHook = X.composeAll [
             X.className X.=? "1Password" X.--> doRectFloat (SS.RationalRect 0.25 0.25 0.5 0.5),
             X.manageHook X.def X.<+> manageDocks
@@ -148,6 +148,9 @@ main = X.xmonad $ Desktops.ewmhFullscreen . Desktops.ewmh $ X.def
         
         -- open default terminal
         ("M-S-<Return>", X.spawn myTerminal),
+
+        -- open file explorer
+        ("M-e", X.spawn "spacefm"),
 
         ("M-<Space>", X.spawn "rofi -show combi -show calc -show emoji -show filebrowser"),
         ("M-S-<Space>", X.spawn "rofimoji" ),
