@@ -1,0 +1,58 @@
+#!/usr/bin/env zsh
+#
+# If running non-interactively, don't do anything.
+[[ -o interactive ]] || return
+
+PATH_SELF=$(python \
+    -c "import os,sys; print(os.path.realpath(sys.argv[1]))"\
+    "${(%):-%N}")
+    PATH_SELF=$(dirname $PATH_SELF)
+PATH_UTILS="$PATH_SELF/../lib/utils.sh";
+
+[[ ! -f "$PATH_UTILS" ]] && echo "Utils Unavailable." && return;
+source "$PATH_UTILS"
+
+setopt NO_CASE_GLOB # case insensitive globbing
+setopt CORRECT_ALL # Autocorrect typos in path names when using cd
+setopt APPEND_HISTORY # Never overwrite the history file, append to it
+setopt EXTENDED_HISTORY # always store commands in one line in history
+
+# Set the creation mask, so files created with 644 and dirs as 755
+umask 022
+
+## The following lines were added by compinstall
+#zstyle ':completion:*' auto-description 'specify: %d'
+#zstyle ':completion:*' completer _list _expand _complete _ignored _approximate
+#zstyle ':completion:*' completions 1
+#zstyle ':completion:*' file-sort access
+#zstyle ':completion:*' glob 1
+#zstyle ':completion:*' ignore-parents parent pwd
+#zstyle ':completion:*' list-colors ''
+#zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+#zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
+#zstyle ':completion:*' max-errors 3
+#zstyle ':completion:*' preserve-prefix '//[^/]##/'
+#zstyle ':completion:*' prompt '%e posibilities:'
+#zstyle ':completion:*' squeeze-slashes true
+#zstyle ':completion:*' substitute 1
+#zstyle ':completion:*' use-compctl false
+#zstyle ':vcs_info:git:*' formats '%b '
+#zstyle :compinstall filename '~/.zshrc'
+#
+#autoload -Uz compinit vcs_info
+#bindkey -v
+#
+#precmd() { vcs_info }
+#compinit
+#
+#HISTFILE=~/.histfile
+#HISTSIZE=1000
+#SAVEHIST=1000
+#
+#setopt extendedglob notify
+#setopt PROMPT_SUBST
+#unsetopt autocd beep nomatch
+#
+#PROMPT='%F{green}%*%f %F{blue}%~%f %F{red}${vcs_info_msg_0_}%f$ '
+#
+#neofetch
