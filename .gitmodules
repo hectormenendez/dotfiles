@@ -1,6 +1,3 @@
-[submodule "dotfiles/config/nvim"]
-	path = dotfiles/config/nvim
-	url = ../vimrc
 [submodule "dotfiles/config/emacs.d"]
 	path = dotfiles/config/emacs.d
 	url = ../emacs.d
