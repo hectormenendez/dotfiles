@@ -9,12 +9,16 @@ alias -- --='cd -'
 
 alias ssh='TERM=xterm ssh'
 
+# clear scrollbuffer as well
+alias clear="printf '\033[2J\033[3J\033[1;1H'"
+
 # Show Color on grep
 alias grep='grep --color=auto'
 
 # LS specific
 alias ls="ls --classify --tabsize=0 --literal --color=auto --show-control-chars --human-readable --group-directories-first"
-alias la="exa -la --git -t created -s created --group-directories-first"
+alias la="exa -la --git"
+alias lt="exa -la --git -t created -s created --group-directories-first"
 alias tree="exa -T"
 
 # Erase the screen and show the file listing.
@@ -49,3 +53,4 @@ alias xephyr="Xephyr -ac -br -noreset -screen $(xrandr --current | grep primary 
 
 alias unlock='eval $(op signin)'
 alias gmail="aerc"
+alias webcam="mplayer tv:// -tv driver=v4l2:device=/dev/video0 -vo x11"
