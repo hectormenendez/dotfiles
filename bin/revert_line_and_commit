@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Ensure the correct number of arguments are provided
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <commit_id> <line_number>"
+    exit 1
+fi
+
+COMMIT_ID=$1
+LINE_NUMBER=$2
+FILE_NAME="LEXICON.pkl"  # Specify your file name here
+TEMP_FILE_AT_COMMIT="$FILE_NAME.at.commit"
+LINE_FILE="line$LINE_NUMBER.txt"
+TEMP_FILE="$FILE_NAME.tmp"
+
+# Step 1: Extract the file from the specific commit
+git show $COMMIT_ID:$FILE_NAME > $TEMP_FILE_AT_COMMIT
+
+# Step 2: Extract the specific line
+sed -n "${LINE_NUMBER}p" $TEMP_FILE_AT_COMMIT > $LINE_FILE
+
+# Step 3: Replace the line in the current file
+awk -v lineFile=$LINE_FILE 'NR=='"$LINE_NUMBER"'{system("cat " lineFile);next}1' $FILE_NAME > $TEMP_FILE && mv $TEMP_FILE $FILE_NAME
+
+# Step 4: Clean up temporary files
+rm $TEMP_FILE_AT_COMMIT $LINE_FILE
+
+# Step 5: Commit the changes
+git add $FILE_NAME
+git commit -m "Reverted line $LINE_NUMBER of $FILE_NAME to state from commit $COMMIT_ID"
+
+echo "Line $LINE_NUMBER of $FILE_NAME has been reverted to its state from commit $COMMIT_ID and committed."
+
