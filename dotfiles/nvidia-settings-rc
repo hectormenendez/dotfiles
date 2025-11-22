@@ -2,7 +2,7 @@
 # /home/etor/.nvidia-settings-rc
 #
 # Configuration file for nvidia-settings - the NVIDIA Settings utility
-# Generated on Sun Mar 12 10:49:33 2023
+# Generated on Fri Oct 24 20:51:35 2025
 #
 
 # ConfigProperties:
@@ -29,9 +29,9 @@ Timer = Memory_Used_(GPU_0),Yes,3000
 0/LogAnisoAppControlled=1
 0/OpenGLImageSettings=0
 0/FSAAAppEnhanced=1
-0/GammaCorrectedAALinesValue=18
+0/GammaCorrectedAALinesValue=19
 0/ShowGraphicsVisualIndicator=0
-0/XVideoSyncToDisplayID=DP-5
+0/XVideoSyncToDisplayID=DP-3
 [DPY:DP-0]/Dithering=0
 [DPY:DP-0]/DitheringMode=0
 [DPY:DP-0]/DitheringDepth=0
@@ -50,9 +50,20 @@ Timer = Memory_Used_(GPU_0),Yes,3000
 [DPY:DP-2]/ColorSpace=0
 [DPY:DP-2]/ColorRange=0
 [DPY:DP-2]/SynchronousPaletteUpdates=0
+[DPY:DP-3]/RedBrightness=0.000000
+[DPY:DP-3]/GreenBrightness=0.000000
+[DPY:DP-3]/BlueBrightness=0.000000
+[DPY:DP-3]/RedContrast=0.000000
+[DPY:DP-3]/GreenContrast=0.000000
+[DPY:DP-3]/BlueContrast=0.000000
+[DPY:DP-3]/RedGamma=1.000000
+[DPY:DP-3]/GreenGamma=1.000000
+[DPY:DP-3]/BlueGamma=1.000000
 [DPY:DP-3]/Dithering=0
 [DPY:DP-3]/DitheringMode=0
 [DPY:DP-3]/DitheringDepth=0
+[DPY:DP-3]/DigitalVibrance=0
+[DPY:DP-3]/ImageSharpening=127
 [DPY:DP-3]/ColorSpace=0
 [DPY:DP-3]/ColorRange=0
 [DPY:DP-3]/SynchronousPaletteUpdates=0
@@ -62,20 +73,9 @@ Timer = Memory_Used_(GPU_0),Yes,3000
 [DPY:DP-4]/ColorSpace=0
 [DPY:DP-4]/ColorRange=0
 [DPY:DP-4]/SynchronousPaletteUpdates=0
-[DPY:DP-5]/RedBrightness=0.000000
-[DPY:DP-5]/GreenBrightness=0.000000
-[DPY:DP-5]/BlueBrightness=0.000000
-[DPY:DP-5]/RedContrast=0.000000
-[DPY:DP-5]/GreenContrast=0.000000
-[DPY:DP-5]/BlueContrast=0.000000
-[DPY:DP-5]/RedGamma=1.000000
-[DPY:DP-5]/GreenGamma=1.000000
-[DPY:DP-5]/BlueGamma=1.000000
 [DPY:DP-5]/Dithering=0
 [DPY:DP-5]/DitheringMode=0
 [DPY:DP-5]/DitheringDepth=0
-[DPY:DP-5]/DigitalVibrance=45
-[DPY:DP-5]/ImageSharpening=120
 [DPY:DP-5]/ColorSpace=0
 [DPY:DP-5]/ColorRange=0
 [DPY:DP-5]/SynchronousPaletteUpdates=0
