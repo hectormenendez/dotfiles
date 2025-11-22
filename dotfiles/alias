@@ -43,7 +43,7 @@ fi
 
 if isArch; then
     alias paclog="expac --timefmt=%Y-%m_%d-%T '%l %n' | sort -n"
-    alias pacman="paru --skipreview --removemake --cleanafter"
+    alias pacman="paru --skipreview --removemake"
 fi
 
 alias code=code-insiders --password-store="gnome"
@@ -54,3 +54,6 @@ alias xephyr="Xephyr -ac -br -noreset -screen $(xrandr --current | grep primary 
 alias unlock='eval $(op signin)'
 alias gmail="aerc"
 alias webcam="mplayer tv:// -tv driver=v4l2:device=/dev/video0 -vo x11"
+alias lg="lazygit"
+
+alias xclip='xclip -sel clip'
