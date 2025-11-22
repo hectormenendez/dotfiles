@@ -18,7 +18,7 @@ import XMonad.Hooks.ManageHelpers(doRectFloat)
 import XMonad.Hooks.SetWMName(setWMName)
 
 -- How many workspaces?
-myWorkspaces = ["1", "2", "3", "4", "5", "6"]
+myWorkspaces = ["1", "2", "3", "4", "5", "6", "7"]
 
 -- The default terminal emulator
 myTerminal = "kitty"
@@ -155,6 +155,9 @@ main = X.xmonad $ Desktops.ewmhFullscreen . Desktops.ewmh $ X.def
         ("M-<Space>", X.spawn "rofi -show combi -show calc -show emoji -show filebrowser"),
         ("M-S-<Space>", X.spawn "rofimoji" ),
         ("<Print>", X.spawn "scrot --select '%Y-%m-%d_$wx$h.png' -e 'mv $f ~/Downloads/'"),
+
+        -- invert Xorg colors (xcalib must be installed)
+        ("M-S-i", X.spawn "xcalib -i -a"),
 
         ------------------------------------------ Controlling Windows
 
